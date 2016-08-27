@@ -18,8 +18,7 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.time.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.selection.min.js"></script>
-
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph2.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js"></script>
 
 <style>
 #wrapper {
@@ -80,6 +79,23 @@
                     </colgroup>
                     <tbody id="feeds"></tbody>
                 </table>
+            </div>
+            
+            <div style="padding:10px;">
+                <h4>My Graphs</h4>
+                
+                <select id="graph-select" style="width:230px">
+                    <option>Select graph:</option>
+                    <option>Graph 1</option>
+                    <option>Graph 2</option>
+                    <option>Graph 3</option>
+                </select>
+                
+                <br><br>
+                <b>Graph Name:</b><br>
+                <input id="graph-name" type="text" style="width:215px" />
+                <button id="graph-delete" class="btn" style="display:none">Delete</button>
+                <button id="graph-save" class="btn">Save</button>
             </div>
             
     </div>
@@ -158,7 +174,7 @@
             <div id="window-info" style=""></div><br>
                 
             <table class="table">
-                <tr><th>Feed</th><th></th><th>Quality</th><th>Min</th><th>Max</th><th>Diff</th><th>Mean</th><th>Stdev</th><th style='text-align:center'>Scale</th><th style='text-align:center'>Delta</th><th style='text-align:center'>Average</th><th>Decimal Points</th><th style="width:120px"></th><th style="width:80px"></th></tr>
+                <tr><th>Feed</th><th>Type</th><th>Color</th><th>Fill</th><th>Quality</th><th>Min</th><th>Max</th><th>Diff</th><th>Mean</th><th>Stdev</th><th>Wh</th><th style='text-align:center'>Scale</th><th style='text-align:center'>Delta</th><th style='text-align:center'>Average</th><th>DP</th><th style="width:120px"></th></tr>
                 <tbody id="stats"></tbody>
             </table>
             
@@ -187,16 +203,27 @@
     </div>
 </div>
 
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js"></script>
+
 <script>
     var path = "<?php echo $path; ?>";
     
+    // Assign active feedid from URL
     var urlparts = window.location.pathname.split("graph/");
     if (urlparts.length==2) {
         feedid = parseInt(urlparts[1]);
-        graph.feedlist.push({id:feedid, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+        feedlist.push({id:feedid, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
     }
     
-    graph.init();
-    graph.show();
+    var timeWindow = 3600000*24.0*7;
+    var now = Math.round(+new Date * 0.001)*1000;
+    view.start = now - timeWindow;
+    view.end = now;
+    view.calc_interval();
+    
+    graph_init_editor();
+    graph_resize();
+    graph_reloaddraw();
+    
 </script>
 
