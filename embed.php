@@ -55,14 +55,24 @@
             savedgraphs = result;
             
             var index = graph_index_from_name(name);
+            
             view.start = savedgraphs[index].start;
             view.end = savedgraphs[index].end;
             view.interval = savedgraphs[index].interval;
             view.limitinterval = savedgraphs[index].limitinterval;
             view.fixinterval = savedgraphs[index].fixinterval;
-            
+            floatingtime = savedgraphs[index].floatingtime,
+            yaxismin = savedgraphs[index].yaxismin;
+            yaxismax = savedgraphs[index].yaxismax;
             feedlist = savedgraphs[index].feedlist;
             
+            if (floatingtime) {
+                var timewindow = view.end - view.start;
+                var now = Math.round(+new Date * 0.001)*1000;
+                view.end = now;
+                view.start = view.end - timewindow;
+            }
+
             graph_resize();
             graph_reloaddraw();
         }

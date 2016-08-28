@@ -11,6 +11,8 @@ var floatingtime=1;
 var yaxismin="auto";
 var yaxismax="auto";
 
+var previousPoint = 0;
+
 var active_histogram_feed = 0;
 
 $("#info").show();
@@ -33,6 +35,28 @@ $('#placeholder').bind("plotselected", function (event, ranges)
     view.calc_interval();
     
     graph_reloaddraw();
+});
+
+$('#placeholder').bind("plothover", function (event, pos, item) {
+    if (item) {
+        var z = item.dataIndex;
+        
+        if (previousPoint != item.datapoint) {
+            previousPoint = item.datapoint;
+
+            $("#tooltip").remove();
+            var item_time = item.datapoint[0];
+            var item_value = item.datapoint[1];
+
+            var d = new Date(item_time);
+            var days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+            var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            var minutes = d.getMinutes();
+            if (minutes<10) minutes = "0"+minutes;
+            var date = d.getHours()+":"+minutes+" "+days[d.getDay()]+", "+months[d.getMonth()]+" "+d.getDate();
+            tooltip(item.pageX, item.pageY, item_value+"<br><span style='font-size:11px'>"+date+"</span>", "#fff");
+        }
+    } else $("#tooltip").remove();
 });
 
 $(window).resize(function(){
@@ -178,7 +202,7 @@ function graph_init_editor()
            }
         }
         
-        if (loaded==false && checked) feedlist.push({id:feedid, yaxis:1, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
+        if (loaded==false && checked) feedlist.push({id:feedid, name:getfeedname(feedid), yaxis:1, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
         graph_reloaddraw();
     });
 
@@ -415,7 +439,7 @@ function graph_draw()
         }
         // Add series to plot
         
-        var plot = {label:feedlist[z].id+":"+getfeedname(feedlist[z].id), data:data, yaxis:feedlist[z].yaxis, color: feedlist[z].color};
+        var plot = {label:feedlist[z].id+":"+feedlist[z].name, data:data, yaxis:feedlist[z].yaxis, color: feedlist[z].color};
         
         if (feedlist[z].plottype=='lines') plot.lines = { show: true, fill: feedlist[z].fill };
         if (feedlist[z].plottype=='bars') plot.bars = { show: true, barWidth: view.interval * 1000 * 0.75 };
@@ -638,7 +662,8 @@ function histogram(feedid,type,resolution)
     histogram = tmp;
 
     var options = {
-        series: { bars: { show: true, barWidth:resolution*0.8 } }
+        series: { bars: { show: true, barWidth:resolution*0.8 } },
+        grid: {hoverable: true}
     };
     $.plot("#placeholder",[{data:histogram}], options);
 }

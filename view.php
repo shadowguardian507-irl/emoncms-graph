@@ -191,11 +191,15 @@
 <script>
     var path = "<?php echo $path; ?>";
     
+    sidebar_resize();
+    graph_init_editor();
+    graph_resize();
+
     // Assign active feedid from URL
     var urlparts = window.location.pathname.split("graph/");
     if (urlparts.length==2) {
         feedid = parseInt(urlparts[1]);
-        feedlist.push({id:feedid, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+        feedlist.push({id:feedid, name:getfeedname(feedid), yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
     }
     
     var timeWindow = 3600000*24.0*7;
@@ -204,10 +208,7 @@
     view.end = now;
     view.calc_interval();
     
-    sidebar_resize();
     
-    graph_init_editor();
-    graph_resize();
     graph_reloaddraw();
     
 </script>
