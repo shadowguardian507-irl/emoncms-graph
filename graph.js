@@ -657,9 +657,17 @@ $("#graph-select").change(function() {
     view.interval = savedgraphs[index].interval;
     view.limitinterval = savedgraphs[index].limitinterval;
     view.fixinterval = savedgraphs[index].fixinterval;
+    floatingtime = savedgraphs[index].floatingtime,
     yaxismin = savedgraphs[index].yaxismin;
     yaxismax = savedgraphs[index].yaxismax;
     feedlist = savedgraphs[index].feedlist;
+    
+    if (floatingtime) {
+        var timewindow = view.end - view.start;
+        var now = Math.round(+new Date * 0.001)*1000;
+        view.end = now;
+        view.start = view.end - timewindow;
+    }
 
     $("#request-fixinterval")[0].checked = view.fixinterval;
 
