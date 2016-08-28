@@ -708,6 +708,11 @@ $("#graph-save").click(function() {
         return false;
     }
     
+    var now = Math.round(+new Date * 0.001)*1000;
+    if (Math.abs(now - view.end)<120000) {
+        floatingtime = 1;
+    }
+    
     var graph_to_save = {
         name: name,
         start: view.start,
