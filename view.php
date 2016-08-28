@@ -22,55 +22,38 @@
 
 <style>
 #wrapper {
+  padding:0px;
+  margin:0px;
   padding-left: 250px;
-  transition: all 0.4s ease 0s;
 }
 
 #sidebar-wrapper {
+  margin-top:-10px;
   margin-left: -250px;
   left: 250px;
   width: 250px;
   background: #eee;
   position: fixed;
-  height: 100%;
   overflow-y: auto;
   z-index: 1000;
-  transition: all 0.4s ease 0s;
 }
 
 #page-content-wrapper {
   width: 100%;
-  padding-left:20px;
+  padding-left:0px;
 }
 
-@media (max-width:1024px) {
 
-    #wrapper {
-      padding-left: 0;
-    }
-
-    #sidebar-wrapper {
-      left: 0;
-    }
-
-    #wrapper.active {
-      position: relative;
-      left: 250px;
-    }
-
-    #wrapper.active #sidebar-wrapper {
-      left: 250px;
-      width: 250px;
-      transition: all 0.4s ease 0s;
-    }
-
-}
 </style>
 
 <div id="wrapper">
     <div id="sidebar-wrapper">
-            <h3>Feeds</h3>
-            <div style="overflow-y: scroll; overflow-x: hidden; background-color:#f3f3f3; width:250px">
+            <div style="padding-left:10px;">
+                <div id="sidebar-close" style="float:right; cursor:pointer; padding:10px;"><i class="icon-remove"></i></div>
+                <h3>Feeds</h3>
+                
+            </div>
+            <div style="overflow-x: hidden; background-color:#f3f3f3; width:100%">
                 <table class="table">
                     <colgroup>
                        <col span="1" style="width: 70%;">
@@ -84,7 +67,7 @@
             <div style="padding:10px;">
                 <h4>My Graphs</h4>
                 
-                <select id="graph-select" style="width:230px">
+                <select id="graph-select" style="width:215px">
                     <option>Select graph:</option>
                     <option>Graph 1</option>
                     <option>Graph 2</option>
@@ -93,23 +76,20 @@
                 
                 <br><br>
                 <b>Graph Name:</b><br>
-                <input id="graph-name" type="text" style="width:215px" />
+                <input id="graph-name" type="text" style="width:200px" />
                 <button id="graph-delete" class="btn" style="display:none">Delete</button>
                 <button id="graph-save" class="btn">Save</button>
             </div>
-            
     </div>
 
-    <div id="page-content-wrapper">
-
-<div class="row">    
-    <div class="span10" style="min-width:820px">
-
-        <h3>Data viewer</h3>
+    <div id="page-content-wrapper" style="max-width:1200px">
+        
+        <h3>Data viewer</h3> 
 
         <div id="error" style="display:none"></div>
 
         <div id="navigation" style="padding-bottom:5px;">
+            <button class="btn" id="sidebar-open"><i class="icon-list"></i></button>
             <button class='btn graph_time' type='button' time='1'>D</button>
             <button class='btn graph_time' type='button' time='7'>W</button>
             <button class='btn graph_time' type='button' time='30'>M</button>
@@ -200,8 +180,6 @@
         </div>
     </div>
 </div>
-    </div>
-</div>
 
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js"></script>
 
@@ -220,6 +198,8 @@
     view.start = now - timeWindow;
     view.end = now;
     view.calc_interval();
+    
+    sidebar_resize();
     
     graph_init_editor();
     graph_resize();
