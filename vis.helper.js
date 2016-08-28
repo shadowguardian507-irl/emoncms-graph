@@ -107,9 +107,9 @@ function stats(data)
             if (val<minval) minval = val;
             sum += val;
             i++;
-        } else {
-            npointsnull++;
         }
+        if (data[z][1]==null) npointsnull++;
+        
         npoints ++;
     }
     var mean = sum / i;
