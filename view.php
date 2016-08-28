@@ -82,7 +82,7 @@
             </div>
     </div>
 
-    <div id="page-content-wrapper" style="max-width:1200px">
+    <div id="page-content-wrapper" style="max-width:1280px">
         
         <h3>Data viewer</h3> 
 
