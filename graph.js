@@ -27,6 +27,11 @@ $('.graph_time').click(function () {
     graph_reloaddraw();
 });
 
+$('#placeholder').bind("legendclick", function (event, ranges)
+{
+console.log(event);
+});
+
 $('#placeholder').bind("plotselected", function (event, ranges)
 {
     floatingtime=0; 
@@ -311,6 +316,11 @@ function graph_init_editor()
     $("#csvnullvalues").change(function(){
         printcsv();
     });
+    
+    $('body').on("click",".legendColorBox",function(d){
+          var country = $(this).html().toLowerCase();
+          console.log(country);
+    }); 
 }
 
 function graph_reloaddraw() {
@@ -407,7 +417,10 @@ function graph_draw()
 			      //tickFormatter: euroFormatter
 		    } ],
         grid: {hoverable: true, clickable: true},
-        selection: { mode: "x" }
+        selection: { mode: "x" },
+        legend: { show: true, position: "nw", toggle: true },
+        toggle: { scale: "visible" },
+        touch: { pan: "x", scale: "x" }
     }
     
     if (yaxismin!='auto' && yaxismin!='') { options.yaxes[0].min = yaxismin; options.yaxes[1].min = yaxismin; }
@@ -439,7 +452,7 @@ function graph_draw()
         }
         // Add series to plot
         
-        var plot = {label:feedlist[z].id+":"+feedlist[z].name, data:data, yaxis:feedlist[z].yaxis, color: feedlist[z].color};
+        var plot = {label:feedlist[z].name, data:data, yaxis:feedlist[z].yaxis, color: feedlist[z].color};
         
         if (feedlist[z].plottype=='lines') plot.lines = { show: true, fill: feedlist[z].fill };
         if (feedlist[z].plottype=='bars') plot.bars = { show: true, barWidth: view.interval * 1000 * 0.75 };
