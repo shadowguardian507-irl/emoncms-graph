@@ -7,21 +7,27 @@ var skipmissing = 0;
 var requesttype = "interval";
 var showcsv = 0;
 var showmissing = 0;
+var floatingtime=1;
+var yaxismin="auto";
+var yaxismax="auto";
 
 var active_histogram_feed = 0;
 
 $("#info").show();
 
-$("#graph_zoomout").click(function () {view.zoomout(); graph_reloaddraw();});
-$("#graph_zoomin").click(function () {view.zoomin(); graph_reloaddraw();});
-$('#graph_right').click(function () {view.panright(); graph_reloaddraw();});
-$('#graph_left').click(function () {view.panleft(); graph_reloaddraw();});
+$("#graph_zoomout").click(function () {floatingtime=0; view.zoomout(); graph_reloaddraw();});
+$("#graph_zoomin").click(function () {floatingtime=0; view.zoomin(); graph_reloaddraw();});
+$('#graph_right').click(function () {floatingtime=0; view.panright(); graph_reloaddraw();});
+$('#graph_left').click(function () {floatingtime=0; view.panleft(); graph_reloaddraw();});
 $('.graph_time').click(function () {
-    view.timewindow($(this).attr("time")); graph_reloaddraw();
+    floatingtime=1; 
+    view.timewindow($(this).attr("time")); 
+    graph_reloaddraw();
 });
 
 $('#placeholder').bind("plotselected", function (event, ranges)
 {
+    floatingtime=0; 
     view.start = ranges.xaxis.from;
     view.end = ranges.xaxis.to;
     view.calc_interval();
@@ -262,6 +268,16 @@ function graph_init_editor()
             }
         }
     });
+    
+    $("body").on("change","#yaxis-min",function(){
+        yaxismin = $(this).val();
+        graph_draw();
+    });
+    
+    $("body").on("change","#yaxis-max",function(){
+        yaxismax = $(this).val();
+        graph_draw();
+    });
 
 
     $("#csvtimeformat").change(function(){
@@ -363,12 +379,15 @@ function graph_draw()
 	      yaxes: [ { }, {
 			      // align if we are to the right
 			      alignTicksWithAxis: 1,
-			      position: "right",
+			      position: "right"
 			      //tickFormatter: euroFormatter
 		    } ],
         grid: {hoverable: true, clickable: true},
         selection: { mode: "x" }
     }
+    
+    if (yaxismin!='auto' && yaxismin!='') { options.yaxes[0].min = yaxismin; options.yaxes[1].min = yaxismin; }
+    if (yaxismax!='auto' && yaxismax!='') { options.yaxes[0].max = yaxismax; options.yaxes[1].max = yaxismax; }
     
     var time_in_window = (view.end - view.start) / 1000;
     var hours = Math.floor(time_in_window / 3600);
@@ -638,6 +657,8 @@ $("#graph-select").change(function() {
     view.interval = savedgraphs[index].interval;
     view.limitinterval = savedgraphs[index].limitinterval;
     view.fixinterval = savedgraphs[index].fixinterval;
+    yaxismin = savedgraphs[index].yaxismin;
+    yaxismax = savedgraphs[index].yaxismax;
     feedlist = savedgraphs[index].feedlist;
 
     $("#request-fixinterval")[0].checked = view.fixinterval;
@@ -686,6 +707,9 @@ $("#graph-save").click(function() {
         interval: view.interval,
         limitinterval: view.limitinterval,
         fixinterval: view.fixinterval,
+        floatingtime: floatingtime,
+        yaxismin: yaxismin,
+        yaxismax: yaxismax,
         feedlist: JSON.parse(JSON.stringify(feedlist))
     };
     

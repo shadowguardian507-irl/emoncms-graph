@@ -68,10 +68,6 @@
                 <h4>My Graphs</h4>
                 
                 <select id="graph-select" style="width:215px">
-                    <option>Select graph:</option>
-                    <option>Graph 1</option>
-                    <option>Graph 2</option>
-                    <option>Graph 3</option>
                 </select>
                 
                 <br><br>
@@ -100,7 +96,7 @@
             <button id='graph_right' class='btn'>></button>
             
             <div class="input-prepend input-append" style="float:right; margin-right:22px">
-            <span class="add-on">Show missing data: <input type="checkbox" id="showmissing" /></span>
+            <span class="add-on">Show missing data: <input type="checkbox" id="showmissing" style="margin-top:1px" /></span>
             
             </div>
         </div>
@@ -126,7 +122,7 @@
 
         <div id="info" style="padding:20px; display:none">
             
-            <div class="input-prepend input-append">
+            <div class="input-prepend input-append" style="padding-right:5px">
                 <span class="add-on" style="width:50px">Start</span>
                 <input id="request-start" type="text" style="width:80px" />
 
@@ -144,9 +140,18 @@
                 
                 <span class="fixed-interval-options">
                     <input id="request-interval" type="text" style="width:60px" />
-                    <span class="add-on">Fix <input id="request-fixinterval" type="checkbox" /></span>
-                    <span class="add-on">Limit to data interval <input id="request-limitinterval" type="checkbox" /></span>
+                    <span class="add-on">Fix <input id="request-fixinterval" type="checkbox" style="margin-top:1px" /></span>
+                    <span class="add-on">Limit to data interval <input id="request-limitinterval" type="checkbox" style="margin-top:1px" /></span>
                 </span>
+            </div>
+            
+            <div class="input-prepend input-append">
+                <span class="add-on" style="width:50px">Y-axis:</span>
+                <span class="add-on" style="width:30px">min</span>
+                <input id="yaxis-min" type="text" style="width:50px" value="auto"/>
+
+                <span class="add-on" style="width:30px">max</span>
+                <input id="yaxis-max" type="text" style="width:50px" value="auto"/>
                 
                 <button id="reload" class="btn">Reload</button>
             </div>
