@@ -669,8 +669,11 @@ $("#graph-select").change(function() {
         view.start = view.end - timewindow;
     }
 
+    $("#yaxis-min").val(yaxismin);
+    $("#yaxis-max").val(yaxismax);
     $("#request-fixinterval")[0].checked = view.fixinterval;
-
+    $("#request-limitinterval")[0].checked = view.limitinterval;
+    
     load_feed_selector();
 
     graph_reloaddraw();
