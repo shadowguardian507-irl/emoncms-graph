@@ -12,4 +12,4 @@
     }
     
 ?>
-<script>var savedgraphsnamelist = <?php echo json_encode($savedgraphsnamelist); ?>;  console.log(savedgraphsnamelist); </script>
+<script>var savedgraphsnamelist = <?php echo json_encode($savedgraphsnamelist); ?>;</script>

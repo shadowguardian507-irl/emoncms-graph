@@ -70,7 +70,8 @@ function graph_draw(){
     iframe.height(height);
 
   });
-  reloadiframe = 0;
+  // This will be triggered from the vis module on vis_draw
+  // reloadiframe = 0;
 }
 
 function graph_slowupdate() {}
