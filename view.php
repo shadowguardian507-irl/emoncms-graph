@@ -98,8 +98,10 @@
             <button id='graph_right' class='btn'>></button>
             
             <div class="input-prepend input-append" style="float:right; margin-right:22px">
-            <span class="add-on">Show missing data: <input type="checkbox" id="showmissing" style="margin-top:1px" /></span>
-            
+            <span class="add-on">Show</span>
+            <span class="add-on">missing data: <input type="checkbox" id="showmissing" style="margin-top:1px" /></span>
+            <span class="add-on">legend: <input type="checkbox" id="showlegend" style="margin-top:1px" /></span>
+            <span class="add-on">feed tag: <input type="checkbox" id="showtag" style="margin-top:1px" /></span>
             </div>
         </div>
 

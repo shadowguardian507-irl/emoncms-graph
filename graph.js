@@ -6,16 +6,24 @@ var embed = false;
 var skipmissing = 0;
 var requesttype = "interval";
 var showcsv = 0;
-var showmissing = 0;
+
+var showmissing = false;
+var showtag = true;
+var showlegend = true;
+
 var floatingtime=1;
 var yaxismin="auto";
 var yaxismax="auto";
+var showtag = true;
 
 var previousPoint = 0;
 
 var active_histogram_feed = 0;
 
 $("#info").show();
+$("#showmissing")[0].checked = showmissing;
+$("#showtag")[0].checked = showtag;
+$("#showlegend")[0].checked = showlegend;
 
 $("#graph_zoomout").click(function () {floatingtime=0; view.zoomout(); graph_reloaddraw();});
 $("#graph_zoomin").click(function () {floatingtime=0; view.zoomin(); graph_reloaddraw();});
@@ -207,7 +215,10 @@ function graph_init_editor()
            }
         }
         
-        if (loaded==false && checked) feedlist.push({id:feedid, name:getfeedname(feedid), yaxis:1, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
+        if (loaded==false && checked) {
+            var index = getfeedindex(feedid);
+            feedlist.push({id:feedid, name:feeds[index].name, tag:feeds[index].tag, yaxis:1, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
+        }
         graph_reloaddraw();
     });
 
@@ -233,7 +244,17 @@ function graph_init_editor()
     });
 
     $("#showmissing").click(function(){
-        showmissing = $("#showmissing")[0].checked*1.0;
+        if ($("#showmissing")[0].checked) showmissing = true; else showmissing = false;
+        graph_draw();
+    });
+    
+    $("#showlegend").click(function(){
+        if ($("#showlegend")[0].checked) showlegend = true; else showlegend = false;
+        graph_draw();
+    });
+    
+    $("#showtag").click(function(){
+        if ($("#showtag")[0].checked) showtag = true; else showtag = false;
         graph_draw();
     });
 
@@ -418,10 +439,12 @@ function graph_draw()
 		    } ],
         grid: {hoverable: true, clickable: true},
         selection: { mode: "x" },
-        legend: { show: true, position: "nw", toggle: true },
+        legend: { show: false, position: "nw", toggle: true },
         toggle: { scale: "visible" },
         touch: { pan: "x", scale: "x" }
     }
+    
+    if (showlegend) options.legend.show = true;
     
     if (yaxismin!='auto' && yaxismin!='') { options.yaxes[0].min = yaxismin; options.yaxes[1].min = yaxismin; }
     if (yaxismax!='auto' && yaxismax!='') { options.yaxes[0].max = yaxismax; options.yaxes[1].max = yaxismax; }
@@ -451,8 +474,10 @@ function graph_draw()
             data = tmp;
         }
         // Add series to plot
-        
-        var plot = {label:feedlist[z].name, data:data, yaxis:feedlist[z].yaxis, color: feedlist[z].color};
+        var label = "";
+        if (showtag) label += feedlist[z].tag+": ";
+        label += feedlist[z].name;
+        var plot = {label:label, data:data, yaxis:feedlist[z].yaxis, color: feedlist[z].color};
         
         if (feedlist[z].plottype=='lines') plot.lines = { show: true, fill: feedlist[z].fill };
         if (feedlist[z].plottype=='bars') plot.bars = { show: true, barWidth: view.interval * 1000 * 0.75 };
@@ -526,6 +551,15 @@ function getfeedname(id)
     for (var z in feeds) {
         if (feeds[z].id == id) {
             return feeds[z].name;
+        }
+    }
+}
+
+function getfeedindex(id) 
+{
+    for (var z in feeds) {
+        if (feeds[z].id == id) {
+            return z;
         }
     }
 }
@@ -690,6 +724,7 @@ $("#graph-select").change(function() {
     $("#graph-delete").show();
     var index = graph_index_from_name(name);
     
+    // view settings
     view.start = savedgraphs[index].start;
     view.end = savedgraphs[index].end;
     view.interval = savedgraphs[index].interval;
@@ -698,6 +733,13 @@ $("#graph-select").change(function() {
     floatingtime = savedgraphs[index].floatingtime,
     yaxismin = savedgraphs[index].yaxismin;
     yaxismax = savedgraphs[index].yaxismax;
+    
+    // show settings
+    showmissing = savedgraphs[index].showmissing;
+    showtag = savedgraphs[index].showtag;
+    showlegend = savedgraphs[index].showlegend;
+    
+    // feedlist
     feedlist = savedgraphs[index].feedlist;
     
     if (floatingtime) {
@@ -711,6 +753,9 @@ $("#graph-select").change(function() {
     $("#yaxis-max").val(yaxismax);
     $("#request-fixinterval")[0].checked = view.fixinterval;
     $("#request-limitinterval")[0].checked = view.limitinterval;
+    $("#showmissing")[0].checked = showmissing;
+    $("#showtag")[0].checked = showtag;
+    $("#showlegend")[0].checked = showlegend;
     
     load_feed_selector();
 
@@ -764,6 +809,9 @@ $("#graph-save").click(function() {
         floatingtime: floatingtime,
         yaxismin: yaxismin,
         yaxismax: yaxismax,
+        showmissing: showmissing,
+        showtag: showtag,
+        showlegend: showlegend,
         feedlist: JSON.parse(JSON.stringify(feedlist))
     };
     
