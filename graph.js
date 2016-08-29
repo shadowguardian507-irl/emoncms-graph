@@ -1,6 +1,8 @@
 var savedgraphs = [];
 var feeds = [];
 var feedlist = [];
+var plotdata = [];
+
 var embed = false;
 
 var skipmissing = 0;
@@ -53,7 +55,6 @@ $('#placeholder').bind("plotselected", function (event, ranges)
 $('#placeholder').bind("plothover", function (event, pos, item) {
     if (item) {
         var z = item.dataIndex;
-        
         if (previousPoint != item.datapoint) {
             previousPoint = item.datapoint;
 
@@ -67,7 +68,7 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
             var minutes = d.getMinutes();
             if (minutes<10) minutes = "0"+minutes;
             var date = d.getHours()+":"+minutes+" "+days[d.getDay()]+", "+months[d.getMonth()]+" "+d.getDate();
-            tooltip(item.pageX, item.pageY, item_value+"<br><span style='font-size:11px'>"+date+"</span>", "#fff");
+            tooltip(item.pageX, item.pageY, "<span style='font-size:11px'>"+item.series.label+"</span><br>"+item_value+"<br><span style='font-size:11px'>"+date+"</span>", "#fff");
         }
     } else $("#tooltip").remove();
 });
@@ -460,7 +461,7 @@ function graph_draw()
     
     if (!embed) $("#window-info").html("<b>Window:</b> "+printdate(view.start)+" > "+printdate(view.end)+", <b>Length:</b> "+hours+"h"+mins+" ("+time_in_window+" seconds)");
     
-    var plotdata = [];
+    plotdata = [];
     for (var z in feedlist) {
         
         var data = feedlist[z].data;
@@ -679,27 +680,30 @@ function histogram(feedid,type,resolution)
     var histogram = {};
     var total_histogram = 0;
     var val = 0;
-    for (var z in feedlist) {
-      if (feedlist[z].id==feedid) {
-        var data = feedlist[z].data;
-        
-        for (var i=1; i<data.length; i++) {
-          if (data[i][1]!=null) {
-            val = data[i][1];
-          }
-          var key = Math.round(val/resolution)*resolution;
-          if (histogram[key]==undefined) histogram[key] = 0;
-          
-          var t = (data[i][0] - data[i-1][0])*0.001;
-          
-          var inc = 0;
-          if (type=="kwhatpower") inc = (val * t)/(3600.0*1000.0);
-          if (type=="timeatvalue") inc = t;
-          histogram[key] += inc;
-          total_histogram += inc;
-        }
-        break;
+    
+    // Get the feedlist index of the feedid
+    var index = -1;
+    for (var z in feedlist)
+      if (feedlist[z].id==feedid) index = z;
+    if (index==-1) return false;
+    
+    // Load data from feedlist object
+    var data = feedlist[index].data;
+    
+    for (var i=1; i<data.length; i++) {
+      if (data[i][1]!=null) {
+        val = data[i][1];
       }
+      var key = Math.round(val/resolution)*resolution;
+      if (histogram[key]==undefined) histogram[key] = 0;
+      
+      var t = (data[i][0] - data[i-1][0])*0.001;
+      
+      var inc = 0;
+      if (type=="kwhatpower") inc = (val * t)/(3600.0*1000.0);
+      if (type=="timeatvalue") inc = t;
+      histogram[key] += inc;
+      total_histogram += inc;
     }
 
     // Sort and convert to 2d array
@@ -712,7 +716,12 @@ function histogram(feedid,type,resolution)
         series: { bars: { show: true, barWidth:resolution*0.8 } },
         grid: {hoverable: true}
     };
-    $.plot("#placeholder",[{data:histogram}], options);
+
+    var label = "";
+    if (showtag) label += feedlist[index].tag+": ";
+    label += feedlist[index].name;
+    
+    $.plot("#placeholder",[{label:label, data:histogram}], options);
 }
 
 //----------------------------------------------------------------------------------------
