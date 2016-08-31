@@ -499,8 +499,9 @@ function graph_draw()
         
             var apiurl = path+"feed/data.json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end+"&interval="+view.interval+"&skipmissing="+skipmissing+"&limitinterval="+view.limitinterval;
          
+         
             out += "<tr>";
-            out += "<td>"+feedlist[z].id+":"+getfeedname(feedlist[z].id)+"</td>";
+            out += "<td>"+feedlist[z].id+":"+feedlist[z].tag+":"+feedlist[z].name+"</td>";
             out += "<td><select class='plottype' feedid="+feedlist[z].id+" style='width:80px'>";
             
             var selected = "";
