@@ -16,7 +16,7 @@ function graph_widgetlist(){
     {
       "offsetx":0,"offsety":0,"width":400,"height":300,
       "menu":"Visualisations",
-      "options":["name"],
+      "options":["graphid"],
       "optionstype":["dropbox"],
       "optionsname":[_Tr("Graph")],
       "optionshint":[_Tr("Saved graphs from graph module")],

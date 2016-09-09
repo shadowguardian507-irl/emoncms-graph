@@ -13,7 +13,7 @@
     global $fullwidth;
     $fullwidth = true;
     
-    $name = get("name");
+    $graphid = get("graphid");
 ?>
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
@@ -47,26 +47,23 @@
     
     var path = "<?php echo $path; ?>";
     
-    var name = "<?php echo $name; ?>";
+    var graphid = "<?php echo $graphid; ?>";
     
     $.ajax({                                      
-        url: path+"/graph/list",
+        url: path+"/graph/get?id="+graphid,
         async: true,
         dataType: "json",
         success: function(result) {
-            savedgraphs = result;
             
-            var index = graph_index_from_name(name);
-            
-            view.start = savedgraphs[index].start;
-            view.end = savedgraphs[index].end;
-            view.interval = savedgraphs[index].interval;
-            view.limitinterval = savedgraphs[index].limitinterval;
-            view.fixinterval = savedgraphs[index].fixinterval;
-            floatingtime = savedgraphs[index].floatingtime,
-            yaxismin = savedgraphs[index].yaxismin;
-            yaxismax = savedgraphs[index].yaxismax;
-            feedlist = savedgraphs[index].feedlist;
+            view.start = result.start;
+            view.end = result.end;
+            view.interval = result.interval;
+            view.limitinterval = result.limitinterval;
+            view.fixinterval = result.fixinterval;
+            floatingtime = result.floatingtime,
+            yaxismin = result.yaxismin;
+            yaxismax = result.yaxismax;
+            feedlist = result.feedlist;
             
             if (floatingtime) {
                 var timewindow = view.end - view.start;

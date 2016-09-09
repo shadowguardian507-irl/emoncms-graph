@@ -23,9 +23,9 @@ var previousPoint = 0;
 var active_histogram_feed = 0;
 
 $("#info").show();
-$("#showmissing")[0].checked = showmissing;
-$("#showtag")[0].checked = showtag;
-$("#showlegend")[0].checked = showlegend;
+if ($("#showmissing")[0]!=undefined) $("#showmissing")[0].checked = showmissing;
+if ($("#showtag")[0]!=undefined) $("#showtag")[0].checked = showtag;
+if ($("#showlegend")[0]!=undefined) $("#showlegend")[0].checked = showlegend;
 
 $("#graph_zoomout").click(function () {floatingtime=0; view.zoomout(); graph_reloaddraw();});
 $("#graph_zoomin").click(function () {floatingtime=0; view.zoomin(); graph_reloaddraw();});
@@ -37,9 +37,8 @@ $('.graph_time').click(function () {
     graph_reloaddraw();
 });
 
-$('#placeholder').bind("legendclick", function (event, ranges)
-{
-console.log(event);
+$('#placeholder').bind("legendclick", function (event, ranges) {
+  console.log(event);
 });
 
 $('#placeholder').bind("plotselected", function (event, ranges)
@@ -785,10 +784,8 @@ $("#graph-name").keyup(function(){
 $("#graph-delete").click(function() {
     var name = $("#graph-name").val();
     var updateindex = graph_index_from_name(name);
-    
     if (updateindex!=-1) {
-        savedgraphs.splice(updateindex,1);
-        graph_save();
+        graph_delete(savedgraphs[updateindex].id);
         feedlist = [];
         graph_reloaddraw();
         $("#graph-name").val("");
@@ -825,16 +822,18 @@ $("#graph-save").click(function() {
         feedlist: JSON.parse(JSON.stringify(feedlist))
     };
     
-    // Update or append
     var updateindex = graph_index_from_name(name);
     
+    // Update or append
     if (updateindex==-1) {
         savedgraphs.push(graph_to_save);
+        graph_create(graph_to_save);
     } else {
+        graph_to_save.id = savedgraphs[updateindex].id;
         savedgraphs[updateindex] = graph_to_save;
+        graph_update(graph_to_save);
     }
     
-    graph_save();
     $("#graph-select").val(name);
 });
 
@@ -854,7 +853,7 @@ function graph_index_from_name(name) {
 function graph_load_savedgraphs()
 {
     $.ajax({                                      
-        url: path+"/graph/list",
+        url: path+"/graph/getall",
         async: true,
         dataType: "json",
         success: function(result) {
@@ -869,36 +868,64 @@ function graph_load_savedgraphs()
         }
     });
 }
-
-function graph_save() {
+function graph_create(data) {
 
     // Clean feedlist of data and stats that dont need to be saved
-    for (var z in savedgraphs) {
-        for (var i in savedgraphs[z].feedlist) {
-            delete savedgraphs[z].feedlist[i].data
-            delete savedgraphs[z].feedlist[i].stats;
-        }
+    for (var i in data.feedlist) {
+        delete data.feedlist[i].data
+        delete data.feedlist[i].stats;
     }
     
     // Save 
     $.ajax({         
         method: "POST",                             
-        url: path+"/graph/save",
-        data: "mygraphs="+JSON.stringify(savedgraphs),
+        url: path+"/graph/create",
+        data: "data="+JSON.stringify(data),
         async: true,
         dataType: "json",
         success: function(result) {
-            if (!result.success) alert("ERROR: "+result);
+            if (!result.success) alert("ERROR: "+result.message);
         }
     });
     
-    // Update list
-    var out = "<option>Select graph:</option>";
-    for (var z in savedgraphs) {
-       var name = savedgraphs[z].name;
-       out += "<option>"+name+"</option>";
+    graph_load_savedgraphs();
+}
+
+function graph_update(data) {
+
+    // Clean feedlist of data and stats that dont need to be saved
+    for (var i in data.feedlist) {
+        delete data.feedlist[i].data
+        delete data.feedlist[i].stats;
     }
-    $("#graph-select").html(out);
+    
+    // Save 
+    $.ajax({         
+        method: "POST",                             
+        url: path+"/graph/update",
+        data: "id="+data.id+"&data="+JSON.stringify(data),
+        async: true,
+        dataType: "json",
+        success: function(result) {
+            if (!result.success) alert("ERROR: "+result.message);
+        }
+    });
+}
+
+function graph_delete(id) {
+    // Save 
+    $.ajax({         
+        method: "POST",                             
+        url: path+"/graph/delete",
+        data: "id="+id,
+        async: true,
+        dataType: "json",
+        success: function(result) {
+            if (!result.success) alert("ERROR: "+result.message);
+        }
+    });
+    
+    graph_load_savedgraphs();
 }
 
 // ----------------------------------------------------------------------------------------

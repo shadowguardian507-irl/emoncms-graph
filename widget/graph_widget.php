@@ -4,11 +4,11 @@
     global $session, $mysqli;
     require_once "Modules/graph/graph_model.php";
     $graph = new Graph($mysqli);
-    $savedgraphs = $graph->get($session['userid']);
+    $savedgraphs = $graph->getall($session['userid']);
     
     $savedgraphsnamelist = array();
     foreach ($savedgraphs as $savedgraph) {
-        $savedgraphsnamelist[] = array($savedgraph->name,$savedgraph->name);
+        $savedgraphsnamelist[] = array($savedgraph->id,$savedgraph->name);
     }
     
 ?>
