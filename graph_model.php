@@ -92,9 +92,10 @@ class Graph
         {
             $data = json_decode($row['data']);
             // Check for valid decode
-            if ($data==null) $data = new stdClass();
-            $data->id = $row['id'];
-            $graphs[] = $data;
+            if ($data!=null) {
+                $data->id = $row['id'];
+                $graphs[] = $data;
+            }
         }
         return $graphs;
     }
