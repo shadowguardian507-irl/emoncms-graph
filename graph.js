@@ -107,9 +107,13 @@ function graph_init_editor()
         success: function(data_in) {
             feeds = data_in;
             
+            var numberoftags = 0;
             feedsbytag = {};
             for (var z in feeds) {
-                if (feedsbytag[feeds[z].tag]==undefined) feedsbytag[feeds[z].tag] = [];
+                if (feedsbytag[feeds[z].tag]==undefined) {
+                    feedsbytag[feeds[z].tag] = [];
+                    numberoftags++;
+                }
                 feedsbytag[feeds[z].tag].push(feeds[z]);
             }
             
@@ -141,7 +145,7 @@ function graph_init_editor()
             }
             $("#feeds").html(out);
             
-            if (feeds.length>12 && feedsbytag.length>2) {
+            if (feeds.length>12 && numberoftags>2) {
                 $(".tagbody").hide();
             }
         }
@@ -997,8 +1001,10 @@ function load_feed_selector() {
     
     for (var z=0; z<feedlist.length; z++) {
         var feedid = feedlist[z].id;
-        if (feedlist[z].yaxis==1) $(".feed-select-left[feedid="+feedid+"]")[0].checked = true;
-        if (feedlist[z].yaxis==2) $(".feed-select-right[feedid="+feedid+"]")[0].checked = true;
+        var tag = feedlist[z].tag;
+        if (tag=="") tag = "undefined";
+        if (feedlist[z].yaxis==1) { $(".feed-select-left[feedid="+feedid+"]")[0].checked = true; $(".tagbody[tag='"+tag+"']").show(); }
+        if (feedlist[z].yaxis==2) { $(".feed-select-right[feedid="+feedid+"]")[0].checked = true; $(".tagbody[tag='"+tag+"']").show(); }
     }
 }
 
