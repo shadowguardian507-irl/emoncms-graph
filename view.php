@@ -195,15 +195,20 @@
 <script>
     var path = "<?php echo $path; ?>";
     
+
+    
+    sidebar_resize();
+    graph_init_editor();
+    
     // Assign active feedid from URL
     var urlparts = window.location.pathname.split("graph/");
     if (urlparts.length==2) {
         feedid = parseInt(urlparts[1]);
-        feedlist.push({id:feedid, name:getfeedname(feedid), yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+        f = getfeed(feedid);
+        feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
     }
     
-    sidebar_resize();
-    graph_init_editor();
+    load_feed_selector();
     graph_resize();
     
     var timeWindow = 3600000*24.0*7;

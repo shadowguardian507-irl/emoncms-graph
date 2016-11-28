@@ -137,7 +137,7 @@ function graph_init_editor()
             }
             $("#feeds").html(out);
             
-            load_feed_selector();
+            
         }
     });
     
@@ -564,11 +564,11 @@ function graph_draw()
     }
 }
 
-function getfeedname(id) 
+function getfeed(id) 
 {
     for (var z in feeds) {
         if (feeds[z].id == id) {
-            return feeds[z].name;
+            return feeds[z];
         }
     }
 }
