@@ -1,6 +1,6 @@
 var savedgraphs = [];
 var feeds = [];
-var feedlist = [];
+feedlist = [];
 var plotdata = [];
 
 var embed = false;
@@ -107,19 +107,36 @@ function graph_init_editor()
         success: function(data_in) {
             feeds = data_in;
             
-            var out = "";
+            feedsbytag = {};
             for (var z in feeds) {
-               out += "<tr>";
-               var name = feeds[z].name;
-               if (name.length>20) {
-                   name = name.substr(0,20)+"..";
+                if (feedsbytag[feeds[z].tag]==undefined) feedsbytag[feeds[z].tag] = [];
+                feedsbytag[feeds[z].tag].push(feeds[z]);
+            }
+            
+            console.log(feedsbytag);
+            
+            var out = "";
+            for (var tag in feedsbytag) {
+               tagname = tag;
+               if (tag=="") tagname = "undefined";
+               out += "<tr style='background-color:#aaa'><td style='font-size:12px; padding:4px; padding-left:8px; font-weight:bold'>"+tagname+"</td><td></td><td></td></tr>";
+               // out += "<tbody tag='"+tagname+"'>";
+               for (var z in feedsbytag[tag]) 
+               {
+                   out += "<tr>";
+                   var name = feedsbytag[tag][z].name;
+                   if (name.length>20) {
+                       name = name.substr(0,20)+"..";
+                   }
+                   out += "<td>"+name+"</td>";
+                   out += "<td><input class='feed-select-left' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
+                   out += "<td><input class='feed-select-right' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
+                   out += "</tr>";
                }
-               out += "<td>"+name+"</td>";
-               out += "<td><input class='feed-select-left' feedid="+feeds[z].id+" type='checkbox'></td>";
-               out += "<td><input class='feed-select-right' feedid="+feeds[z].id+" type='checkbox'></td>";
-               out += "</tr>";
+               // out += "</tbody>";
             }
             $("#feeds").html(out);
+            
             load_feed_selector();
         }
     });
@@ -966,7 +983,7 @@ function load_feed_selector() {
         $(".feed-select-right[feedid="+feedid+"]")[0].checked = false;
     }
     
-    for (var z in feedlist) {
+    for (var z=0; z<feedlist.length; z++) {
         var feedid = feedlist[z].id;
         if (feedlist[z].yaxis==1) $(".feed-select-left[feedid="+feedid+"]")[0].checked = true;
         if (feedlist[z].yaxis==2) $(".feed-select-right[feedid="+feedid+"]")[0].checked = true;
