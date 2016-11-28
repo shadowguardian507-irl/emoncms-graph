@@ -56,13 +56,7 @@
                 
             </div>
             <div style="overflow-x: hidden; background-color:#f3f3f3; width:100%">
-                <table class="table">
-                    <colgroup>
-                       <col span="1" style="width: 70%;">
-                       <col span="1" style="width: 15%;">
-                       <col span="1" style="width: 15%;">
-                    </colgroup>
-                    <tbody id="feeds"></tbody>
+                <table class="table" id="feeds">
                 </table>
             </div>
             

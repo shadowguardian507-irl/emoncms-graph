@@ -113,14 +113,18 @@ function graph_init_editor()
                 feedsbytag[feeds[z].tag].push(feeds[z]);
             }
             
-            console.log(feedsbytag);
-            
             var out = "";
+            out += "<colgroup>";
+            out += "<col span='1' style='width: 70%;'>";
+            out += "<col span='1' style='width: 15%;'>";
+            out += "<col span='1' style='width: 15%;'>";
+            out += "</colgroup>";
+            
             for (var tag in feedsbytag) {
                tagname = tag;
                if (tag=="") tagname = "undefined";
-               out += "<tr style='background-color:#aaa'><td style='font-size:12px; padding:4px; padding-left:8px; font-weight:bold'>"+tagname+"</td><td></td><td></td></tr>";
-               // out += "<tbody tag='"+tagname+"'>";
+               out += "<tr class='tagheading' tag='"+tagname+"' style='background-color:#aaa; cursor:pointer'><td style='font-size:12px; padding:4px; padding-left:8px; font-weight:bold'>"+tagname+"</td><td></td><td></td></tr>";
+               out += "<tbody class='tagbody' tag='"+tagname+"'>";
                for (var z in feedsbytag[tag]) 
                {
                    out += "<tr>";
@@ -133,11 +137,13 @@ function graph_init_editor()
                    out += "<td><input class='feed-select-right' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
                    out += "</tr>";
                }
-               // out += "</tbody>";
+               out += "</tbody>";
             }
             $("#feeds").html(out);
             
-            
+            if (feeds.length>12 && feedsbytag.length>2) {
+                $(".tagbody").hide();
+            }
         }
     });
     
@@ -258,6 +264,12 @@ function graph_init_editor()
         
         if (loaded==false && checked) feedlist.push({id:feedid, yaxis:2, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
         graph_reloaddraw();
+    });
+    
+    $("body").on("click",".tagheading",function(){
+        var tag = $(this).attr("tag");
+        var e = $(".tagbody[tag='"+tag+"']");
+        if (e.is(":visible")) e.hide(); else e.show();
     });
 
     $("#showmissing").click(function(){
