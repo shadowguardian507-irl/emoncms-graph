@@ -65,6 +65,11 @@
             yaxismax = result.yaxismax;
             feedlist = result.feedlist;
             
+            // show settings
+            showmissing = result.showmissing;
+            showtag = result.showtag;
+            showlegend = result.showlegend;
+            
             if (floatingtime) {
                 var timewindow = view.end - view.start;
                 var now = Math.round(+new Date * 0.001)*1000;
