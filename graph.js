@@ -242,10 +242,11 @@ function graph_init_editor()
            }
         }
         
-        if (loaded==false && checked) {
-            var index = getfeedindex(feedid);
-            feedlist.push({id:feedid, name:feeds[index].name, tag:feeds[index].tag, yaxis:1, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
-        }
+        //if (loaded==false && checked) {
+        //    var index = getfeedindex(feedid);
+        //    feedlist.push({id:feedid, name:feeds[index].name, tag:feeds[index].tag, yaxis:1, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
+        //}
+        if (loaded==false && checked) pushfeedlist(feedid, 1);
         graph_reloaddraw();
     });
 
@@ -266,7 +267,8 @@ function graph_init_editor()
            }
         }
         
-        if (loaded==false && checked) feedlist.push({id:feedid, yaxis:2, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
+        // if (loaded==false && checked) feedlist.push({id:feedid, yaxis:2, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
+        if (loaded==false && checked) pushfeedlist(feedid, 2);
         graph_reloaddraw();
     });
     
@@ -375,6 +377,11 @@ function graph_init_editor()
           var country = $(this).html().toLowerCase();
           console.log(country);
     }); 
+}
+
+function pushfeedlist(feedid, yaxis) {
+    var index = getfeedindex(feedid);
+    feedlist.push({id:feedid, name:feeds[index].name, tag:feeds[index].tag, yaxis:yaxis, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
 }
 
 function graph_reloaddraw() {
