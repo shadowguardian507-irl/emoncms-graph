@@ -436,7 +436,7 @@ function graph_reload()
                     var delta = feedlist[z].data[i][1] - feedlist[z].data[i-1][1];
                     feedlist[z].data[i-1][1] = delta;
                 } else {
-                    feedlist[z].data[i][1] = null;
+                    feedlist[z].data[i][1] = 0;
                     feedlist[z].data[i-1][1] = null;
                 }
             }
