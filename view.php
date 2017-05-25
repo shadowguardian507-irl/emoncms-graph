@@ -75,6 +75,7 @@
                 <br><br>
                 <b>Graph Name:</b><br>
                 <input id="graph-name" type="text" style="width:200px" />
+                <div id="selected-graph-id" style="font-size:10px">Selected graph id: <span id="graph-id">None selected</span></div>
                 <button id="graph-delete" class="btn" style="display:none">Delete</button>
                 <button id="graph-save" class="btn">Save</button>
             </div>
@@ -126,15 +127,19 @@
             <div id="placeholder"></div>
         </div>
 
-        <div id="info" style="padding:20px; display:none">
+        <div id="info" style="padding-top:20px; display:none">
             
-            <div class="input-prepend input-append" style="padding-right:5px">
+            <div class="input-prepend" style="padding-right:5px">
                 <span class="add-on" style="width:50px">Start</span>
                 <input id="request-start" type="text" style="width:80px" />
-
+            </div>
+            
+            <div class="input-prepend" style="padding-right:5px">
                 <span class="add-on" style="width:50px">End</span>
                 <input id="request-end" type="text" style="width:80px" />
-
+            </div>
+            
+            <div class="input-prepend input-append" style="padding-right:5px">
                 <span class="add-on" style="width:50px">Type</span>
                 <select id="request-type" style="width:120px">
                     <option value="interval">Fixed Interval</option>
@@ -143,6 +148,9 @@
                     <option>Monthly</option>
                     <option>Annual</option>
                 </select>
+                
+            </div>
+            <div class="input-prepend input-append" style="padding-right:5px">
                 
                 <span class="fixed-interval-options">
                     <input id="request-interval" type="text" style="width:60px" />
@@ -196,8 +204,6 @@
 
 <script>
     var path = "<?php echo $path; ?>";
-    
-
     
     sidebar_resize();
     graph_init_editor();
