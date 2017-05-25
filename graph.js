@@ -773,6 +773,8 @@ $("#graph-select").change(function() {
     $("#graph-delete").show();
     var index = graph_index_from_name(name);
     
+    $("#graph-id").html(savedgraphs[index].id);
+    
     // view settings
     view.start = savedgraphs[index].start;
     view.end = savedgraphs[index].end;
