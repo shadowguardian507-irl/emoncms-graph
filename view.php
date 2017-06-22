@@ -51,6 +51,40 @@
 }
 
 
+.feed-options {
+    background-color:#eee;
+    overflow-x: scroll;
+}
+
+.feed-options-header {
+    height:40px;
+    background-color:#ccc;
+    font-weight:bold;
+    cursor:pointer;
+    color:#fff;
+}
+
+.feed-options-title {
+  float:left;
+  padding:10px;
+}
+
+.feed-options-show-options {
+	float:right;
+	padding:10px;
+	width:150px;
+	text-align:center;
+	border-left: 1px solid #eee;
+}
+
+.feed-options-show-stats {
+	float:right;
+	padding:10px;
+	width:150px;
+	text-align:center;
+	border-left: 1px solid #eee;
+}
+
 </style>
 
 <div id="wrapper">
@@ -170,12 +204,26 @@
             </div>
             
             <div id="window-info" style=""></div><br>
-                
-            <table class="table">
-                <tr><th>Feed</th><th>Type</th><th>Color</th><th>Fill</th><th>Quality</th><th>Min</th><th>Max</th><th>Diff</th><th>Mean</th><th>Stdev</th><th>Wh</th><th style='text-align:center'>Scale</th><th style='text-align:center'>Delta</th><th style='text-align:center'>Average</th><th>DP</th><th style="width:120px"></th></tr>
-                <tbody id="stats"></tbody>
-            </table>
             
+            <div class="feed-options hide">
+                <div class="feed-options-header">
+                    <div class="feed-options-title">Feeds in view</div>
+                    <div class="feed-options-show-options hide">Show options</div>
+                    <div class="feed-options-show-stats">Show statistics</div>
+                </div>
+
+                
+                <table id="feed-options-table" class="table">
+                    <tr><th>Feed</th><th>Type</th><th>Color</th><th>Fill</th><th style='text-align:center'>Scale</th><th style='text-align:center'>Delta</th><th style='text-align:center'>Average</th><th>DP</th><th style="width:120px"></th></tr>
+                    <tbody id="feed-controls"></tbody>
+                </table>
+                
+                <table id="feed-stats-table" class="table hide">
+                    <tr><th>Feed</th><th>Quality</th><th>Min</th><th>Max</th><th>Diff</th><th>Mean</th><th>Stdev</th><th>Wh</th></tr>
+                    <tbody id="feed-stats"></tbody>
+                </table>
+            </div>
+            <br>
             
             <div class="input-prepend input-append">
                 <button class="btn" id="showcsv" >Show CSV Output</button>
@@ -210,9 +258,15 @@
     // Assign active feedid from URL
     var urlparts = window.location.pathname.split("graph/");
     if (urlparts.length==2) {
-        feedid = parseInt(urlparts[1]);
-        f = getfeed(feedid);
-        feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+        var feedids = urlparts[1].split(",");
+		for(var z in feedids) {
+		    var feedid = parseInt(feedids[z]);
+		     
+		    if (feedid) {
+                f = getfeed(feedid);
+                feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+			}		
+		}
     }
     
     load_feed_selector();
