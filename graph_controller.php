@@ -43,7 +43,7 @@ function graph_controller()
         $result = $graph->getall($session['userid']);
     }
     
-    else if ($session['write']) $result = view("Modules/graph/view.php",array());
+    else $result = view("Modules/graph/view.php",array("session"=>$session["write"]));
     
     return array('content'=>$result, 'fullwidth'=>true);
 }

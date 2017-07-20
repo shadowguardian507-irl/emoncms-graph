@@ -99,7 +99,7 @@
                 </table>
             </div>
             
-            <div style="padding:10px;">
+            <div id="mygraphs" style="padding:10px;">
                 <h4>My Graphs</h4>
                 
                 <select id="graph-select" style="width:215px">
@@ -251,25 +251,44 @@
 
 <script>
     var path = "<?php echo $path; ?>";
-    
-    sidebar_resize();
-    graph_init_editor();
-    
+    var session = <?php echo $session; ?>;
+
+    if (session) {
+        // Load user feeds for editor
+        $.ajax({                                      
+            url: path+"/feed/list.json",
+            async: false,
+            dataType: "json",
+            success: function(data_in) {
+                feeds = data_in;
+        }});
+    }
+
     // Assign active feedid from URL
     var urlparts = window.location.pathname.split("graph/");
     if (urlparts.length==2) {
         var feedids = urlparts[1].split(",");
-		for(var z in feedids) {
-		    var feedid = parseInt(feedids[z]);
-		     
-		    if (feedid) {
-                f = getfeed(feedid);
-                feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
-			}		
-		}
+		    for (var z in feedids) {
+		        var feedid = parseInt(feedids[z]);
+		         
+		        if (feedid) {
+                if (session) {
+                    f = getfeed(feedid);
+                    feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+                } else {
+                    feedlist.push({id:feedid, name:"undefined", tag:"undefined", yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+                }
+			      }		
+		    }
     }
     
-    load_feed_selector();
+    sidebar_resize();
+    graph_init_editor();
+    
+    //feeds = feedlist;
+    
+    load_feed_selector(); 
+    if (!session) $("#mygraphs").hide();
     graph_resize();
     
     var timeWindow = 3600000*24.0*7;
@@ -277,7 +296,6 @@
     view.start = now - timeWindow;
     view.end = now;
     view.calc_interval();
-    
     
     graph_reloaddraw();
     
