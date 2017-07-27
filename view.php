@@ -1,121 +1,121 @@
 <?php
-    /*
-    All Emoncms code is released under the GNU Affero General Public License.
-    See COPYRIGHT.txt and LICENSE.txt.
+/*
+  All Emoncms code is released under the GNU Affero General Public License.
+  See COPYRIGHT.txt and LICENSE.txt.
 
-    ---------------------------------------------------------------------
-    Emoncms - open source energy visualisation
-    Part of the OpenEnergyMonitor project:
-    http://openenergymonitor.org
-    */
+  ---------------------------------------------------------------------
+  Emoncms - open source energy visualisation
+  Part of the OpenEnergyMonitor project:
+  http://openenergymonitor.org
+ */
 
-    global $path, $embed;
-    global $fullwidth;
-    $fullwidth = true;
+global $path, $embed;
+global $fullwidth;
+$fullwidth = true;
 ?>
 
-<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
+<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/excanvas.min.js"></script><![endif]-->
 
 
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.time.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.selection.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.touch.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.time.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.selection.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.touch.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
 <!--
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/flot.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/flot.min.js"></script>
 -->
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Modules/graph/vis.helper.js"></script>
 
 <style>
-#wrapper {
-  padding:0px;
-  margin:0px;
-  padding-left: 250px;
-}
+    #wrapper {
+        padding:0px;
+        margin:0px;
+        padding-left: 250px;
+    }
 
-#sidebar-wrapper {
-  margin-top:-10px;
-  margin-left: -250px;
-  left: 250px;
-  width: 250px;
-  background: #eee;
-  position: fixed;
-  overflow-y: auto;
-  z-index: 1000;
-}
+    #sidebar-wrapper {
+        margin-top:-10px;
+        margin-left: -250px;
+        left: 250px;
+        width: 250px;
+        background: #eee;
+        position: fixed;
+        overflow-y: auto;
+        z-index: 1000;
+    }
 
-#page-content-wrapper {
-  width: 100%;
-  padding-left:0px;
-}
+    #page-content-wrapper {
+        width: 100%;
+        padding-left:0px;
+    }
 
 
-.feed-options {
-    background-color:#eee;
-    overflow-x: scroll;
-}
+    .feed-options {
+        background-color:#eee;
+        overflow-x: scroll;
+    }
 
-.feed-options-header {
-    height:40px;
-    background-color:#ccc;
-    font-weight:bold;
-    cursor:pointer;
-    color:#fff;
-}
+    .feed-options-header {
+        height:40px;
+        background-color:#ccc;
+        font-weight:bold;
+        cursor:pointer;
+        color:#fff;
+    }
 
-.feed-options-title {
-  float:left;
-  padding:10px;
-}
+    .feed-options-title {
+        float:left;
+        padding:10px;
+    }
 
-.feed-options-show-options {
-	float:right;
-	padding:10px;
-	width:150px;
-	text-align:center;
-	border-left: 1px solid #eee;
-}
+    .feed-options-show-options {
+        float:right;
+        padding:10px;
+        width:150px;
+        text-align:center;
+        border-left: 1px solid #eee;
+    }
 
-.feed-options-show-stats {
-	float:right;
-	padding:10px;
-	width:150px;
-	text-align:center;
-	border-left: 1px solid #eee;
-}
+    .feed-options-show-stats {
+        float:right;
+        padding:10px;
+        width:150px;
+        text-align:center;
+        border-left: 1px solid #eee;
+    }
 
 </style>
 
 <div id="wrapper">
     <div id="sidebar-wrapper">
-            <div style="padding-left:10px;">
-                <div id="sidebar-close" style="float:right; cursor:pointer; padding:10px;"><i class="icon-remove"></i></div>
-                <h3>Feeds</h3>
-                
-            </div>
-            <div style="overflow-x: hidden; background-color:#f3f3f3; width:100%">
-                <table class="table" id="feeds">
-                </table>
-            </div>
-            
-            <div id="mygraphs" style="padding:10px;">
-                <h4>My Graphs</h4>
-                
-                <select id="graph-select" style="width:215px">
-                </select>
-                
-                <br><br>
-                <b>Graph Name:</b><br>
-                <input id="graph-name" type="text" style="width:200px" />
-                <div id="selected-graph-id" style="font-size:10px">Selected graph id: <span id="graph-id">None selected</span></div>
-                <button id="graph-delete" class="btn" style="display:none">Delete</button>
-                <button id="graph-save" class="btn">Save</button>
-            </div>
+        <div style="padding-left:10px;">
+            <div id="sidebar-close" style="float:right; cursor:pointer; padding:10px;"><i class="icon-remove"></i></div>
+            <h3>Feeds</h3>
+
+        </div>
+        <div style="overflow-x: hidden; background-color:#f3f3f3; width:100%">
+            <table class="table" id="feeds">
+            </table>
+        </div>
+
+        <div id="mygraphs" style="padding:10px;">
+            <h4>My Graphs</h4>
+
+            <select id="graph-select" style="width:215px">
+            </select>
+
+            <br><br>
+            <b>Graph Name:</b><br>
+            <input id="graph-name" type="text" style="width:200px" />
+            <div id="selected-graph-id" style="font-size:10px">Selected graph id: <span id="graph-id">None selected</span></div>
+            <button id="graph-delete" class="btn" style="display:none">Delete</button>
+            <button id="graph-save" class="btn">Save</button>
+        </div>
     </div>
 
     <div id="page-content-wrapper" style="max-width:1280px">
-        
+
         <h3>Data viewer</h3> 
 
         <div id="error" style="display:none"></div>
@@ -130,14 +130,14 @@
             <button id='graph_zoomout' class='btn'>-</button>
             <button id='graph_left' class='btn'><</button>
             <button id='graph_right' class='btn'>></button>
-            
+
             <div class="input-prepend input-append" style="float:right; margin-right:22px">
-            <span class="add-on">Show</span>
-            <span class="add-on">missing data: <input type="checkbox" id="showmissing" style="margin-top:1px" /></span>
-            <span class="add-on">legend: <input type="checkbox" id="showlegend" style="margin-top:1px" /></span>
-            <span class="add-on">feed tag: <input type="checkbox" id="showtag" style="margin-top:1px" /></span>
+                <span class="add-on">Show</span>
+                <span class="add-on">missing data: <input type="checkbox" id="showmissing" style="margin-top:1px" /></span>
+                <span class="add-on">legend: <input type="checkbox" id="showlegend" style="margin-top:1px" /></span>
+                <span class="add-on">feed tag: <input type="checkbox" id="showtag" style="margin-top:1px" /></span>
             </div>
-            
+
             <div style="clear:both"></div>
         </div>
 
@@ -152,7 +152,7 @@
                 <span class="add-on" style="width:75px">Resolution</span>
                 <input id="histogram-resolution" type="text" style="width:60px"/>
             </div>
-            
+
             <button id="histogram-back" class="btn" style="float:right">Back to main view</button>
         </div>
 
@@ -161,17 +161,17 @@
         </div>
 
         <div id="info" style="padding-top:20px; display:none">
-            
+
             <div class="input-prepend" style="padding-right:5px">
                 <span class="add-on" style="width:50px">Start</span>
                 <input id="request-start" type="text" style="width:80px" />
             </div>
-            
+
             <div class="input-prepend" style="padding-right:5px">
                 <span class="add-on" style="width:50px">End</span>
                 <input id="request-end" type="text" style="width:80px" />
             </div>
-            
+
             <div class="input-prepend input-append" style="padding-right:5px">
                 <span class="add-on" style="width:50px">Type</span>
                 <select id="request-type" style="width:120px">
@@ -181,17 +181,17 @@
                     <option>Monthly</option>
                     <option>Annual</option>
                 </select>
-                
+
             </div>
             <div class="input-prepend input-append" style="padding-right:5px">
-                
+
                 <span class="fixed-interval-options">
                     <input id="request-interval" type="text" style="width:60px" />
                     <span class="add-on">Fix <input id="request-fixinterval" type="checkbox" style="margin-top:1px" /></span>
                     <span class="add-on">Limit to data interval <input id="request-limitinterval" type="checkbox" style="margin-top:1px" /></span>
                 </span>
             </div>
-            
+
             <div class="input-prepend input-append">
                 <span class="add-on" style="width:50px">Y-axis:</span>
                 <span class="add-on" style="width:30px">min</span>
@@ -199,12 +199,12 @@
 
                 <span class="add-on" style="width:30px">max</span>
                 <input id="yaxis-max" type="text" style="width:50px" value="auto"/>
-                
+
                 <button id="reload" class="btn">Reload</button>
             </div>
-            
+
             <div id="window-info" style=""></div><br>
-            
+
             <div class="feed-options hide">
                 <div class="feed-options-header">
                     <div class="feed-options-title">Feeds in view</div>
@@ -212,19 +212,19 @@
                     <div class="feed-options-show-stats">Show statistics</div>
                 </div>
 
-                
+
                 <table id="feed-options-table" class="table">
                     <tr><th>Feed</th><th>Type</th><th>Color</th><th>Fill</th><th style='text-align:center'>Scale</th><th style='text-align:center'>Delta</th><th style='text-align:center'>Average</th><th>DP</th><th style="width:120px"></th></tr>
                     <tbody id="feed-controls"></tbody>
                 </table>
-                
+
                 <table id="feed-stats-table" class="table hide">
                     <tr><th>Feed</th><th>Quality</th><th>Min</th><th>Max</th><th>Diff</th><th>Mean</th><th>Stdev</th><th>Wh</th></tr>
                     <tbody id="feed-stats"></tbody>
                 </table>
             </div>
             <br>
-            
+
             <div class="input-prepend input-append">
                 <button class="btn" id="showcsv" >Show CSV Output</button>
                 <span class="add-on csvoptions">Time format:</span>
@@ -240,14 +240,14 @@
                     <option value="remove">Remove whole line</option>
                 </select>
             </div> 
-            
-            
+
+
             <textarea id="csv" style="width:98%; height:500px; display:none; margin-top:10px"></textarea>
         </div>
     </div>
 </div>
 
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Modules/graph/graph.js"></script>
 
 <script>
     var path = "<?php echo $path; ?>";
@@ -255,49 +255,50 @@
 
     if (session) {
         // Load user feeds for editor
-        $.ajax({                                      
-            url: path+"/feed/list.json",
+        $.ajax({
+            url: path + "/feed/list.json",
             async: false,
             dataType: "json",
-            success: function(data_in) {
+            success: function (data_in) {
                 feeds = data_in;
-        }});
+            }});
     }
 
     // Assign active feedid from URL
     var urlparts = window.location.pathname.split("graph/");
-    if (urlparts.length==2) {
+    if (urlparts.length == 2) {
         var feedids = urlparts[1].split(",");
-		    for (var z in feedids) {
-		        var feedid = parseInt(feedids[z]);
-		         
-		        if (feedid) {
+        for (var z in feedids) {
+            var feedid = parseInt(feedids[z]);
+
+            if (feedid) {
                 if (session) {
                     f = getfeed(feedid);
-                    feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+                    feedlist.push({id: feedid, name: f.name, tag: f.tag, yaxis: 1, fill: 0, scale: 1.0, delta: false, dp: 1, plottype: 'lines'});
                 } else {
-                    feedlist.push({id:feedid, name:"undefined", tag:"undefined", yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+                    feedlist.push({id: feedid, name: "undefined", tag: "undefined", yaxis: 1, fill: 0, scale: 1.0, delta: false, dp: 1, plottype: 'lines'});
                 }
-			      }		
-		    }
+            }
+        }
     }
-    
+
     sidebar_resize();
     graph_init_editor();
-    
+
     //feeds = feedlist;
-    
-    load_feed_selector(); 
-    if (!session) $("#mygraphs").hide();
+
+    load_feed_selector();
+    if (!session)
+        $("#mygraphs").hide();
     graph_resize();
-    
-    var timeWindow = 3600000*24.0*7;
-    var now = Math.round(+new Date * 0.001)*1000;
+
+    var timeWindow = 3600000 * 24.0 * 7;
+    var now = Math.round(+new Date * 0.001) * 1000;
     view.start = now - timeWindow;
     view.end = now;
     view.calc_interval();
-    
+
     graph_reloaddraw();
-    
+
 </script>
 
