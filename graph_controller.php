@@ -9,6 +9,14 @@ function graph_controller() {
     require_once "Modules/graph/graph_model.php";
     $graph = new Graph($mysqli);
 
+   /* if (group_module_installed()) {
+        require_once "Modules/group/group_model.php";
+        $group = new Group($mysqli, $redis, $user, $feed, $input, null);
+    }
+    else {
+        $group = null;
+    }*/
+
     $result = "";
 
     if ($route->action == "embed") {
@@ -41,8 +49,21 @@ function graph_controller() {
         $route->format = "json";
         $result = $graph->getall($session['userid']);
     }
-    else
-        $result = view("Modules/graph/view.php", array("session" => $session["write"]));
+    else {
+        if (group_module_installed())
+            $result = view("Modules/graph/view.php", array("session" => $session["write"], 'group_support' => 1));
+        else
+            $result = view("Modules/graph/view.php", array("session" => $session["write"], 'group_support' => 0));
+    }
 
     return array('content' => $result, 'fullwidth' => true);
+}
+
+function group_module_installed() {
+    global $mysqli;
+    $result = $mysqli->query("SHOW TABLES LIKE 'groups'");
+    if ($result->num_rows > 0)
+        return true;
+    else
+        false;
 }

@@ -1,6 +1,7 @@
 var savedgraphs = [];
-var feeds = [];
-feedlist = [];
+var feeds = []; // session user's feeds
+feedlist = []; // feeds to be shown in the data viewer
+var groups = []; // groups the session user belongs to. If his/her role is administrator or subadministrator, each group will contain all its users and their feeds
 var plotdata = [];
 
 var embed = false;
@@ -121,17 +122,17 @@ function graph_init_editor()
 {
 
     if (session) {
-
         // Load saved graphs
         graph_load_savedgraphs();
-
-
     }
     else
     {
         feeds = feedlist;
     }
 
+    //-------------------------------------------------
+    // Populate editor: session user's feeds
+    //-------------------------------------------------
     var numberoftags = 0;
     feedsbytag = {};
     for (var z in feeds) {
@@ -175,7 +176,17 @@ function graph_init_editor()
         $(".tagbody").hide();
     }
 
+    //-------------------------------------------------
+    // Populate editor: groups, users and their feeds
+    //-------------------------------------------------
+    groups.forEach(function (group, index) {
+        $('#select-group').append('<option value=' + index + '>' + group.name + '</option>');
+    });
+    populate_group_table(0);
 
+    /******************************************
+     Actions data viewer
+     ******************************************/
     $("#reload").click(function () {
         view.start = $("#request-start").val() * 1000;
         view.end = $("#request-end").val() * 1000;
@@ -247,64 +258,6 @@ function graph_init_editor()
             }
         }
         graph_draw();
-    });
-
-    $("body").on("click", ".feed-select-left", function () {
-        var feedid = $(this).attr("feedid");
-        var checked = $(this)[0].checked;
-
-        var loaded = false;
-        for (var z in feedlist) {
-            if (feedlist[z].id == feedid) {
-                if (!checked) {
-                    feedlist.splice(z, 1);
-                } else {
-                    feedlist[z].yaxis = 1;
-                    loaded = true;
-                    $(".feed-select-right[feedid=" + feedid + "]")[0].checked = false;
-                }
-            }
-        }
-
-        //if (loaded==false && checked) {
-        //    var index = getfeedindex(feedid);
-        //    feedlist.push({id:feedid, name:feeds[index].name, tag:feeds[index].tag, yaxis:1, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
-        //}
-        if (loaded == false && checked)
-            pushfeedlist(feedid, 1);
-        graph_reloaddraw();
-    });
-
-    $("body").on("click", ".feed-select-right", function () {
-        var feedid = $(this).attr("feedid");
-        var checked = $(this)[0].checked;
-
-        var loaded = false;
-        for (var z in feedlist) {
-            if (feedlist[z].id == feedid) {
-                if (!checked) {
-                    feedlist.splice(z, 1);
-                } else {
-                    feedlist[z].yaxis = 2;
-                    loaded = true;
-                    $(".feed-select-left[feedid=" + feedid + "]")[0].checked = false;
-                }
-            }
-        }
-
-        // if (loaded==false && checked) feedlist.push({id:feedid, yaxis:2, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
-        if (loaded == false && checked)
-            pushfeedlist(feedid, 2);
-        graph_reloaddraw();
-    });
-
-    $("body").on("click", ".tagheading", function () {
-        var tag = $(this).attr("tag");
-        var e = $(".tagbody[tag='" + tag + "']");
-        if (e.is(":visible"))
-            e.hide();
-        else
-            e.show();
     });
 
     $("#showmissing").click(function () {
@@ -409,7 +362,6 @@ function graph_init_editor()
         graph_draw();
     });
 
-
     $("#csvtimeformat").change(function () {
         printcsv();
     });
@@ -436,11 +388,111 @@ function graph_init_editor()
         $(".feed-options-show-options").hide();
         $(".feed-options-show-stats").show();
     });
+
+    /******************************************
+     Actions ticking checkboxes in editor
+     ******************************************/
+    $("body").on("click", ".feed-select-left", function () {
+        var feedid = $(this).attr("feedid");
+        var checked = $(this)[0].checked;
+        var feed_from_group = false;
+
+        // Check if the feed belongs to a user in a group
+        var source = $(this).attr('source');
+        if (source == 'group') {
+            feed_from_group = true;
+        }
+
+        var loaded = false;
+        for (var z in feedlist) {
+            if (feedlist[z].id == feedid) {
+                if (!checked) {
+                    feedlist.splice(z, 1);
+                } else {
+                    feedlist[z].yaxis = 1;
+                    loaded = true;
+                    $(".feed-select-right[feedid=" + feedid + "]")[0].checked = false;
+                }
+            }
+        }
+
+        //if (loaded==false && checked) {
+        //    var index = getfeedindex(feedid);
+        //    feedlist.push({id:feedid, name:feeds[index].name, tag:feeds[index].tag, yaxis:1, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
+        //}
+        if (loaded == false && checked)
+            pushfeedlist(feedid, 1, feed_from_group);
+        graph_reloaddraw();
+    });
+
+    $("body").on("click", ".feed-select-right", function () {
+        var feedid = $(this).attr("feedid");
+        var checked = $(this)[0].checked;
+        var feed_from_group = false;
+
+        // Check if the feed belongs to a user in a group
+        var source = $(this).attr('source');
+        if (source == 'group') {
+            feed_from_group = true;
+        }
+
+        var loaded = false;
+        for (var z in feedlist) {
+            if (feedlist[z].id == feedid) {
+                if (!checked) {
+                    feedlist.splice(z, 1);
+                } else {
+                    feedlist[z].yaxis = 2;
+                    loaded = true;
+                    $(".feed-select-left[feedid=" + feedid + "]")[0].checked = false;
+                }
+            }
+        }
+
+        // if (loaded==false && checked) feedlist.push({id:feedid, yaxis:2, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
+        if (loaded == false && checked)
+            pushfeedlist(feedid, 2, feed_from_group);
+        graph_reloaddraw();
+    });
+
+    /******************************************
+     Actions editor user's feeds
+     ******************************************/
+    $("body").on("click", ".tagheading", function () {
+        var tag = $(this).attr("tag");
+        var e = $(".tagbody[tag='" + tag + "']");
+        if (e.is(":visible"))
+            e.hide();
+        else
+            e.show();
+    });
+
+    /******************************************
+     Actions editor displaying groups
+     ******************************************/
+    $('#select-group').on('change', function () {
+        populate_group_table($(this).val());
+    });
+
+    $('body').on('click', '.user-name', function () {
+        var user = $(this).attr('user');
+        $('.user-feed[user=' + user + ']').toggle();
+    });
 }
 
-function pushfeedlist(feedid, yaxis) {
-    var index = getfeedindex(feedid);
-    feedlist.push({id: feedid, name: feeds[index].name, tag: feeds[index].tag, yaxis: yaxis, fill: 0, scale: 1.0, delta: false, getaverage: false, dp: 1, plottype: 'lines'});
+/******************************************
+ Functions
+ ******************************************/
+
+function pushfeedlist(feedid, yaxis, feed_from_group) {
+    if (feed_from_group === false) {
+        var index = getfeedindex(feedid);
+        feedlist.push({id: feedid, name: feeds[index].name, tag: feeds[index].tag, yaxis: yaxis, fill: 0, scale: 1.0, delta: false, getaverage: false, dp: 1, plottype: 'lines'});
+    }
+    else {
+        var feed = getfeedfromgroups(feedid);
+        feedlist.push({id: feed.id, source: 'group', name: feed.name, tag: feed.tag, yaxis: yaxis, fill: 0, scale: 1.0, delta: false, getaverage: false, dp: 1, plottype: 'lines'});
+    }
 }
 
 function graph_reloaddraw() {
@@ -470,7 +522,11 @@ function graph_reload()
         var method = "data";
         if (feedlist[z].getaverage)
             method = "average";
-        var request = path + "feed/" + method + ".json?id=" + feedlist[z].id + "&start=" + view.start + "&end=" + view.end + mode;
+
+        if (feedlist[z].source == 'group')
+            var request = path + "group/getfeed/" + method + ".json?id=" + feedlist[z].id + "&start=" + view.start + "&end=" + view.end + mode;
+        else
+            var request = path + "feed/" + method + ".json?id=" + feedlist[z].id + "&start=" + view.start + "&end=" + view.end + mode;
 
         $.ajax({
             url: request,
@@ -702,6 +758,36 @@ function getfeedindex(id)
             return z;
         }
     }
+}
+
+function getfeedfromgroups(feedid) {
+    var feed_to_return = {};
+    groups.forEach(function (group) {
+        group.users.forEach(function (user) {
+            user.feedslist.forEach(function (feed) {
+                if (feedid == feed.id)
+                    feed_to_return = JSON.parse(JSON.stringify(feed));
+            });
+        });
+    });
+    return feed_to_return;
+}
+
+function populate_group_table(groupindex) {
+    $('#group-table').html('');
+    var users = groups[groupindex].users;
+    users.forEach(function (user, index) {
+        $('#group-table').append('<tr class="user-name" user="' + user.username + '"><td colspan=3>' + user.username + '</td></tr>');
+        user.feedslist.forEach(function (feed, index) {
+            var out = '<tr class="user-feed hide" user="' + user.username + '">';
+            out += '<td style="width:70%">' + feed.tag + ':' + feed.name + '</td>';
+            out += '<td style="width:15%"><input class="feed-select-left" source="group" userid="' + user.userid + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
+            out += '<td style="width:15%"><input class="feed-select-right" source="group" userid="' + user.userid + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
+            out += '</tr>';
+            $('#group-table').append(out);
+        });
+
+    });
 }
 
 //----------------------------------------------------------------------------------------

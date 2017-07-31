@@ -27,6 +27,10 @@ $fullwidth = true;
 -->
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Modules/graph/vis.helper.js"></script>
 
+<!-- toggle button to choose User or Group. Documentation: http://bootstrapswitch.com/options.html -->
+<link href="https://unpkg.com/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet">
+<script src="https://unpkg.com/bootstrap-switch"></script>
+
 <style>
     #wrapper {
         padding:0px;
@@ -85,18 +89,46 @@ $fullwidth = true;
         border-left: 1px solid #eee;
     }
 
+    #vis-mode-toggle, #vis-mode-user, #vis-mode-groups{
+        margin:15px 0;
+    }
+
+    #group-table{
+        width:100%;
+    }
+
+    #group-table .user-name td{
+        font-size:12px; 
+        padding:4px; 
+        padding-left:8px; 
+        font-weight:bold;
+        background-color:#aaa; 
+        cursor:pointer
+    }
+
 </style>
 
 <div id="wrapper">
     <div id="sidebar-wrapper">
         <div style="padding-left:10px;">
             <div id="sidebar-close" style="float:right; cursor:pointer; padding:10px;"><i class="icon-remove"></i></div>
-            <h3>Feeds</h3>
-
+            <div id="vis-mode-toggle" class="hide">
+                <input type="checkbox" name="vis-mode-toggle" data-on-text="User" data-off-text="Groups" data-label-text="Mode" data-inverse="true" data-on-color="default" data-off-color="default" checked>
+            </div>
         </div>
-        <div style="overflow-x: hidden; background-color:#f3f3f3; width:100%">
-            <table class="table" id="feeds">
-            </table>
+        <div id='vis-mode-user' style="padding-left:10px;">            
+            <h3>Feeds</h3>
+            <div style="overflow-x: hidden; background-color:#f3f3f3; width:100%">
+                <table class="table" id="feeds">
+                </table>
+            </div>
+        </div>
+        <div id='vis-mode-groups' class='hide' style="padding-left:10px;">            
+            <h3>Groups</h3>
+            <select id='select-group'></select>
+            <div style="overflow-x: hidden; background-color:#f3f3f3; width:100%">
+                <table id='group-table' class='table'></table>
+            </div>
         </div>
 
         <div id="mygraphs" style="padding:10px;">
@@ -252,7 +284,12 @@ $fullwidth = true;
 <script>
     var path = "<?php echo $path; ?>";
     var session = <?php echo $session; ?>;
+    var group_support = <?php echo $group_support === 0 ? 'false' : 'true'; ?>;
+    var vis_mode = 'user';
 
+    /*********************************************
+     Load user feeds and groups (users and feeds)
+     *********************************************/
     if (session) {
         // Load user feeds for editor
         $.ajax({
@@ -262,9 +299,22 @@ $fullwidth = true;
             success: function (data_in) {
                 feeds = data_in;
             }});
+
+        if (group_support === false)
+            vis_mode = 'user';
+        else {
+            // Load user groups
+            $.ajax({url: path + "/group/mygroups.json", async: false, dataType: "json", success: function (data_in) {
+                    groups = data_in;
+                }});
+            // Show visualization mode switcher
+            $('#vis-mode-toggle').show();
+        }
     }
 
-    // Assign active feedid from URL
+    /*********************************************
+     Assign active feedid from URL - Carlos ToDo
+     *********************************************/
     var urlparts = window.location.pathname.split("graph/");
     if (urlparts.length == 2) {
         var feedids = urlparts[1].split(",");
@@ -282,10 +332,11 @@ $fullwidth = true;
         }
     }
 
+    /*********************************************
+     Other initialitation
+     *********************************************/
     sidebar_resize();
     graph_init_editor();
-
-    //feeds = feedlist;
 
     load_feed_selector();
     if (!session)
@@ -300,5 +351,28 @@ $fullwidth = true;
 
     graph_reloaddraw();
 
+    /******************************************
+     Visualization mode switcher
+     ******************************************/
+    $("[name='vis-mode-toggle']").bootstrapSwitch();
+    $("[name='vis-mode-toggle']").on('switchChange.bootstrapSwitch', function (event, state) {
+        // Clear data viewer
+        $('.feed-select-right').prop('checked', '');
+        $('.feed-select-left').prop('checked', '');
+        feedlist = [];
+        graph_reloaddraw();
+
+        //show the relevant info in editor
+        if (vis_mode == 'user') {
+            vis_mode = 'groups';
+            $('#vis-mode-groups').show();
+            $('#vis-mode-user').hide();
+        }
+        else {
+            vis_mode = 'user';
+            $('#vis-mode-groups').hide();
+            $('#vis-mode-user').show();
+        }
+    });
 </script>
 
