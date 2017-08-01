@@ -472,6 +472,7 @@ function graph_init_editor()
      ******************************************/
     $('#select-group').on('change', function () {
         populate_group_table($(this).val());
+        load_feed_selector();
     });
 
     $('body').on('click', '.user-name', function () {
@@ -790,6 +791,13 @@ function populate_group_table(groupindex) {
     });
 }
 
+function get_group_index(groupid) {
+    for (var index in groups) {
+        if (groups[index].groupid == groupid)
+            return index;
+    }
+}
+
 //----------------------------------------------------------------------------------------
 // Print CSV
 //----------------------------------------------------------------------------------------
@@ -998,6 +1006,20 @@ $("#graph-select").change(function () {
     showtag = savedgraphs[index].showtag;
     showlegend = savedgraphs[index].showlegend;
 
+    // visualization mode
+    if (savedgraphs[index].source == 'groups') {
+        vis_mode = 'groups';
+        //$("[name='vis-mode-toggle']").bootstrapSwitch('state', false);
+        $('#vis-mode-groups').show();
+        $('#vis-mode-user').hide();
+        $('#select-group').val(get_group_index(savedgraphs[index].groupid)).trigger('change');
+    } else {
+        vis_mode = 'user';
+        $("[name='vis-mode-toggle']").bootstrapSwitch('state', true);
+        $('#vis-mode-groups').hide();
+        $('#vis-mode-user').show();
+    }
+    
     // feedlist
     feedlist = savedgraphs[index].feedlist;
 
@@ -1017,7 +1039,6 @@ $("#graph-select").change(function () {
     $("#showlegend")[0].checked = showlegend;
 
     load_feed_selector();
-
     graph_reloaddraw();
 });
 
@@ -1071,6 +1092,12 @@ $("#graph-save").click(function () {
         showlegend: showlegend,
         feedlist: JSON.parse(JSON.stringify(feedlist))
     };
+
+    if (vis_mode == 'groups') {
+        graph_to_save.source = 'groups';
+        var group_index = $('#select-group').val();
+        graph_to_save.groupid = groups[group_index].groupid;
+    }
 
     var updateindex = graph_index_from_name(name);
 
@@ -1215,11 +1242,13 @@ function sidebar_resize() {
 
 // ----------------------------------------------------------------------------------------
 function load_feed_selector() {
-    for (var z in feeds) {
-        var feedid = feeds[z].id;
-        $(".feed-select-left[feedid=" + feedid + "]")[0].checked = false;
-        $(".feed-select-right[feedid=" + feedid + "]")[0].checked = false;
-    }
+    /*for (var z in feeds) {
+     var feedid = feeds[z].id;
+     $(".feed-select-left[feedid=" + feedid + "]").prop('checked', '');
+     $(".feed-select-right[feedid=" + feedid + "]").prop('checked', '');
+     }*/
+    $(".feed-select-left").prop('checked', '');
+    $(".feed-select-right").prop('checked', '');
 
     for (var z = 0; z < feedlist.length; z++) {
         var feedid = feedlist[z].id;
@@ -1227,11 +1256,11 @@ function load_feed_selector() {
         if (tag == "")
             tag = "undefined";
         if (feedlist[z].yaxis == 1) {
-            $(".feed-select-left[feedid=" + feedid + "]")[0].checked = true;
+            $(".feed-select-left[feedid=" + feedid + "]").prop('checked', 'checked');
             $(".tagbody[tag='" + tag + "']").show();
         }
         if (feedlist[z].yaxis == 2) {
-            $(".feed-select-right[feedid=" + feedid + "]")[0].checked = true;
+            $(".feed-select-right[feedid=" + feedid + "]").prop('checked', 'checked');
             $(".tagbody[tag='" + tag + "']").show();
         }
     }

@@ -291,7 +291,7 @@ $fullwidth = true;
      Load user feeds and groups (users and feeds)
      *********************************************/
     if (session) {
-        // Load user feeds for editor
+        // Load user feeds
         $.ajax({
             url: path + "/feed/list.json",
             async: false,
