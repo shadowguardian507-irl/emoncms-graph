@@ -179,10 +179,12 @@ function graph_init_editor()
     //-------------------------------------------------
     // Populate editor: groups, users and their feeds
     //-------------------------------------------------
-    groups.forEach(function (group, index) {
-        $('#select-group').append('<option value=' + index + '>' + group.name + '</option>');
-    });
-    populate_group_table(0);
+    if (group_support === true) {
+        groups.forEach(function (group, index) {
+            $('#select-group').append('<option value=' + index + '>' + group.name + '</option>');
+        });
+        populate_group_table(0);
+    }
 
     /******************************************
      Actions data viewer
@@ -1019,7 +1021,7 @@ $("#graph-select").change(function () {
         $('#vis-mode-groups').hide();
         $('#vis-mode-user').show();
     }
-    
+
     // feedlist
     feedlist = savedgraphs[index].feedlist;
 

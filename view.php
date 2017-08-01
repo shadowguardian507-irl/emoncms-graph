@@ -300,15 +300,16 @@ $fullwidth = true;
                 feeds = data_in;
             }});
 
-        if (group_support === false)
-            vis_mode = 'user';
-        else {
+        // Only show visualization mode switcher if groups module is installed and the user is member of a group (different than "passive member")
+        if (group_support === true) {
             // Load user groups
             $.ajax({url: path + "/group/mygroups.json", async: false, dataType: "json", success: function (data_in) {
                     groups = data_in;
                 }});
-            // Show visualization mode switcher
-            $('#vis-mode-toggle').show();
+            if (groups.length === 0)
+                group_support = false; // Disable group support
+            else
+                $('#vis-mode-toggle').show();
         }
     }
 
