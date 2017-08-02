@@ -6,16 +6,15 @@ defined('EMONCMS_EXEC') or die('Restricted access');
 function graph_controller() {
     global $session, $route, $mysqli, $redis;
 
-    require_once "Modules/graph/graph_model.php";
-    $graph = new Graph($mysqli);
-
-   /* if (group_module_installed()) {
+    if (group_module_installed()) {
         require_once "Modules/group/group_model.php";
-        $group = new Group($mysqli, $redis, $user, $feed, $input, null);
+        $group = new Group($mysqli, $redis, null, null, null, null);
     }
-    else {
+    else
         $group = null;
-    }*/
+
+    require_once "Modules/graph/graph_model.php";
+    $graph = new Graph($mysqli, $group);
 
     $result = "";
 
@@ -28,13 +27,25 @@ function graph_controller() {
         $route->format = "json";
         $result = $graph->create($session['userid'], post('data'));
     }
+    else if ($session['write'] && $route->action == "creategroupgraph" && isset($_POST['data']) && isset($_POST['groupid']) && group_module_installed()) {
+        $route->format = "json";
+        $result = $graph->creategroupgraph($session['userid'], post('data'), post('groupid'));
+    }
     else if ($session['write'] && $route->action == "update" && isset($_POST['id']) && isset($_POST['data'])) {
         $route->format = "json";
         $result = $graph->update($session['userid'], post('id'), post('data'));
     }
+    else if ($session['write'] && $route->action == "updategroupgraph" && isset($_POST['id']) && isset($_POST['data'])) {
+        $route->format = "json";
+        $result = $graph->updategroupgraph($session['userid'], post('id'), post('data'),post('groupid'));
+    }
     else if ($session['write'] && $route->action == "delete" && isset($_POST['id'])) {
         $route->format = "json";
         $result = $graph->delete($session['userid'], post('id'));
+    }
+    else if ($session['write'] && $route->action == "deletegroupgraph" && isset($_POST['id'])) {
+        $route->format = "json";
+        $result = $graph->deletegroupgraph($session['userid'], post('id'));
     }
     else if ($route->action == "get" && isset($_GET['id'])) {
         $route->format = "json";

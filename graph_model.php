@@ -16,17 +16,37 @@ defined('EMONCMS_EXEC') or die('Restricted access');
 class Graph {
 
     private $mysqli;
+    private $group;
 
-    public function __construct($mysqli) {
+    public function __construct($mysqli, $group) {
         $this->mysqli = $mysqli;
+        $this->group = $group;
     }
 
     public function create($userid, $data) {
         $userid = (int) $userid;
         $data = preg_replace('/[^\w\s-.",:#{}\[\]]/', '', $data);
 
-        $stmt = $this->mysqli->prepare("INSERT INTO graph ( userid, data ) VALUES (?,?)");
+        $stmt = $this->mysqli->prepare("INSERT INTO graph ( userid, data, groupid ) VALUES (?,?,0)");
         $stmt->bind_param("is", $userid, $data);
+        $stmt->execute();
+        $id = $this->mysqli->insert_id;
+        if ($id)
+            return array("success" => true, "message" => "graph saved id:$id");
+        return array("success" => false, "message" => "error:$id");
+    }
+
+    public function creategroupgraph($userid, $data, $groupid) {
+        $userid = (int) $userid;
+        $data = preg_replace('/[^\w\s-.",:#{}\[\]]/', '', $data);
+        $groupid = (int) $groupid;
+
+        if ($this->group == null || !$this->group->is_group_admin($groupid, $userid)) {
+            return array("success" => false, "message" => "error: user is not admin of the group");
+        }
+
+        $stmt = $this->mysqli->prepare("INSERT INTO graph ( userid, data, groupid ) VALUES (0,?,?)");
+        $stmt->bind_param("si", $data, $groupid);
         $stmt->execute();
         $id = $this->mysqli->insert_id;
         if ($id)
@@ -49,10 +69,47 @@ class Graph {
         return array("success" => false, "message" => "graph does not exist");
     }
 
+    public function updategroupgraph($userid, $id, $data, $groupid) {
+        $userid = (int) $userid;
+        $id = (int) $id;
+        $data = preg_replace('/[^\w\s-.",:#{}\[\]]/', '', $data);
+        $groupid = (int) $groupid;
+
+        if ($this->group == null || !$this->group->is_group_admin($groupid, $userid)) {
+            return array("success" => false, "message" => "error: user is not admin of the group");
+        }
+
+
+        $result = $this->mysqli->query("SELECT data FROM graph WHERE `id`='$id' AND `groupid`='$groupid'");
+        if ($result->num_rows) {
+            $stmt = $this->mysqli->prepare("UPDATE graph SET `data`=? WHERE `id`=?");
+            $stmt->bind_param("si", $data, $id);
+            $stmt->execute();
+            return array("success" => true, "message" => "updated");
+        }
+        return array("success" => false, "message" => "graph does not exist or doesn't belong to group");
+    }
+
     public function delete($userid, $id) {
         $userid = (int) $userid;
         $id = (int) $id;
         $this->mysqli->query("DELETE FROM graph WHERE `id` = '$id' AND `userid` = '$userid'");
+        return array("success" => true, "message" => "deleted");
+    }
+
+    public function deletegroupgraph($userid, $id) {
+        $userid = (int) $userid;
+        $id = (int) $id;
+
+        $result = $this->mysqli->query("SELECT groupid FROM graph WHERE `id`='$id'");
+        if ($result->num_rows != 1)
+            return array("success" => false, "message" => "graph id not found");
+        $row = $result->fetch_array();
+
+        if (!$this->group->is_group_admin($row['groupid'], $userid))
+            return array("success" => false, "message" => "You are not an administrator of the group");
+
+        $this->mysqli->query("DELETE FROM graph WHERE `id` = '$id'");
         return array("success" => true, "message" => "deleted");
     }
 
@@ -82,15 +139,33 @@ class Graph {
     public function getall($userid) {
         $userid = (int) $userid;
 
-        $graphs = array();
+        $graphs = array('user' => []);
 
+        // Get user's graphs
         $result = $this->mysqli->query("SELECT id,data FROM graph WHERE `userid`='$userid'");
         while ($row = $result->fetch_array()) {
             $data = json_decode($row['data']);
             // Check for valid decode
             if ($data != null) {
                 $data->id = $row['id'];
-                $graphs[] = $data;
+                $graphs['user'][] = $data;
+            }
+        }
+        // Get group's graphs
+        if ($this->group != null) {
+            $graphs['groups'] = array();
+            $groups = $this->group->grouplist($userid);
+            foreach ($groups as $group) {
+                $gid = $group['groupid'];
+                $result = $this->mysqli->query("SELECT id,data FROM graph WHERE `groupid`='$gid'");
+                while ($row = $result->fetch_array()) {
+                    $data = json_decode($row['data']);
+                    // Check for valid decode
+                    if ($data != null) {
+                        $data->id = $row['id'];
+                        $graphs['groups'][$group['name']][] = $data;
+                    }
+                }
             }
         }
         return $graphs;
