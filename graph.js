@@ -726,8 +726,8 @@ function populate_group_table(groupindex) {
             user.feedslist.forEach(function (feed, index) {
                 var out = '<tr class="user-feed hide" user="' + user.username + '">';
                 out += '<td style="width:70%">' + feed.tag + ':' + feed.name + '</td>';
-                out += '<td style="width:15%"><input class="feed-select-left" source="group" userid="' + user.userid + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
-                out += '<td style="width:15%"><input class="feed-select-right" source="group" userid="' + user.userid + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
+                out += '<td style="width:15%"><input class="feed-select-left" source="group" userid="' + user.userid + '" user="' + user.username + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
+                out += '<td style="width:15%"><input class="feed-select-right" source="group" userid="' + user.userid + '" user="' + user.username + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
                 out += '</tr>';
                 $('#group-table').append(out);
             });
@@ -1200,11 +1200,6 @@ function sidebar_resize() {
 
 // ----------------------------------------------------------------------------------------
 function load_feed_selector() {
-    /*for (var z in feeds) {
-     var feedid = feeds[z].id;
-     $(".feed-select-left[feedid=" + feedid + "]").prop('checked', '');
-     $(".feed-select-right[feedid=" + feedid + "]").prop('checked', '');
-     }*/
     $(".feed-select-left").prop('checked', '');
     $(".feed-select-right").prop('checked', '');
     for (var z = 0; z < feedlist.length; z++) {
@@ -1220,6 +1215,11 @@ function load_feed_selector() {
             $(".feed-select-right[feedid=" + feedid + "]").prop('checked', 'checked');
             $(".tagbody[tag='" + tag + "']").show();
         }
+
+        $(".feed-select-right[feedid=" + feedid + "]").each(function (index) {
+            if ($(this).attr('user') != undefined)
+                $('.user-feed[user=' + $(this).attr('user') + ']').show();
+        });
     }
 }
 
