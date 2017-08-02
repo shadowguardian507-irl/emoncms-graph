@@ -312,13 +312,46 @@ $fullwidth = true;
                 $('#vis-mode-toggle').show();
         }
     }
+    
+    /*********************************************
+     Init editor
+     *********************************************/
+    graph_init_editor();
 
     /*********************************************
-     Assign active feedid from URL - Carlos ToDo
+     Assign active feedid from URL
      *********************************************/
     var urlparts = window.location.pathname.split("graph/");
     if (urlparts.length == 2) {
         var feedids = urlparts[1].split(",");
+        for (var z in feedids) {
+            var feedid = parseInt(feedids[z]);
+
+            if (feedid) {
+                if (session) {
+                    f = getfeed(feedid);
+                    feedlist.push({id: feedid, name: f.name, tag: f.tag, yaxis: 1, fill: 0, scale: 1.0, delta: false, dp: 1, plottype: 'lines'});
+                } else {
+                    feedlist.push({id: feedid, name: "undefined", tag: "undefined", yaxis: 1, fill: 0, scale: 1.0, delta: false, dp: 1, plottype: 'lines'});
+                }
+            }
+        }
+    }
+    if (urlparts.length > 2) {
+        // get data from URL
+        var groupid = urlparts[2].slice(0, urlparts[2].indexOf(','));
+        var feeds_string = urlparts[2].slice(urlparts[2].indexOf(',') + 1);
+        var feedids = feeds_string.split(",");
+        
+        // Display groups mode and select the right group
+        $("[name='vis-mode-toggle']").bootstrapSwitch('state', false);
+        vis_mode = 'groups';
+        $('#vis-mode-groups').show();
+        $('#vis-mode-user').hide();
+        $('#select-group').val(get_group_index(groupid));
+        populate_group_table(groupid);
+        
+        // fetch feeds to display
         for (var z in feedids) {
             var feedid = parseInt(feedids[z]);
 
@@ -337,7 +370,6 @@ $fullwidth = true;
      Other initialitation
      *********************************************/
     sidebar_resize();
-    graph_init_editor();
 
     load_feed_selector();
     if (!session)
@@ -375,5 +407,14 @@ $fullwidth = true;
             $('#vis-mode-user').show();
         }
     });
+
+    /******************************************
+     Functions
+     ******************************************/
+    function get_group_index(groupid) {
+        for (z in groups)
+            if (groups[z].groupid == groupid)
+                return z;
+    }
 </script>
 
