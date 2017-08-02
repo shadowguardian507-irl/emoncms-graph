@@ -349,7 +349,7 @@ $fullwidth = true;
         $('#vis-mode-groups').show();
         $('#vis-mode-user').hide();
         $('#select-group').val(get_group_index(groupid));
-        populate_group_table(groupid);
+        populate_group_table(get_group_index(groupid));
         
         // fetch feeds to display
         for (var z in feedids) {
@@ -357,7 +357,7 @@ $fullwidth = true;
 
             if (feedid) {
                 if (session) {
-                    f = getfeed(feedid);
+                    f = getfeedfromgroups(feedid);
                     feedlist.push({id: feedid, name: f.name, tag: f.tag, yaxis: 1, fill: 0, scale: 1.0, delta: false, dp: 1, plottype: 'lines'});
                 } else {
                     feedlist.push({id: feedid, name: "undefined", tag: "undefined", yaxis: 1, fill: 0, scale: 1.0, delta: false, dp: 1, plottype: 'lines'});
