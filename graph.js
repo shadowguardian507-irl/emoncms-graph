@@ -164,11 +164,11 @@ function graph_init_editor()
             $('#select-group').append('<option value=' + index + '>' + group.name + '</option>');
         });
         populate_group_table(0);
-        if(groups[0].role != 1){
+        if (groups[0].role != 1) {
             $('#graph-save').hide();
             $('#graph-delete').hide();
         }
-        else{
+        else {
             $('#graph-save').show();
             $('#graph-delete').show();
         }
@@ -424,14 +424,14 @@ function graph_init_editor()
      Actions editor displaying groups
      ******************************************/
     $('#select-group').on('change', function () {
-        var groupindex=$(this).val();
+        var groupindex = $(this).val();
         populate_group_table(groupindex);
         load_feed_selector();
-        if(groups[groupindex].role != 1){
+        if (groups[groupindex].role != 1) {
             $('#graph-save').hide();
             $('#graph-delete').hide();
         }
-        else{
+        else {
             $('#graph-save').show();
             $('#graph-delete').show();
         }
@@ -716,18 +716,23 @@ function getfeedfromgroups(feedid) {
 
 function populate_group_table(groupindex) {
     $('#group-table').html('');
-    var users = groups[groupindex].users;
-    users.forEach(function (user, index) {
-        $('#group-table').append('<tr class="user-name" user="' + user.username + '"><td colspan=3>' + user.username + '</td></tr>');
-        user.feedslist.forEach(function (feed, index) {
-            var out = '<tr class="user-feed hide" user="' + user.username + '">';
-            out += '<td style="width:70%">' + feed.tag + ':' + feed.name + '</td>';
-            out += '<td style="width:15%"><input class="feed-select-left" source="group" userid="' + user.userid + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
-            out += '<td style="width:15%"><input class="feed-select-right" source="group" userid="' + user.userid + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
-            out += '</tr>';
-            $('#group-table').append(out);
+    if (groups[groupindex].users.success == false) { // when user role is "member"
+        void(0); // do nothing
+    }
+    else {
+        var users = groups[groupindex].users;
+        users.forEach(function (user, index) {
+            $('#group-table').append('<tr class="user-name" user="' + user.username + '"><td colspan=3>' + user.username + '</td></tr>');
+            user.feedslist.forEach(function (feed, index) {
+                var out = '<tr class="user-feed hide" user="' + user.username + '">';
+                out += '<td style="width:70%">' + feed.tag + ':' + feed.name + '</td>';
+                out += '<td style="width:15%"><input class="feed-select-left" source="group" userid="' + user.userid + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
+                out += '<td style="width:15%"><input class="feed-select-right" source="group" userid="' + user.userid + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
+                out += '</tr>';
+                $('#group-table').append(out);
+            });
         });
-    });
+    }
 }
 
 function get_group_index(groupid) {
