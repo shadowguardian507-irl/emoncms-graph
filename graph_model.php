@@ -152,7 +152,7 @@ class Graph {
             }
         }
         // Get group's graphs
-        if ($this->group != null) {
+        if (is_null($this->group) == false) {
             $graphs['groups'] = array();
             $groups = $this->group->grouplist($userid);
             foreach ($groups as $group) {
