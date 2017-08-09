@@ -312,7 +312,7 @@ $fullwidth = true;
                 $('#vis-mode-toggle').show();
         }
     }
-    
+
     /*********************************************
      Init editor
      *********************************************/
@@ -342,7 +342,7 @@ $fullwidth = true;
         var groupid = urlparts[2].slice(0, urlparts[2].indexOf(','));
         var feeds_string = urlparts[2].slice(urlparts[2].indexOf(',') + 1);
         var feedids = feeds_string.split(",");
-        
+
         // Display groups mode and select the right group
         $("[name='vis-mode-toggle']").bootstrapSwitch('state', false);
         vis_mode = 'groups';
@@ -350,7 +350,7 @@ $fullwidth = true;
         $('#vis-mode-user').hide();
         $('#select-group').val(get_group_index(groupid));
         populate_group_table(get_group_index(groupid));
-        
+
         // fetch feeds to display
         for (var z in feedids) {
             var feedid = parseInt(feedids[z]);
@@ -358,7 +358,7 @@ $fullwidth = true;
             if (feedid) {
                 if (session) {
                     f = getfeedfromgroups(feedid);
-                    feedlist.push({id: feedid, name: f.name, tag: f.tag, yaxis: 1, fill: 0, scale: 1.0, delta: false, dp: 1, plottype: 'lines'});
+                    feedlist.push({id: feedid, name: f.name, tag: f.tag, yaxis: 1, fill: 0, scale: 1.0, delta: false, dp: 1, plottype: 'lines', source: 'group'});
                 } else {
                     feedlist.push({id: feedid, name: "undefined", tag: "undefined", yaxis: 1, fill: 0, scale: 1.0, delta: false, dp: 1, plottype: 'lines'});
                 }
