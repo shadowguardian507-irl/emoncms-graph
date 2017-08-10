@@ -725,7 +725,7 @@ function populate_group_table(groupindex) {
             $('#group-table').append('<tr class="user-name" user="' + user.username + '"><td colspan=3>' + user.username + '</td></tr>');
             user.feedslist.forEach(function (feed, index) {
                 var out = '<tr class="user-feed hide" user="' + user.username + '">';
-                out += '<td style="width:70%">' + feed.tag + ':' + feed.name + '</td>';
+                out += '<td style="width:70%" title="' + feed.tag + ':' + feed.name + '">' + feed.tag + ':' + feed.name + '</td>';
                 out += '<td style="width:15%"><input class="feed-select-left" source="group" userid="' + user.userid + '" user="' + user.username + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
                 out += '<td style="width:15%"><input class="feed-select-right" source="group" userid="' + user.userid + '" user="' + user.username + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
                 out += '</tr>';

@@ -105,6 +105,15 @@ $fullwidth = true;
         background-color:#aaa; 
         cursor:pointer
     }
+    
+    #group-table tr{
+        width:100%
+    }
+    
+    #group-table .user-feed td{
+        max-width:150px;
+        overflow-x: hidden
+    }
 
 </style>
 
