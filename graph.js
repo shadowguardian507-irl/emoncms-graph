@@ -791,6 +791,10 @@ function graph_draw()
         }
         // Add series to plot
         var label = "";
+        if (vis_mode == 'groups') {
+            var user = feed_belongs_to(feedlist[z].id);
+            label += user.username + ': '; // 
+        }
         if (showtag)
             label += feedlist[z].tag + ": ";
         label += feedlist[z].name;
@@ -948,6 +952,17 @@ function get_group_index(groupid) {
     for (var index in groups) {
         if (groups[index].groupid == groupid)
             return index;
+    }
+}
+
+function feed_belongs_to(feedid) {
+    for (var group in groups) {
+        for (var user in groups[group].users) {
+            for (var feed in groups[group].users[user].feedslist) {
+                if (groups[group].users[user].feedslist[feed].id == feedid)
+                    return groups[group].users[user];
+            }
+        }
     }
 }
 
