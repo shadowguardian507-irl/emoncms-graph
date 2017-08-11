@@ -51,7 +51,7 @@ $fullwidth = true;
             <h3>Groups</h3>
             <select id='select-group'></select>
             <div style="overflow-x: hidden; background-color:#f3f3f3; width:100%">
-                <table id='group-table' class='table'></table>
+                <div id='group-table' class='table'></div>
             </div>
         </div>
 

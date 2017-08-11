@@ -174,9 +174,9 @@ function graph_init_editor()
         }
     }
 
-    /******************************************
-     Actions data viewer
-     ******************************************/
+    //******************************************
+    // Actions data viewer
+    // ******************************************/
     $("#reload").click(function () {
         view.start = $("#request-start").val() * 1000;
         view.end = $("#request-end").val() * 1000;
@@ -347,71 +347,259 @@ function graph_init_editor()
         $(".feed-options-show-options").hide();
         $(".feed-options-show-stats").show();
     });
-    /******************************************
-     Actions ticking checkboxes in editor
-     ******************************************/
-    $("body").on("click", ".feed-select-left", function () {
+
+    //******************************************
+    // Actions ticking checkboxes in editor
+    // ******************************************/
+    $("body").on("click", ".feed-select-left", function (e) {
+        e.stopPropagation();
         var feedid = $(this).attr("feedid");
         var checked = $(this)[0].checked;
         var feed_from_group = false;
+
         // Check if the feed belongs to a user in a group
         var source = $(this).attr('source');
         if (source == 'group') {
             feed_from_group = true;
+            // set state of "check all" checkbox
+            var userid = $(this).attr('userid');
+            var tag = $(this).attr('tag');
+            var any_checked = false
+            var any_unchecked = false;
+            $(".feed-select-left[tag='" + tag + "'][userid='" + userid + "']").each(function () {
+                if ($(this)[0].checked == false)
+                    any_unchecked = true;
+                else
+                    any_checked = true;
+            });
+            if (any_checked == true && any_unchecked == false) // all checked
+                $('.feed-tag-checkbox-left[tag="' + tag + '"][uid="' + userid + '"]').prop('checked', 'checked').prop("indeterminate", false);
+            else if (any_checked == false && any_unchecked == true) // none checked
+                $('.feed-tag-checkbox-left[tag="' + tag + '"][uid="' + userid + '"]').prop('checked', '').prop("indeterminate", false);
+            else // some are checked and some are unchecked
+                $('.feed-tag-checkbox-left[tag="' + tag + '"][uid="' + userid + '"]').prop("indeterminate", true);
         }
 
+        // Add/remove the feeds to the feedlist
         var loaded = false;
         for (var z in feedlist) {
             if (feedlist[z].id == feedid) {
                 if (!checked) {
-                    feedlist.splice(z, 1);
+                    feedlist.splice(z, 1);  // Remove from graph the feeds that are not checked and are in the graph
                 } else {
                     feedlist[z].yaxis = 1;
                     loaded = true;
-                    $(".feed-select-right[feedid=" + feedid + "]")[0].checked = false;
+                    $(".feed-select-right[feedid=" + feedid + "]").each(function () { // Ensure that feeds are only ticked the appropiate column
+                        $(this)[0].checked = false;
+                    });
                 }
             }
         }
-
-        //if (loaded==false && checked) {
-        //    var index = getfeedindex(feedid);
-        //    feedlist.push({id:feedid, name:feeds[index].name, tag:feeds[index].tag, yaxis:1, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
-        //}
-        if (loaded == false && checked)
+        if (loaded == false && checked) // When both sides where unticked and one has been ticked now we add it to the graph
             pushfeedlist(feedid, 1, feed_from_group);
+
         graph_reloaddraw();
+
+        // set state of "check all" checkbox
+        if (source == 'group') {
+            var userid = $(this).attr('userid');
+            var tag = $(this).attr('tag');
+            var any_checked = false
+            var any_unchecked = false;
+            $(".feed-select-left[tag='" + tag + "'][userid='" + userid + "']").each(function () {
+                if ($(this)[0].checked == false)
+                    any_unchecked = true;
+                else
+                    any_checked = true;
+            });
+            if (any_checked == true && any_unchecked == false) { // all checked
+                $('.feed-tag-checkbox-left[tag="' + tag + '"][uid="' + userid + '"]').prop('checked', 'checked').prop("indeterminate", false);
+                $('.feed-tag-checkbox-right[tag="' + tag + '"][uid="' + userid + '"]').prop('checked', '').prop("indeterminate", false);
+                $('.feed-select-right[tag="' + tag + '"][userid="' + userid + '"]').prop('checked', '');
+            }
+            else if (any_checked == false && any_unchecked == true) { // none checked
+                $('.feed-tag-checkbox-left[tag="' + tag + '"][uid="' + userid + '"]').prop('checked', '').prop("indeterminate", false);
+            }
+            else { // some are checked and some are unchecked
+                $('.feed-tag-checkbox-left[tag="' + tag + '"][uid="' + userid + '"]').prop("indeterminate", true);
+                // the other column
+                var any_checked = false
+                var any_unchecked = false;
+                $(".feed-select-right[tag='" + tag + "'][userid='" + userid + "']").each(function () {
+                    if ($(this)[0].checked == false)
+                        any_unchecked = true;
+                    else
+                        any_checked = true;
+
+                    if (any_checked == false && any_unchecked == true) { // none checked
+                        $('.feed-tag-checkbox-right[tag="' + tag + '"][uid="' + userid + '"]').prop('checked', '').prop("indeterminate", false);
+                    }
+                    else { // some are checked and some are unchecked
+                        $('.feed-tag-checkbox-right[tag="' + tag + '"][uid="' + userid + '"]').prop("indeterminate", true);
+                    }
+                });
+            }
+        }
+
     });
-    $("body").on("click", ".feed-select-right", function () {
+    $("body").on("click", ".feed-select-right", function (e) {
+        e.stopPropagation();
         var feedid = $(this).attr("feedid");
         var checked = $(this)[0].checked;
         var feed_from_group = false;
+
         // Check if the feed belongs to a user in a group
         var source = $(this).attr('source');
-        if (source == 'group') {
+        if (source == 'group')
             feed_from_group = true;
-        }
 
+        // Add/remove the feeds to the feedlist
         var loaded = false;
         for (var z in feedlist) {
             if (feedlist[z].id == feedid) {
                 if (!checked) {
-                    feedlist.splice(z, 1);
+                    feedlist.splice(z, 1);  // Remove from graph the feeds that are not checked and are in the graph
                 } else {
                     feedlist[z].yaxis = 2;
                     loaded = true;
-                    $(".feed-select-left[feedid=" + feedid + "]")[0].checked = false;
+                    $(".feed-select-left[feedid=" + feedid + "]").each(function () { // Ensure that feeds are only ticked the appropiate column
+                        $(this)[0].checked = false;
+                    });
                 }
             }
         }
-
-        // if (loaded==false && checked) feedlist.push({id:feedid, yaxis:2, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
-        if (loaded == false && checked)
+        if (loaded == false && checked) // When both sides where unticked and one has been ticked now we add it to the graph
             pushfeedlist(feedid, 2, feed_from_group);
+
+        graph_reloaddraw();
+
+        // set state of "check all" checkbox
+        if (source == 'group') {
+            var userid = $(this).attr('userid');
+            var tag = $(this).attr('tag');
+            var any_checked = false
+            var any_unchecked = false;
+            $(".feed-select-right[tag='" + tag + "'][userid='" + userid + "']").each(function () {
+                if ($(this)[0].checked == false)
+                    any_unchecked = true;
+                else
+                    any_checked = true;
+            });
+            if (any_checked == true && any_unchecked == false) { // all checked
+                $('.feed-tag-checkbox-right[tag="' + tag + '"][uid="' + userid + '"]').prop('checked', 'checked').prop("indeterminate", false);
+                $('.feed-tag-checkbox-left[tag="' + tag + '"][uid="' + userid + '"]').prop('checked', '').prop("indeterminate", false);
+                $('.feed-select-left[tag="' + tag + '"][userid="' + userid + '"]').prop('checked', '');
+            }
+            else if (any_checked == false && any_unchecked == true) { // none checked
+                $('.feed-tag-checkbox-right[tag="' + tag + '"][uid="' + userid + '"]').prop('checked', '').prop("indeterminate", false);
+            }
+            else { // some are checked and some are unchecked
+                $('.feed-tag-checkbox-right[tag="' + tag + '"][uid="' + userid + '"]').prop("indeterminate", true);
+                // the other column
+                var any_checked = false
+                var any_unchecked = false;
+                $(".feed-select-left[tag='" + tag + "'][userid='" + userid + "']").each(function () {
+                    if ($(this)[0].checked == false)
+                        any_unchecked = true;
+                    else
+                        any_checked = true;
+
+                    if (any_checked == false && any_unchecked == true) { // none checked
+                        $('.feed-tag-checkbox-left[tag="' + tag + '"][uid="' + userid + '"]').prop('checked', '').prop("indeterminate", false);
+                    }
+                    else { // some are checked and some are unchecked
+                        $('.feed-tag-checkbox-left[tag="' + tag + '"][uid="' + userid + '"]').prop("indeterminate", true);
+                    }
+                });
+            }
+        }
+    });
+    $("body").on("click", ".feed-tag-checkbox-right", function (e) {
+        e.stopPropagation();
+        var tag = $(this).attr("tag");
+        var userid = $(this).attr("uid");
+        var checked = $(this)[0].checked;
+        var feed_from_group = true;
+
+        // Tick/untick the feeds
+        if (checked)
+            $('.feed-select-right[tag="' + tag + '"][userid="' + userid + '"]').prop('checked', 'checked');
+        else
+            $('.feed-select-right[tag="' + tag + '"][userid="' + userid + '"]').prop('checked', '');
+
+        // Ensure only this checkbox is ticked
+        if (checked)
+            $(".feed-tag-checkbox-left").prop('checked', '').prop("indeterminate", false);
+
+        // Add/remove the feeds to the feedlist
+        $('.feed-select-right[tag="' + tag + '"][userid="' + userid + '"]').each(function () {
+            var feedid = $(this).attr('feedid');
+            var loaded = false;
+            for (var z in feedlist) {
+                if (feedlist[z].id == feedid) {
+                    if (!checked) {
+                        feedlist.splice(z, 1); // Remove from graph the feeds that are not checked and are in the graph
+                    } else {
+                        feedlist[z].yaxis = 2;
+                        loaded = true;
+                        $(".feed-select-left[feedid=" + feedid + "]").each(function () {  // Ensure that feeds are only ticked the appropiate column
+                            $(this)[0].checked = false;
+                        });
+                    }
+                }
+            }
+            if (loaded == false && checked) // When both sides where unticked and one has been ticked now we add it to the graph
+                pushfeedlist(feedid, 2, feed_from_group);
+        });
+
+        // Draw graph
         graph_reloaddraw();
     });
-    /******************************************
-     Actions editor user's feeds
-     ******************************************/
+    $("body").on("click", ".feed-tag-checkbox-left", function (e) {
+        e.stopPropagation();
+        var tag = $(this).attr("tag");
+        var userid = $(this).attr("uid");
+        var checked = $(this)[0].checked;
+        var feed_from_group = true;
+
+        // Tick/untick the feeds
+        if (checked)
+            $('.feed-select-left[tag="' + tag + '"][userid="' + userid + '"]').prop('checked', 'checked');
+        else
+            $('.feed-select-left[tag="' + tag + '"][userid="' + userid + '"]').prop('checked', '');
+
+        // Ensure only this checkbox is ticked
+        if (checked)
+            $(".feed-tag-checkbox-right").prop('checked', '').prop("indeterminate", false);
+
+        // Add/remove the feeds to the feedlist
+        $('.feed-select-left[tag="' + tag + '"][userid="' + userid + '"]').each(function () {
+            var feedid = $(this).attr('feedid');
+            var loaded = false;
+            for (var z in feedlist) {
+                if (feedlist[z].id == feedid) {
+                    if (!checked) {
+                        feedlist.splice(z, 1); // Remove from graph the feeds that are not checked and are in the graph
+                    } else {
+                        feedlist[z].yaxis = 1;
+                        loaded = true;
+                        $(".feed-select-right[feedid=" + feedid + "]").each(function () { // Ensure that feeds are only ticked the appropiate column
+                            $(this)[0].checked = false;
+                        });
+                    }
+                }
+            }
+            if (loaded == false && checked) // When both sides where unticked and one has been ticked now we add it to the graph
+                pushfeedlist(feedid, 1, feed_from_group);
+        });
+
+        // Draw graph
+        graph_reloaddraw();
+    });
+
+    //******************************************
+    // Actions editor user's feeds
+    // ******************************************/
     $("body").on("click", ".tagheading", function () {
         var tag = $(this).attr("tag");
         var e = $(".tagbody[tag='" + tag + "']");
@@ -420,9 +608,10 @@ function graph_init_editor()
         else
             e.show();
     });
-    /******************************************
-     Actions editor displaying groups
-     ******************************************/
+
+    //******************************************
+    // Actions editor displaying groups
+    // ******************************************/
     $('#select-group').on('change', function () {
         var groupindex = $(this).val();
         populate_group_table(groupindex);
@@ -438,8 +627,14 @@ function graph_init_editor()
     });
     $('body').on('click', '.user-name', function () {
         var user = $(this).attr('user');
-        $('.user-feed[user=' + user + ']').toggle();
+        $('.feed-tag[user="' + user + '"]').toggle();
     });
+    $('body').on('click', '.feed-tag', function () {
+        var user = $(this).attr('user');
+        var tag = $(this).attr('tag');
+        $('.feed[user="' + user + '"][tag="' + tag + '"]').toggle();
+    });
+
 }
 
 /******************************************
@@ -722,15 +917,29 @@ function populate_group_table(groupindex) {
     else {
         var users = groups[groupindex].users;
         users.forEach(function (user, index) {
-            $('#group-table').append('<tr class="user-name" user="' + user.username + '"><td colspan=3>' + user.username + '</td></tr>');
-            user.feedslist.forEach(function (feed, index) {
-                var out = '<tr class="user-feed hide" user="' + user.username + '">';
-                out += '<td style="width:70%" title="' + feed.tag + ':' + feed.name + '">' + feed.tag + ':' + feed.name + '</td>';
-                out += '<td style="width:15%"><input class="feed-select-left" source="group" userid="' + user.userid + '" user="' + user.username + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
-                out += '<td style="width:15%"><input class="feed-select-right" source="group" userid="' + user.userid + '" user="' + user.username + '" groupid="' + groups[groupindex].groupid + '" feedid="' + feed.id + '" type="checkbox"></td>';
-                out += '</tr>';
-                $('#group-table').append(out);
+            $('#group-table').append('<div class="user-name" user="' + user.username + '">' + user.username + '</div>');
+            var out = '';
+            // Add tags
+            var tags_list = [];
+            user.feedslist.forEach(function (feed) {
+                if (tags_list.indexOf(feed.tag) == -1) {
+                    tags_list.push(feed.tag);
+                    out += "<div class='feed-tag hide' tag='" + feed.tag + "' user='" + user.username + "'>";
+                    out += feed.tag + "<input class='feed-tag-checkbox-right' type='checkbox' tag='" + feed.tag + "' uid='" + user.userid + "' />" + "<input class='feed-tag-checkbox-left' type='checkbox' tag='" + feed.tag + "' uid='" + user.userid + "' />";
+                    // Add feed tah have the current tag
+                    user.feedslist.forEach(function (feed_again) {
+                        if (feed_again.tag == feed.tag) {
+                            out += "<div class='feed user-feed  hide' user='" + user.username + "' tag='" + feed_again.tag + "' uid='" + user.userid + "'>";
+                            out += "<div class='feed-select'><input class='feed-select-right' source='group' userid='" + user.userid + "' user='" + user.username + "' tag='" + feed_again.tag + "' groupid='" + groups[groupindex].groupid + "' feedid='" + feed_again.id + "' type='checkbox' /></div>";
+                            out += "<div class='feed-select'><input class='feed-select-left' source='group' userid='" + user.userid + "' user='" + user.username + "' tag='" + feed_again.tag + "' groupid='" + groups[groupindex].groupid + "' feedid='" + feed_again.id + "' type='checkbox' /></div>";
+                            out += "<div class='feed-name' title='" + feed_again.name + "'>" + feed_again.name + "</div>";
+                            out += "</div>"; // feed
+                        }
+                    });
+                    out += "</div>";
+                }
             });
+            $('#group-table').append(out);
         });
     }
 }
@@ -1216,9 +1425,11 @@ function load_feed_selector() {
             $(".tagbody[tag='" + tag + "']").show();
         }
 
-        $(".feed-select-right[feedid=" + feedid + "]").each(function (index) {
-            if ($(this).attr('user') != undefined)
-                $('.user-feed[user=' + $(this).attr('user') + ']').show();
+        $(".feed-select-right[feedid=" + feedid + "]").each(function (index) { // We only need to use on e column, the aim is to reach the parent elements
+            if ($(this).attr('user') != undefined) {
+                $('.user-feed[user=' + $(this).attr('user') + '][tag="' + tag + '"]').show();
+                $('.feed-tag[user=' + $(this).attr('user') + ']').show();
+            }
         });
     }
 }
