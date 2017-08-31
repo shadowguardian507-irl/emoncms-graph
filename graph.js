@@ -791,7 +791,7 @@ function graph_draw()
         }
         // Add series to plot
         var label = "";
-        if (vis_mode == 'groups') {
+        if (typeof (vis_mode) == 'string' && vis_mode == 'groups') {
             var user = feed_belongs_to(feedlist[z].id);
             label += user.username + ': '; // 
         }

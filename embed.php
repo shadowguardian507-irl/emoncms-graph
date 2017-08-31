@@ -48,7 +48,7 @@ $graphid = get("graphid");
     var path = "<?php echo $path; ?>";
 
     var graphid = "<?php echo $graphid; ?>";
-
+        
     $.ajax({
         url: path + "/graph/get?id=" + graphid,
         async: true,
@@ -76,6 +76,15 @@ $graphid = get("graphid");
                 view.end = now;
                 view.start = view.end - timewindow;
             }
+
+            if (result.source != undefined && result.source == 'groups'){
+                vis_mode = 'groups';
+                 $.ajax({url: path + "/group/mygroups.json", async: false, dataType: "json", success: function (data_in) {
+                    groups = data_in;
+                }});                
+            }
+            else
+                vis_mode = 'user';
 
             graph_resize();
             graph_reloaddraw();
