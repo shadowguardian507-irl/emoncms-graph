@@ -778,32 +778,33 @@ function graph_draw()
         $("#window-info").html("<b>Window:</b> " + printdate(view.start) + " > " + printdate(view.end) + ", <b>Length:</b> " + hours + "h" + mins + " (" + time_in_window + " seconds)");
     plotdata = [];
     for (var z in feedlist) {
-
-        var data = feedlist[z].data;
-        // Hide missing data (only affects the plot view)
-        if (!showmissing) {
-            var tmp = [];
-            for (var n in data) {
-                if (data[n][1] != null)
-                    tmp.push(data[n]);
+        if (feedlist[z].data.success == undefined) {
+            var data = feedlist[z].data;
+            // Hide missing data (only affects the plot view)
+            if (!showmissing) {
+                var tmp = [];
+                for (var n in data) {
+                    if (data[n][1] != null)
+                        tmp.push(data[n]);
+                }
+                data = tmp;
             }
-            data = tmp;
+            // Add series to plot
+            var label = "";
+            if (typeof (vis_mode) == 'string' && vis_mode == 'groups' && embed != true) {
+                var user = feed_belongs_to(feedlist[z].id);
+                label += user.username + ': '; // 
+            }
+            if (showtag)
+                label += feedlist[z].tag + ": ";
+            label += feedlist[z].name;
+            var plot = {label: label, data: data, yaxis: feedlist[z].yaxis, color: feedlist[z].color};
+            if (feedlist[z].plottype == 'lines')
+                plot.lines = {show: true, fill: feedlist[z].fill};
+            if (feedlist[z].plottype == 'bars')
+                plot.bars = {show: true, barWidth: view.interval * 1000 * 0.75};
+            plotdata.push(plot);
         }
-        // Add series to plot
-        var label = "";
-        if (typeof (vis_mode) == 'string' && vis_mode == 'groups') {
-            var user = feed_belongs_to(feedlist[z].id);
-            label += user.username + ': '; // 
-        }
-        if (showtag)
-            label += feedlist[z].tag + ": ";
-        label += feedlist[z].name;
-        var plot = {label: label, data: data, yaxis: feedlist[z].yaxis, color: feedlist[z].color};
-        if (feedlist[z].plottype == 'lines')
-            plot.lines = {show: true, fill: feedlist[z].fill};
-        if (feedlist[z].plottype == 'bars')
-            plot.bars = {show: true, barWidth: view.interval * 1000 * 0.75};
-        plotdata.push(plot);
     }
     $.plot($('#placeholder'), plotdata, options);
     if (!embed) {
