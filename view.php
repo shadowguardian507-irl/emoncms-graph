@@ -28,8 +28,8 @@ $fullwidth = true;
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Modules/graph/vis.helper.js"></script>
 
 <!-- toggle button to choose User or Group. Documentation: http://bootstrapswitch.com/options.html -->
-<link href="https://unpkg.com/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet">
-<script src="https://unpkg.com/bootstrap-switch"></script>
+<link href="<?php echo $path; ?>Modules/graph/Lib/bootstrap-switch.css" rel="stylesheet">
+<script src="<?php echo $path; ?>Modules/graph/Lib/bootstrap-switch.js"></script>
 <link href="<?php echo $path; ?>Modules/graph/graph.css" rel="stylesheet">
 
 <div id="wrapper">
