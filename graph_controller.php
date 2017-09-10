@@ -8,7 +8,7 @@ function graph_controller() {
 
     if (group_module_installed()) {
         require_once "Modules/group/group_model.php";
-        $group = new Group($mysqli, $redis, null, null, null, null,null);
+        $group = new Group($mysqli, $redis, null, null, null);
     }
     else
         $group = null;

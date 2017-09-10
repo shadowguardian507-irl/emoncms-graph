@@ -5,7 +5,7 @@ global $session, $mysqli;
 
 if (group_module_installed()) {
     require_once "Modules/group/group_model.php";
-    $group = new Group($mysqli, null, null, null, null, null, null);
+    $group = new Group($mysqli, null, null, null, null);
 }
 else
     $group = null;
