@@ -164,7 +164,7 @@ function graph_init_editor()
             $('#select-group').append('<option value=' + index + '>' + group.name + '</option>');
         });
         populate_group_table(0);
-        if (groups[0].role != 1) {
+        if (groups[0].role != 1&&groups[0].role != 2) {
             $('#graph-save').hide();
             $('#graph-delete').hide();
         }
@@ -616,7 +616,7 @@ function graph_init_editor()
         var groupindex = $(this).val();
         populate_group_table(groupindex);
         load_feed_selector();
-        if (groups[groupindex].role != 1) {
+        if (groups[groupindex].role != 1&&groups[groupindex].role != 2) {
             $('#graph-save').hide();
             $('#graph-delete').hide();
         }

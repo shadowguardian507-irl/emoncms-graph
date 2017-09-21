@@ -40,9 +40,10 @@ class Graph {
         $userid = (int) $userid;
         $data = preg_replace('/[^\w\s-.",:#{}\[\]]/', '', $data);
         $groupid = (int) $groupid;
+        $user_role = $this->group->get_user_role($userid, $userid, $groupid);
 
-        if ($this->group == null || !$this->group->is_group_admin($groupid, $userid)) {
-            return array("success" => false, "message" => "error: user is not admin of the group");
+        if ($this->group == null || ($user_role != 1 && $user_role != 2)) {
+            return array("success" => false, "message" => "error: user is not admin/subadmin of the group");
         }
 
         $stmt = $this->mysqli->prepare("INSERT INTO graph ( userid, data, groupid ) VALUES (0,?,?)");
@@ -74,9 +75,10 @@ class Graph {
         $id = (int) $id;
         $data = preg_replace('/[^\w\s-.",:#{}\[\]]/', '', $data);
         $groupid = (int) $groupid;
+        $user_role = $this->group->get_user_role($userid, $userid, $groupid);
 
-        if ($this->group == null || !$this->group->is_group_admin($groupid, $userid)) {
-            return array("success" => false, "message" => "error: user is not admin of the group");
+        if ($this->group == null || ($user_role != 1 && $user_role != 2)) {
+            return array("success" => false, "message" => "error: user is not admin/subadmin of the group");
         }
 
 
@@ -106,8 +108,9 @@ class Graph {
             return array("success" => false, "message" => "graph id not found");
         $row = $result->fetch_array();
 
-        if (!$this->group->is_group_admin($row['groupid'], $userid))
-            return array("success" => false, "message" => "You are not an administrator of the group");
+        $user_role = $this->group->get_user_role($userid, $userid, $row['groupid']);
+        if ($user_role != 1 && $user_role != 2)
+            return array("success" => false, "message" => "You are not an administrator/subadministrator of the group");
 
         $this->mysqli->query("DELETE FROM graph WHERE `id` = '$id'");
         return array("success" => true, "message" => "deleted");
