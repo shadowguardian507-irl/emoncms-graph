@@ -95,61 +95,60 @@ function graph_resize() {
 
 function graph_init_editor()
 {
-    // Load saved graphs
-    graph_load_savedgraphs();
+
+    if (session) {
     
+        // Load saved graphs
+        graph_load_savedgraphs();
+
     
-    // Load user feeds for editor
-    $.ajax({                                      
-        url: path+"/feed/list.json",
-        async: false,
-        dataType: "json",
-        success: function(data_in) {
-            feeds = data_in;
+    }
+    else
+    {
+        feeds = feedlist;
+    }
             
-            var numberoftags = 0;
-            feedsbytag = {};
-            for (var z in feeds) {
-                if (feedsbytag[feeds[z].tag]==undefined) {
-                    feedsbytag[feeds[z].tag] = [];
-                    numberoftags++;
-                }
-                feedsbytag[feeds[z].tag].push(feeds[z]);
-            }
-            
-            var out = "";
-            out += "<colgroup>";
-            out += "<col span='1' style='width: 70%;'>";
-            out += "<col span='1' style='width: 15%;'>";
-            out += "<col span='1' style='width: 15%;'>";
-            out += "</colgroup>";
-            
-            for (var tag in feedsbytag) {
-               tagname = tag;
-               if (tag=="") tagname = "undefined";
-               out += "<tr class='tagheading' tag='"+tagname+"' style='background-color:#aaa; cursor:pointer'><td style='font-size:12px; padding:4px; padding-left:8px; font-weight:bold'>"+tagname+"</td><td></td><td></td></tr>";
-               out += "<tbody class='tagbody' tag='"+tagname+"'>";
-               for (var z in feedsbytag[tag]) 
-               {
-                   out += "<tr>";
-                   var name = feedsbytag[tag][z].name;
-                   if (name.length>20) {
-                       name = name.substr(0,20)+"..";
-                   }
-                   out += "<td>"+name+"</td>";
-                   out += "<td><input class='feed-select-left' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
-                   out += "<td><input class='feed-select-right' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
-                   out += "</tr>";
-               }
-               out += "</tbody>";
-            }
-            $("#feeds").html(out);
-            
-            if (feeds.length>12 && numberoftags>2) {
-                $(".tagbody").hide();
-            }
+    var numberoftags = 0;
+    feedsbytag = {};
+    for (var z in feeds) {
+        if (feedsbytag[feeds[z].tag]==undefined) {
+            feedsbytag[feeds[z].tag] = [];
+            numberoftags++;
         }
-    });
+        feedsbytag[feeds[z].tag].push(feeds[z]);
+    }
+    
+    var out = "";
+    out += "<colgroup>";
+    out += "<col span='1' style='width: 70%;'>";
+    out += "<col span='1' style='width: 15%;'>";
+    out += "<col span='1' style='width: 15%;'>";
+    out += "</colgroup>";
+    
+    for (var tag in feedsbytag) {
+       tagname = tag;
+       if (tag=="") tagname = "undefined";
+       out += "<tr class='tagheading' tag='"+tagname+"' style='background-color:#aaa; cursor:pointer'><td style='font-size:12px; padding:4px; padding-left:8px; font-weight:bold'>"+tagname+"</td><td></td><td></td></tr>";
+       out += "<tbody class='tagbody' tag='"+tagname+"'>";
+       for (var z in feedsbytag[tag]) 
+       {
+           out += "<tr>";
+           var name = feedsbytag[tag][z].name;
+           if (name.length>20) {
+               name = name.substr(0,20)+"..";
+           }
+           out += "<td>"+name+"</td>";
+           out += "<td><input class='feed-select-left' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
+           out += "<td><input class='feed-select-right' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
+           out += "</tr>";
+       }
+       out += "</tbody>";
+    }
+    $("#feeds").html(out);
+    
+    if (feeds.length>12 && numberoftags>2) {
+        $(".tagbody").hide();
+    }
     
     
     $("#reload").click(function(){
@@ -377,6 +376,20 @@ function graph_init_editor()
           var country = $(this).html().toLowerCase();
           console.log(country);
     }); 
+
+    $(".feed-options-show-stats").click(function(){
+        $("#feed-options-table").hide();
+        $("#feed-stats-table").show();
+        $(".feed-options-show-options").show();
+        $(".feed-options-show-stats").hide();
+    });    
+    
+    $(".feed-options-show-options").click(function(){
+        $("#feed-options-table").show();
+        $("#feed-stats-table").hide();
+        $(".feed-options-show-options").hide();
+        $(".feed-options-show-stats").show();
+    });
 }
 
 function pushfeedlist(feedid, yaxis) {
@@ -555,14 +568,7 @@ function graph_draw()
             out += "</select></td>";
             out += "<td><input class='linecolor' feedid="+feedlist[z].id+" style='width:50px' type='color' value='#"+default_linecolor+"'></td>";
             out += "<td><input class='fill' type='checkbox' feedid="+feedlist[z].id+"></td>";
-            var quality = Math.round(100 * (1-(feedlist[z].stats.npointsnull/feedlist[z].stats.npoints)));
-            out += "<td>"+quality+"% ("+(feedlist[z].stats.npoints-feedlist[z].stats.npointsnull)+"/"+feedlist[z].stats.npoints+")</td>";
-            out += "<td>"+feedlist[z].stats.minval.toFixed(dp)+"</td>";
-            out += "<td>"+feedlist[z].stats.maxval.toFixed(dp)+"</td>";
-            out += "<td>"+feedlist[z].stats.diff.toFixed(dp)+"</td>";
-            out += "<td>"+feedlist[z].stats.mean.toFixed(dp)+"</td>";
-            out += "<td>"+feedlist[z].stats.stdev.toFixed(dp)+"</td>";
-            out += "<td>"+Math.round((feedlist[z].stats.mean*time_in_window)/3600)+"</td>";
+
             for (var i=0; i<11; i++) out += "<option>"+i+"</option>";
             out += "</select></td>";
             out += "<td style='text-align:center'><input class='scale' feedid="+feedlist[z].id+" type='text' style='width:50px' value='1.0' /></td>";
@@ -573,7 +579,25 @@ function graph_draw()
             // out += "<td><a href='"+apiurl+"'><button class='btn btn-link'>API REF</button></a></td>";
             out += "</tr>";
         }
-        $("#stats").html(out);
+        $("#feed-controls").html(out);
+        
+        var out = "";
+        for (var z in feedlist) {
+            out += "<tr>";
+            out += "<td>"+feedlist[z].id+":"+feedlist[z].tag+": "+feedlist[z].name+"</td>";
+            var quality = Math.round(100 * (1-(feedlist[z].stats.npointsnull/feedlist[z].stats.npoints)));
+            out += "<td>"+quality+"% ("+(feedlist[z].stats.npoints-feedlist[z].stats.npointsnull)+"/"+feedlist[z].stats.npoints+")</td>";
+            out += "<td>"+feedlist[z].stats.minval.toFixed(dp)+"</td>";
+            out += "<td>"+feedlist[z].stats.maxval.toFixed(dp)+"</td>";
+            out += "<td>"+feedlist[z].stats.diff.toFixed(dp)+"</td>";
+            out += "<td>"+feedlist[z].stats.mean.toFixed(dp)+"</td>";
+            out += "<td>"+feedlist[z].stats.stdev.toFixed(dp)+"</td>";
+            out += "<td>"+Math.round((feedlist[z].stats.mean*time_in_window)/3600)+"</td>";
+            out += "</tr>";
+        }
+        $("#feed-stats").html(out);
+        
+        if (feedlist.length) $(".feed-options").show(); else $(".feed-options").hide();
         
         for (var z in feedlist) {
             $(".decimalpoints[feedid="+feedlist[z].id+"]").val(feedlist[z].dp);
