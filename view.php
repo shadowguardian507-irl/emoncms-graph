@@ -22,6 +22,12 @@
     
     $userid = 0;
     if (isset($_GET['userid'])) $userid = (int) $_GET['userid'];    
+
+    $feedidsLH = "";
+    if (isset($_GET['feedidsLH'])) $feedidsLH = $_GET['feedidsLH'];
+
+    $feedidsRH = "";
+    if (isset($_GET['feedidsRH'])) $feedidsRH = $_GET['feedidsRH'];
 ?>
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
@@ -264,7 +270,8 @@
     var getbackup = <?php echo $backup; ?>;
     var session = <?php echo $session; ?>;
     var userid = <?php echo $userid; ?>;
-    var feeds = {};
+    var feedidsLH = "<?php echo $feedidsLH; ?>";
+    var feedidsRH = "<?php echo $feedidsRH; ?>";
     
     // Load user feeds
     if (session) {
@@ -295,6 +302,34 @@
 			      }		
 		    }
     }
+    
+    // Left hand feed ids property
+    if (feedidsLH!="") {
+        var feedids = feedidsLH.split(",");
+		    for (var z in feedids) {
+		        var feedid = parseInt(feedids[z]);
+		         
+		        if (feedid) {
+		            var f = getfeed(feedid);
+                if (f==false) f = getfeedpublic(feedid);
+                if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+			      }		
+		    }
+    }
+
+    // Right hand feed ids property
+    if (feedidsRH!="") {
+        var feedids = feedidsRH.split(",");
+		    for (var z in feedids) {
+		        var feedid = parseInt(feedids[z]);
+		         
+		        if (feedid) {
+		            var f = getfeed(feedid);
+                if (f==false) f = getfeedpublic(feedid);
+                if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:2, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+			      }		
+		    }
+    }   
     
     sidebar_resize();
     graph_init_editor();
