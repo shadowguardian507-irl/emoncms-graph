@@ -409,7 +409,11 @@ function graph_reload()
         
         var method = "data";
         if (feedlist[z].getaverage) method = "average";
-        var request = path+"feed/"+method+".json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end + mode;
+        
+        var backup_param = "";
+        if (getbackup) backup_param = "&backup=true"
+        
+        var request = path+"feed/"+method+".json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end + mode + backup_param;
         
         $.ajax({                                      
             url: request,

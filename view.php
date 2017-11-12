@@ -12,7 +12,13 @@
     global $path, $embed;
     global $fullwidth;
     $fullwidth = true;
-    $js_css_version = 1;
+    $js_css_version = 2;
+    
+    $backup = "false";
+    if (isset($_GET['backup']) && $_GET['backup']=="true") {
+        $backup = "true";
+    }
+    
 ?>
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
@@ -204,6 +210,7 @@
 
 <script>
     var path = "<?php echo $path; ?>";
+    var getbackup = <?php echo $backup; ?>;
     
     sidebar_resize();
     graph_init_editor();

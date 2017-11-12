@@ -46,6 +46,7 @@
     embed = true;
     
     var path = "<?php echo $path; ?>";
+    var getbackup = false;
     
     var graphid = "<?php echo $graphid; ?>";
     
