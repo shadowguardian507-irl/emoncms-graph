@@ -393,8 +393,13 @@ function graph_init_editor()
 }
 
 function pushfeedlist(feedid, yaxis) {
-    var index = getfeedindex(feedid);
-    feedlist.push({id:feedid, name:feeds[index].name, tag:feeds[index].tag, yaxis:yaxis, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
+    var f = false;
+    if (session) { 
+        f = getfeed(feedid);
+    } else {
+        f = getfeedpublic(feedid);
+    }
+    if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:yaxis, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
 }
 
 function graph_reloaddraw() {
@@ -622,6 +627,20 @@ function getfeed(id)
             return feeds[z];
         }
     }
+}
+
+function getfeedpublic(feedid) {
+    var f = {};
+    $.ajax({                                      
+        url: path+"feed/aget.json?id="+feedid,
+        async: false,
+        dataType: "json",
+        success: function(result) {
+            f=result;
+            if (f.id==undefined) f = false;
+        }
+    });
+    return f;
 }
 
 function getfeedindex(id) 
