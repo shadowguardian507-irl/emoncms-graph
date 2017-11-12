@@ -280,12 +280,13 @@
 		        var feedid = parseInt(feedids[z]);
 		         
 		        if (feedid) {
+		            var f = false;
                 if (session) { 
                     f = getfeed(feedid);
                 } else {
                     f = getfeedpublic(feedid);
                 }
-                feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+                if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
 			      }		
 		    }
     }
@@ -311,7 +312,10 @@
             url: path+"feed/aget.json?id="+feedid,
             async: false,
             dataType: "json",
-            success: function(result) {f=result}
+            success: function(result) {
+                f=result;
+                if (f.id==undefined) f = false;
+            }
         });
         return f;
     }
