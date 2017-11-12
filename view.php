@@ -12,6 +12,7 @@
     global $path, $embed;
     global $fullwidth;
     $fullwidth = true;
+
     $js_css_version = 2;
     
     $backup = "false";
@@ -19,6 +20,8 @@
         $backup = "true";
     }
     
+    $userid = 0;
+    if (isset($_GET['userid'])) $userid = (int) $_GET['userid'];    
 ?>
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
@@ -260,19 +263,25 @@
     var path = "<?php echo $path; ?>";
     var getbackup = <?php echo $backup; ?>;
     var session = <?php echo $session; ?>;
-
+    var userid = <?php echo $userid; ?>;
+    var feeds = {};
+    
+    // Load user feeds
     if (session) {
-        // Load user feeds for editor
         $.ajax({                                      
-            url: path+"feed/list.json",
-            async: false,
-            dataType: "json",
-            success: function(data_in) {
-                feeds = data_in;
-        }});
+            url: path+"feed/list.json", async: false, dataType: "json",
+            success: function(data_in) { feeds = data_in; }
+        });
+    // Load public feeds for a particular user
+    } else if (userid) {
+        $.ajax({                                      
+            url: path+"feed/list.json?userid="+userid, async: false, dataType: "json",
+            success: function(data_in) { feeds = data_in; }
+        });
     }
 
     // Assign active feedid from URL
+    console.log(window.location.pathname);
     var urlparts = window.location.pathname.split("graph/");
     if (urlparts.length==2) {
         var feedids = urlparts[1].split(",");
@@ -280,12 +289,8 @@
 		        var feedid = parseInt(feedids[z]);
 		         
 		        if (feedid) {
-		            var f = false;
-                if (session) { 
-                    f = getfeed(feedid);
-                } else {
-                    f = getfeedpublic(feedid);
-                }
+		            var f = getfeed(feedid);
+                if (f==false) f = getfeedpublic(feedid);
                 if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
 			      }		
 		    }
@@ -305,20 +310,6 @@
     view.calc_interval();
     
     graph_reloaddraw();
-    
-    function getfeedpublic(feedid) {
-        var f = {};
-        $.ajax({                                      
-            url: path+"feed/aget.json?id="+feedid,
-            async: false,
-            dataType: "json",
-            success: function(result) {
-                f=result;
-                if (f.id==undefined) f = false;
-            }
-        });
-        return f;
-    }
     
 </script>
 

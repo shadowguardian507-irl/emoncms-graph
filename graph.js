@@ -96,17 +96,8 @@ function graph_resize() {
 function graph_init_editor()
 {
 
-    if (session) {
-    
-        // Load saved graphs
-        graph_load_savedgraphs();
-
-    
-    }
-    else
-    {
-        feeds = feedlist;
-    }
+    if (session) graph_load_savedgraphs();
+    if (!session && !userid) feeds = feedlist;
             
     var numberoftags = 0;
     feedsbytag = {};
@@ -393,12 +384,8 @@ function graph_init_editor()
 }
 
 function pushfeedlist(feedid, yaxis) {
-    var f = false;
-    if (session) { 
-        f = getfeed(feedid);
-    } else {
-        f = getfeedpublic(feedid);
-    }
+    var f = getfeed(feedid);
+    if (f==false) f = getfeedpublic(feedid);
     if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:yaxis, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
 }
 
@@ -627,6 +614,7 @@ function getfeed(id)
             return feeds[z];
         }
     }
+    return false;
 }
 
 function getfeedpublic(feedid) {
@@ -650,6 +638,7 @@ function getfeedindex(id)
             return z;
         }
     }
+    return false;
 }
 
 //----------------------------------------------------------------------------------------
