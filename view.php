@@ -256,7 +256,7 @@
     if (session) {
         // Load user feeds for editor
         $.ajax({                                      
-            url: path+"/feed/list.json",
+            url: path+"feed/list.json",
             async: false,
             dataType: "json",
             success: function(data_in) {
@@ -272,20 +272,18 @@
 		        var feedid = parseInt(feedids[z]);
 		         
 		        if (feedid) {
-                if (session) {
+                if (session) { 
                     f = getfeed(feedid);
-                    feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
                 } else {
-                    feedlist.push({id:feedid, name:"undefined", tag:"undefined", yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+                    f = getfeedpublic(feedid);
                 }
+                feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
 			      }		
 		    }
     }
     
     sidebar_resize();
     graph_init_editor();
-    
-    //feeds = feedlist;
     
     load_feed_selector(); 
     if (!session) $("#mygraphs").hide();
@@ -298,6 +296,17 @@
     view.calc_interval();
     
     graph_reloaddraw();
+    
+    function getfeedpublic(feedid) {
+        var f = {};
+        $.ajax({                                      
+            url: path+"feed/aget.json?id="+feedid,
+            async: false,
+            dataType: "json",
+            success: function(result) {f=result}
+        });
+        return f;
+    }
     
 </script>
 
