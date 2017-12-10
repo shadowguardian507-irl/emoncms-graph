@@ -67,10 +67,13 @@ function graph_controller()
         $route->format = "json";
         $result = $graph->deletegroupgraph($session['userid'], post('id'));
     }
+    
+    else if ($group && $route->action=="groupgraph") {
+        $result = view("Modules/graph/group_view.php", array("session" => $session["write"], 'group_support' => 1));
+    }
 
     else {
-        if ($group) $result = view("Modules/graph/group_view.php", array("session" => $session["write"], 'group_support' => 1));
-        else $result = view("Modules/graph/view.php", array("session" => $session["write"]));
+        $result = view("Modules/graph/view.php", array("session" => $session["write"]));
     }
 
     return array('content' => $result, 'fullwidth' => true);

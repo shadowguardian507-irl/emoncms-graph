@@ -931,7 +931,7 @@ function graph_load_savedgraphs()
         async: true,
         dataType: "json",
         success: function(result) {
-            savedgraphs = result;
+            savedgraphs = result.user;
             
             var out = "<option>Select graph:</option>";
             for (var z in savedgraphs) {
