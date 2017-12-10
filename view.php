@@ -1,31 +1,40 @@
 <?php
-/*
-  All Emoncms code is released under the GNU Affero General Public License.
-  See COPYRIGHT.txt and LICENSE.txt.
+    /*
+    All Emoncms code is released under the GNU Affero General Public License.
+    See COPYRIGHT.txt and LICENSE.txt.
 
-  ---------------------------------------------------------------------
-  Emoncms - open source energy visualisation
-  Part of the OpenEnergyMonitor project:
-  http://openenergymonitor.org
- */
+    ---------------------------------------------------------------------
+    Emoncms - open source energy visualisation
+    Part of the OpenEnergyMonitor project:
+    http://openenergymonitor.org
+    */
 
-global $path, $embed;
-global $fullwidth;
-$fullwidth = true;
+    global $path, $embed;
+    global $fullwidth;
+    $fullwidth = true;
+    
+    $userid = 0;
+    if (isset($_GET['userid'])) $userid = (int) $_GET['userid'];
+    
+    $feedidsLH = "";
+    if (isset($_GET['feedidsLH'])) $feedidsLH = $_GET['feedidsLH'];
+
+    $feedidsRH = "";
+    if (isset($_GET['feedidsRH'])) $feedidsRH = $_GET['feedidsRH'];    
 ?>
 
-<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/excanvas.min.js"></script><![endif]-->
+<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
 
 
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.time.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.selection.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.touch.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.time.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.selection.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.touch.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
 <!--
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/flot.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/flot.min.js"></script>
 -->
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Modules/graph/vis.helper.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js"></script>
 
 <!-- toggle button to choose User or Group. Documentation: http://bootstrapswitch.com/options.html -->
 <link href="<?php echo $path; ?>Modules/graph/Lib/bootstrap-switch.css" rel="stylesheet">
@@ -71,7 +80,7 @@ $fullwidth = true;
     </div>
 
     <div id="page-content-wrapper" style="max-width:1280px">
-
+        
         <h3>Data viewer</h3> 
 
         <div id="error" style="display:none"></div>
@@ -86,14 +95,14 @@ $fullwidth = true;
             <button id='graph_zoomout' class='btn'>-</button>
             <button id='graph_left' class='btn'><</button>
             <button id='graph_right' class='btn'>></button>
-
+            
             <div class="input-prepend input-append" style="float:right; margin-right:22px">
-                <span class="add-on">Show</span>
-                <span class="add-on">missing data: <input type="checkbox" id="showmissing" style="margin-top:1px" /></span>
-                <span class="add-on">legend: <input type="checkbox" id="showlegend" style="margin-top:1px" /></span>
-                <span class="add-on">feed tag: <input type="checkbox" id="showtag" style="margin-top:1px" /></span>
+            <span class="add-on">Show</span>
+            <span class="add-on">missing data: <input type="checkbox" id="showmissing" style="margin-top:1px" /></span>
+            <span class="add-on">legend: <input type="checkbox" id="showlegend" style="margin-top:1px" /></span>
+            <span class="add-on">feed tag: <input type="checkbox" id="showtag" style="margin-top:1px" /></span>
             </div>
-
+            
             <div style="clear:both"></div>
         </div>
 
@@ -108,7 +117,7 @@ $fullwidth = true;
                 <span class="add-on" style="width:75px">Resolution</span>
                 <input id="histogram-resolution" type="text" style="width:60px"/>
             </div>
-
+            
             <button id="histogram-back" class="btn" style="float:right">Back to main view</button>
         </div>
 
@@ -117,17 +126,17 @@ $fullwidth = true;
         </div>
 
         <div id="info" style="padding-top:20px; display:none">
-
+            
             <div class="input-prepend" style="padding-right:5px">
                 <span class="add-on" style="width:50px">Start</span>
                 <input id="request-start" type="text" style="width:80px" />
             </div>
-
+            
             <div class="input-prepend" style="padding-right:5px">
                 <span class="add-on" style="width:50px">End</span>
                 <input id="request-end" type="text" style="width:80px" />
             </div>
-
+            
             <div class="input-prepend input-append" style="padding-right:5px">
                 <span class="add-on" style="width:50px">Type</span>
                 <select id="request-type" style="width:120px">
@@ -137,17 +146,17 @@ $fullwidth = true;
                     <option>Monthly</option>
                     <option>Annual</option>
                 </select>
-
+                
             </div>
             <div class="input-prepend input-append" style="padding-right:5px">
-
+                
                 <span class="fixed-interval-options">
                     <input id="request-interval" type="text" style="width:60px" />
                     <span class="add-on">Fix <input id="request-fixinterval" type="checkbox" style="margin-top:1px" /></span>
                     <span class="add-on">Limit to data interval <input id="request-limitinterval" type="checkbox" style="margin-top:1px" /></span>
                 </span>
             </div>
-
+            
             <div class="input-prepend input-append">
                 <span class="add-on" style="width:50px">Y-axis:</span>
                 <span class="add-on" style="width:30px">min</span>
@@ -155,12 +164,12 @@ $fullwidth = true;
 
                 <span class="add-on" style="width:30px">max</span>
                 <input id="yaxis-max" type="text" style="width:50px" value="auto"/>
-
+                
                 <button id="reload" class="btn">Reload</button>
             </div>
-
+            
             <div id="window-info" style=""></div><br>
-
+            
             <div class="feed-options hide">
                 <div class="feed-options-header">
                     <div class="feed-options-title">Feeds in view</div>
@@ -168,19 +177,19 @@ $fullwidth = true;
                     <div class="feed-options-show-stats">Show statistics</div>
                 </div>
 
-
+                
                 <table id="feed-options-table" class="table">
                     <tr><th>Feed</th><th>Type</th><th>Color</th><th>Fill</th><th style='text-align:center'>Scale</th><th style='text-align:center'>Delta</th><th style='text-align:center'>Average</th><th>DP</th><th style="width:120px"></th></tr>
                     <tbody id="feed-controls"></tbody>
                 </table>
-
+                
                 <table id="feed-stats-table" class="table hide">
                     <tr><th>Feed</th><th>Quality</th><th>Min</th><th>Max</th><th>Diff</th><th>Mean</th><th>Stdev</th><th>Wh</th></tr>
                     <tbody id="feed-stats"></tbody>
                 </table>
             </div>
             <br>
-
+            
             <div class="input-prepend input-append">
                 <button class="btn" id="showcsv" >Show CSV Output</button>
                 <span class="add-on csvoptions">Time format:</span>
@@ -196,14 +205,14 @@ $fullwidth = true;
                     <option value="remove">Remove whole line</option>
                 </select>
             </div> 
-
-
+            
+            
             <textarea id="csv" style="width:98%; height:500px; display:none; margin-top:10px"></textarea>
         </div>
     </div>
 </div>
 
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Modules/graph/graph.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js"></script>
 
 <script>
     var path = "<?php echo $path; ?>";
