@@ -212,7 +212,7 @@
     </div>
 </div>
 
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/group_graph.js"></script>
 
 <script>
     var path = "<?php echo $path; ?>";
