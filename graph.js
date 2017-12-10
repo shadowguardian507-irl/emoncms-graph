@@ -163,9 +163,9 @@ function graph_init_editor()
     //******************************************
     // Actions data viewer
     // ******************************************/
-    $("#reload").click(function () {
-        view.start = $("#request-start").val() * 1000;
-        view.end = $("#request-end").val() * 1000;
+    $("#reload").click(function(){
+        view.start = $("#request-start").val()*1000;
+        view.end = $("#request-end").val()*1000;
         view.interval = $("#request-interval").val();
         view.limitinterval = $("#request-limitinterval")[0].checked*1;
         
