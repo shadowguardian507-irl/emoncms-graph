@@ -35,66 +35,7 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/flot.min.js"></script>
 -->
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js"></script>
-
-<style>
-#wrapper {
-  padding:0px;
-  margin:0px;
-  padding-left: 250px;
-}
-
-#sidebar-wrapper {
-  margin-top:-10px;
-  margin-left: -250px;
-  left: 250px;
-  width: 250px;
-  background: #eee;
-  position: fixed;
-  overflow-y: auto;
-  z-index: 1000;
-}
-
-#page-content-wrapper {
-  width: 100%;
-  padding-left:0px;
-}
-
-
-.feed-options {
-    background-color:#eee;
-    overflow-x: scroll;
-}
-
-.feed-options-header {
-    height:40px;
-    background-color:#ccc;
-    font-weight:bold;
-    cursor:pointer;
-    color:#fff;
-}
-
-.feed-options-title {
-  float:left;
-  padding:10px;
-}
-
-.feed-options-show-options {
-	float:right;
-	padding:10px;
-	width:150px;
-	text-align:center;
-	border-left: 1px solid #eee;
-}
-
-.feed-options-show-stats {
-	float:right;
-	padding:10px;
-	width:150px;
-	text-align:center;
-	border-left: 1px solid #eee;
-}
-
-</style>
+<link href="<?php echo $path; ?>Modules/graph/graph.css" rel="stylesheet">
 
 <div id="wrapper">
     <div id="sidebar-wrapper">
