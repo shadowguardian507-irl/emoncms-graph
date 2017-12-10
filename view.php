@@ -197,7 +197,7 @@
     </div>
 </div>
 
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=1"></script>
 
 <script>
     var path = "<?php echo $path; ?>";
