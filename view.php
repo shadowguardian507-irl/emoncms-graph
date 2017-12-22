@@ -35,6 +35,9 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/flot.min.js"></script>
 -->
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js"></script>
+<link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
+
 
 <style>
 #wrapper {
@@ -171,14 +174,20 @@
 
         <div id="info" style="padding-top:20px; display:none">
             
-            <div class="input-prepend" style="padding-right:5px">
+            <div class="input-prepend input-append" style="padding-right:5px">
                 <span class="add-on" style="width:50px">Start</span>
-                <input id="request-start" type="text" style="width:80px" />
+                <span id="datetimepicker1">
+                  <input id="request-start" data-format="dd/MM/yyyy hh:mm:ss" type="text" style="width:140px" />
+                  <span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
+                </span>
             </div>
             
-            <div class="input-prepend" style="padding-right:5px">
+            <div class="input-prepend input-append" style="padding-right:5px">
                 <span class="add-on" style="width:50px">End</span>
-                <input id="request-end" type="text" style="width:80px" />
+                <span id="datetimepicker2">
+                  <input id="request-end" data-format="dd/MM/yyyy hh:mm:ss" type="text" style="width:140px" />
+                  <span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
+                </span>
             </div>
             
             <div class="input-prepend input-append" style="padding-right:5px">

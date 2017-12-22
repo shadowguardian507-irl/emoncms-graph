@@ -168,3 +168,16 @@ function tooltip(x, y, contents, bgColour)
         left: elemX
     });
 };
+
+function parseTimepickerTime(timestr){
+    var tmp = timestr.split(" ");
+    if (tmp.length!=2) return false;
+
+    var date = tmp[0].split("/");
+    if (date.length!=3) return false;
+
+    var time = tmp[1].split(":");
+    if (time.length!=3) return false;
+
+    return new Date(date[2],date[1]-1,date[0],time[0],time[1],time[2],0).getTime() / 1000;
+}
