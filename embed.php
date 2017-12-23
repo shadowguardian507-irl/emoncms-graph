@@ -100,6 +100,15 @@
                 view.start = view.end - timewindow;
             }
 
+            if (result.source != undefined && result.source == 'groups'){
+                vis_mode = 'groups';
+                 $.ajax({url: path + "/group/mygroups.json", async: false, dataType: "json", success: function (data_in) {
+                    groups = data_in;
+                }});                
+            }
+            else
+                vis_mode = 'user';
+
             datetimepickerInit();
             graph_resize();
             graph_reloaddraw();
