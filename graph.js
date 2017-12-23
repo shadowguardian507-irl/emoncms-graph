@@ -2,6 +2,8 @@ var savedgraphs = [];
 var feeds = [];
 feedlist = [];
 var plotdata = [];
+var datetimepicker1;
+var datetimepicker2;
 
 var embed = false;
 
@@ -16,7 +18,6 @@ var showlegend = true;
 var floatingtime=1;
 var yaxismin="auto";
 var yaxismax="auto";
-var showtag = true;
 
 var previousPoint = 0;
 
@@ -55,11 +56,12 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
     if (item) {
         var z = item.dataIndex;
         if (previousPoint != item.datapoint) {
+            var dp=feedlist[item.seriesIndex].dp;
             previousPoint = item.datapoint;
 
             $("#tooltip").remove();
             var item_time = item.datapoint[0];
-            var item_value = item.datapoint[1];
+            var item_value = item.datapoint[1].toFixed(dp);
 
             var d = new Date(item_time);
             var days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -91,6 +93,85 @@ function graph_resize() {
     placeholder.width(width);
     placeholder_bound.height(height-top_offset);
     placeholder.height(height-top_offset);
+}
+
+function datetimepickerInit()
+{
+    $("#datetimepicker1").datetimepicker({
+        language: 'en-EN'
+    });
+
+    $("#datetimepicker2").datetimepicker({
+        language: 'en-EN'
+    });
+
+    $('.navigation-timewindow').click(function () {
+        $("#navigation-timemanual").show();
+        $("#navigation").hide();
+    });
+
+    $('.navigation-timewindow-set').click(function () {
+        var timewindow_start = parseTimepickerTime($("#request-start").val());
+        var timewindow_end = parseTimepickerTime($("#request-end").val());
+        if (!timewindow_start) {alert("Please enter a valid start date."); return false; }
+        if (!timewindow_end) {alert("Please enter a valid end date."); return false; }
+        if (timewindow_start>=timewindow_end) {alert("Start date must be further back in time than end date."); return false; }
+
+        $("#navigation-timemanual").hide();
+        $("#navigation").show();
+        view.start = timewindow_start * 1000;
+        view.end = timewindow_end *1000;
+
+        reloadDatetimePrep();
+        graph_reloaddraw();
+    });
+
+    $('#datetimepicker1').on("changeDate", function (e) {
+        if (view.datetimepicker_previous == null) view.datetimepicker_previous = view.start;
+        if (Math.abs(view.datetimepicker_previous - e.date.getTime()) > 1000*60*60*24)
+        {
+            var d = new Date(e.date.getFullYear(), e.date.getMonth(), e.date.getDate());
+            d.setTime( d.getTime() - e.date.getTimezoneOffset()*60*1000 );
+            var out = d;
+            $('#datetimepicker1').data("datetimepicker").setDate(out);
+        } else {
+            var out = e.date;
+        }
+        view.datetimepicker_previous = e.date.getTime();
+
+        $('#datetimepicker2').data("datetimepicker").setStartDate(out);
+    });
+
+    $('#datetimepicker2').on("changeDate", function (e) {
+        if (view.datetimepicker_previous == null) view.datetimepicker_previous = view.end;
+        if (Math.abs(view.datetimepicker_previous - e.date.getTime()) > 1000*60*60*24)
+        {
+            var d = new Date(e.date.getFullYear(), e.date.getMonth(), e.date.getDate());
+            d.setTime( d.getTime() - e.date.getTimezoneOffset()*60*1000 );
+            var out = d;
+            $('#datetimepicker2').data("datetimepicker").setDate(out);
+        } else {
+            var out = e.date;
+        }
+        view.datetimepicker_previous = e.date.getTime();
+
+        $('#datetimepicker1').data("datetimepicker").setEndDate(out);
+    });
+
+    datetimepicker1 = $('#datetimepicker1').data('datetimepicker');
+    datetimepicker2 = $('#datetimepicker2').data('datetimepicker');
+}
+
+function reloadDatetimePrep()
+{
+    var timewindowStart = parseTimepickerTime($("#request-start").val());
+    var timewindowEnd = parseTimepickerTime($("#request-end").val());
+    if (!timewindowStart) { alert("Please enter a valid start date."); return false; }
+    if (!timewindowEnd) { alert("Please enter a valid end date."); return false; }
+    if (timewindowStart>=timewindowEnd) { alert("Start date must be further back in time than end date."); return false; }
+
+    view.start = timewindowStart*1000;
+    view.end = timewindowEnd*1000;
 }
 
 function graph_init_editor()
@@ -141,13 +222,14 @@ function graph_init_editor()
         $(".tagbody").hide();
     }
     
-    
+    datetimepickerInit();
+
     $("#reload").click(function(){
-        view.start = $("#request-start").val()*1000;
-        view.end = $("#request-end").val()*1000;
+        reloadDatetimePrep();
+
         view.interval = $("#request-interval").val();
         view.limitinterval = $("#request-limitinterval")[0].checked*1;
-        
+
         graph_reloaddraw();
     });
 
@@ -399,9 +481,12 @@ function graph_reload()
     var intervalms = view.interval * 1000;
     view.start = Math.round(view.start / intervalms) * intervalms;
     view.end = Math.round(view.end / intervalms) * intervalms;
-    
-    $("#request-start").val(view.start*0.001);
-    $("#request-end").val(view.end*0.001);
+
+    datetimepicker1.setLocalDate(new Date(view.start));
+    datetimepicker2.setLocalDate(new Date(view.end));
+    datetimepicker1.setEndDate(new Date(view.end));
+    datetimepicker2.setStartDate(new Date(view.start));
+
     $("#request-interval").val(view.interval);
     $("#request-limitinterval").attr("checked",view.limitinterval);
     
@@ -415,7 +500,7 @@ function graph_reload()
         var method = "data";
         if (feedlist[z].getaverage) method = "average";
         var request = path+"feed/"+method+".json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end + mode;
-        
+
         $.ajax({                                      
             url: request,
             async: false,
@@ -488,7 +573,7 @@ function graph_draw()
         toggle: { scale: "visible" },
         touch: { pan: "x", scale: "x" }
     }
-    
+
     if (showlegend) options.legend.show = true;
     
     if (yaxismin!='auto' && yaxismin!='') { options.yaxes[0].min = yaxismin; options.yaxes[1].min = yaxismin; }
@@ -509,7 +594,6 @@ function graph_draw()
     for (var z in feedlist) {
         
         var data = feedlist[z].data;
-        
         // Hide missing data (only affects the plot view)
         if (!showmissing) {
             var tmp = [];
@@ -529,7 +613,7 @@ function graph_draw()
         plotdata.push(plot);
     }
     $.plot($('#placeholder'), plotdata, options);
-    
+
     if (!embed) {
         
         for (var z in feedlist) {
@@ -966,13 +1050,12 @@ function graph_create(data) {
 }
 
 function graph_update(data) {
-
     // Clean feedlist of data and stats that dont need to be saved
     for (var i in data.feedlist) {
         delete data.feedlist[i].data
         delete data.feedlist[i].stats;
     }
-    
+
     // Save 
     $.ajax({         
         method: "POST",                             
