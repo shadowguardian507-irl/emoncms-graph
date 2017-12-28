@@ -19,6 +19,10 @@ var floatingtime=1;
 var yaxismin="auto";
 var yaxismax="auto";
 
+var csvtimeformat="datestr";
+var csvnullvalues="show";
+var csvheaders="showNameTag";
+
 var previousPoint = 0;
 
 var active_histogram_feed = 0;
@@ -53,6 +57,7 @@ $('#placeholder').bind("plotselected", function (event, ranges)
 });
 
 $('#placeholder').bind("plothover", function (event, pos, item) {
+    var item_value;
     if (item) {
         var z = item.dataIndex;
         if (previousPoint != item.datapoint) {
@@ -61,7 +66,11 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
 
             $("#tooltip").remove();
             var item_time = item.datapoint[0];
-            var item_value = item.datapoint[1].toFixed(dp);
+            if (typeof(item.datapoint[2])==="undefined") {
+                item_value=item.datapoint[1].toFixed(dp);
+            } else {
+                item_value=(item.datapoint[1]-item.datapoint[2]).toFixed(dp);
+            }
 
             var d = new Date(item_time);
             var days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -174,6 +183,40 @@ function reloadDatetimePrep()
     view.end = timewindowEnd*1000;
 }
 
+function csvShowHide(set)
+{
+    var action="hide";
+
+    if (set==="swap") {
+        if ($("#showcsv").html()=="Show CSV Output") {
+            action="show";
+        } else {
+            action="hide"; 
+        }
+    } else {
+        action = (set==="1" ? "show" : "hide");
+    }
+
+    if (action==="show") {
+        printcsv()
+        showcsv = 1;
+        $("#csv").show();
+        $(".csvoptions").show();
+        $("#showcsv").html("Hide CSV Output");
+    } else {
+        showcsv = 0;
+        $("#csv").hide();
+        $(".csvoptions").hide();
+        $("#showcsv").html("Show CSV Output");
+    }
+}
+
+
+function arrayMove(array,old_index, new_index){
+    array.splice(new_index, 0, array.splice(old_index, 1)[0]);
+    return array;
+}
+
 function graph_init_editor()
 {
 
@@ -234,18 +277,7 @@ function graph_init_editor()
     });
 
     $("#showcsv").click(function(){
-        if ($("#showcsv").html()=="Show CSV Output") {
-            printcsv()
-            showcsv = 1;
-            $("#csv").show();
-            $(".csvoptions").show();
-            $("#showcsv").html("Hide CSV Output");
-        } else {
-            showcsv = 0;
-            $("#csv").hide();
-            $(".csvoptions").hide();
-            $("#showcsv").html("Show CSV Output");
-        }
+        csvShowHide("swap");
     });
     $(".csvoptions").hide();
 
@@ -259,6 +291,17 @@ function graph_init_editor()
             }
         }
         graph_draw();
+    });
+
+    $("body").on("click", ".move-feed", function(){
+        var feedid = $(this).attr("feedid")*1;
+        var curpos = parseInt(feedid);
+        var moveby = parseInt($(this).attr("moveby"));
+        var newpos = curpos + moveby;
+        if (newpos>=0 && newpos<feedlist.length){
+            newfeedlist = arrayMove(feedlist,curpos,newpos);
+            graph_draw();
+        }
     });
 
     $("body").on("click",".delta",function(){
@@ -291,6 +334,18 @@ function graph_init_editor()
         for (var z in feedlist) {
             if (feedlist[z].id==feedid) {
                 feedlist[z].fill = $(this)[0].checked;
+                break;
+            }
+        }
+        graph_draw();
+    });
+
+    $("body").on("change",".stack",function(){
+        var feedid = $(this).attr("feedid");
+
+        for (var z in feedlist) {
+            if (feedlist[z].id==feedid) {
+                feedlist[z].stack = $(this)[0].checked;
                 break;
             }
         }
@@ -436,12 +491,18 @@ function graph_init_editor()
         graph_draw();
     });
 
-
     $("#csvtimeformat").change(function(){
+        csvtimeformat=$(this).val();
         printcsv();
     });
 
     $("#csvnullvalues").change(function(){
+        csvnullvalues=$(this).val();
+        printcsv();
+    });
+
+    $("#csvheaders").change(function(){
+        csvheaders=$(this).val();
         printcsv();
     });
     
@@ -467,8 +528,15 @@ function graph_init_editor()
 
 function pushfeedlist(feedid, yaxis) {
     var f = getfeed(feedid);
+    var dp=0;
+
     if (f==false) f = getfeedpublic(feedid);
-    if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:yaxis, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
+    if (f!=false) {
+        if (f.datatype==2 || f.value % 1 !== 0 ) {
+            dp=1;
+        }
+        feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:yaxis, fill:0, scale: 1.0, delta:false, getaverage:false, dp:dp, plottype:'lines'});
+    }
 }
 
 function graph_reloaddraw() {
@@ -606,10 +674,12 @@ function graph_draw()
         var label = "";
         if (showtag) label += feedlist[z].tag+": ";
         label += feedlist[z].name;
-        var plot = {label:label, data:data, yaxis:feedlist[z].yaxis, color: feedlist[z].color};
+        var stacked = (typeof(feedlist[z].stack) !== "undefined" && feedlist[z].stack);
+        var plot = {label:label, data:data, yaxis:feedlist[z].yaxis, color: feedlist[z].color, stack: stacked};
         
-        if (feedlist[z].plottype=='lines') plot.lines = { show: true, fill: feedlist[z].fill };
-        if (feedlist[z].plottype=='bars') plot.bars = { show: true, barWidth: view.interval * 1000 * 0.75 };
+        if (feedlist[z].plottype=="lines") { plot.lines = { show: true, fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), fill: feedlist[z].fill } };
+        if (feedlist[z].plottype=="bars") { plot.bars = { align: "center", fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), show: true, barWidth: view.interval * 1000 * 0.75 } };
+
         plotdata.push(plot);
     }
     $.plot($('#placeholder'), plotdata, options);
@@ -626,12 +696,20 @@ function graph_draw()
             var dp = feedlist[z].dp;
         
             var apiurl = path+"feed/data.json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end+"&interval="+view.interval+"&skipmissing="+skipmissing+"&limitinterval="+view.limitinterval;
-         
-         
+
             out += "<tr>";
+            out += "<td>";
+            if (z > 0) {
+                out += "<a class='move-feed' title='Move up' feedid="+z+" moveby=-1 ><i class='icon-arrow-up'></i></a>";
+            }
+            if (z < feedlist.length-1) {
+                out += "<a class='move-feed' title='Move down' feedid="+z+" moveby=1 ><i class='icon-arrow-down'></i></a>";
+            }
+            out += "</td>";
+
             out += "<td>"+feedlist[z].id+":"+feedlist[z].tag+":"+feedlist[z].name+"</td>";
             out += "<td><select class='plottype' feedid="+feedlist[z].id+" style='width:80px'>";
-            
+
             var selected = "";
             if (feedlist[z].plottype == "lines") selected = "selected"; else selected = "";
             out += "<option value='lines' "+selected+">Lines</option>";
@@ -640,6 +718,7 @@ function graph_draw()
             out += "</select></td>";
             out += "<td><input class='linecolor' feedid="+feedlist[z].id+" style='width:50px' type='color' value='#"+default_linecolor+"'></td>";
             out += "<td><input class='fill' type='checkbox' feedid="+feedlist[z].id+"></td>";
+            out += "<td><input class='stack' type='checkbox' feedid="+feedlist[z].id+"></td>";
 
             for (var i=0; i<11; i++) out += "<option>"+i+"</option>";
             out += "</select></td>";
@@ -659,6 +738,7 @@ function graph_draw()
             out += "<td>"+feedlist[z].id+":"+feedlist[z].tag+": "+feedlist[z].name+"</td>";
             var quality = Math.round(100 * (1-(feedlist[z].stats.npointsnull/feedlist[z].stats.npoints)));
             out += "<td>"+quality+"% ("+(feedlist[z].stats.npoints-feedlist[z].stats.npointsnull)+"/"+feedlist[z].stats.npoints+")</td>";
+            var dp = feedlist[z].dp;
             out += "<td>"+feedlist[z].stats.minval.toFixed(dp)+"</td>";
             out += "<td>"+feedlist[z].stats.maxval.toFixed(dp)+"</td>";
             out += "<td>"+feedlist[z].stats.diff.toFixed(dp)+"</td>";
@@ -681,6 +761,8 @@ function graph_draw()
             $(".linecolor[feedid="+feedlist[z].id+"]").val(feedlist[z].color);
             if ($(".fill[feedid="+feedlist[z].id+"]")[0]!=undefined)
                 $(".fill[feedid="+feedlist[z].id+"]")[0].checked = feedlist[z].fill;
+            if ($(".stack[feedid="+feedlist[z].id+"]")[0]!=undefined)
+                $(".stack[feedid="+feedlist[z].id+"]")[0].checked = feedlist[z].stack;
         }
         
         if (showcsv) printcsv();
@@ -726,16 +808,52 @@ function getfeedindex(id)
 //----------------------------------------------------------------------------------------
 function printcsv()
 {
+    if (typeof(feedlist[0]) === "undefined" ) {return};
+
     var timeformat = $("#csvtimeformat").val();
     var nullvalues = $("#csvnullvalues").val();
+    var headers = $("#csvheaders").val();
     
     var csvout = "";
 
     var value = [];
+    var line = [];
     var lastvalue = [];
     var start_time = feedlist[0].data[0][0];
+    var showName=false;
+    var showTag=false;
+
+    switch (headers) {
+        case "showNameTag":
+            showName=true;
+            showTag=true;
+            break;
+        case "showName":
+            showName=true;
+            break;
+    }
+
+    if (showName || showTag ) {
+        switch (timeformat) {
+            case "unix":
+                line = ["Unix timestamp"];
+                break;
+            case "seconds":
+                line = ["Seconds since start"];
+                break;
+            case "datestr":
+                line = ["Date-time string"];
+                break;
+        }
+
+        for (var f in feedlist) {
+            line.push((showTag ? feedlist[f].tag : "")+(showTag && showName ? ":" : "")+(showName ? feedlist[f].name : ""));
+        }
+        csvout = "\"" + line.join("\", \"")+"\"\n";
+    }
+
     for (var z in feedlist[0].data) {
-        var line = [];
+        line = [];
         // Different time format options for csv output
         if (timeformat=="unix") {
             line.push(Math.round(feedlist[0].data[z][0] / 1000));
@@ -900,7 +1018,13 @@ $("#graph-select").change(function() {
     floatingtime = savedgraphs[index].floatingtime,
     yaxismin = savedgraphs[index].yaxismin;
     yaxismax = savedgraphs[index].yaxismax;
-    
+
+    // CSV display settings
+    csvtimeformat = (typeof(savedgraphs[index].csvtimeformat)==="undefined" ? "datestr" : savedgraphs[index].csvtimeformat);
+    csvnullvalues = (typeof(savedgraphs[index].csvnullvalues)==="undefined" ? "show" : savedgraphs[index].csvnullvalues);
+    csvheaders = (typeof(savedgraphs[index].csvheaders)==="undefined" ? "showNameTag" : savedgraphs[index].csvheaders);
+    var tmpCsv = (typeof(savedgraphs[index].showcsv)==="undefined" ? "0" : savedgraphs[index].showcsv.toString());
+
     // show settings
     showmissing = savedgraphs[index].showmissing;
     showtag = savedgraphs[index].showtag;
@@ -923,10 +1047,16 @@ $("#graph-select").change(function() {
     $("#showmissing")[0].checked = showmissing;
     $("#showtag")[0].checked = showtag;
     $("#showlegend")[0].checked = showlegend;
-    
+
     load_feed_selector();
 
     graph_reloaddraw();
+
+    // Placed after graph load as values only available after the graph is redrawn
+    $("#csvtimeformat").val(csvtimeformat);
+    $("#csvnullvalues").val(csvnullvalues);
+    $("#csvheaders").val(csvheaders);
+    csvShowHide(tmpCsv);
 });
 
 $("#graph-name").keyup(function(){
@@ -977,6 +1107,10 @@ $("#graph-save").click(function() {
         showmissing: showmissing,
         showtag: showtag,
         showlegend: showlegend,
+        showcsv: showcsv,
+        csvtimeformat: csvtimeformat,
+        csvnullvalues: csvnullvalues,
+        csvheaders: csvheaders,
         feedlist: JSON.parse(JSON.stringify(feedlist))
     };
     
@@ -1071,6 +1205,7 @@ function graph_update(data) {
 
 function graph_delete(id) {
     // Save 
+
     $.ajax({         
         method: "POST",                             
         url: path+"/graph/delete",

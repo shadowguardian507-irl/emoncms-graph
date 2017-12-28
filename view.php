@@ -34,6 +34,7 @@
 <!--
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/flot.min.js"></script>
 -->
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.stack.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js"></script>
 <link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
@@ -172,7 +173,7 @@
 
                 
                 <table id="feed-options-table" class="table">
-                    <tr><th>Feed</th><th>Type</th><th>Color</th><th>Fill</th><th style='text-align:center'>Scale</th><th style='text-align:center'>Delta</th><th style='text-align:center'>Average</th><th>DP</th><th style="width:120px"></th></tr>
+                    <tr><th></th><th>Feed</th><th>Type</th><th>Color</th><th>Fill</th><th>Stack</th><th style='text-align:center'>Scale</th><th style='text-align:center'>Delta</th><th style='text-align:center'>Average</th><th>DP</th><th style="width:120px"></th></tr>
                     <tbody id="feed-controls"></tbody>
                 </table>
                 
@@ -196,6 +197,12 @@
                     <option value="show">Show</option>
                     <option value="lastvalue">Replace with last value</option>
                     <option value="remove">Remove whole line</option>
+                </select>
+                <span class="add-on csvoptions">Headers:</span>
+                <select id="csvheaders" class="csvoptions">
+                    <option value="showNameTag">Show name and tag</option>
+                    <option value="showName">Show name</option>
+                    <option value="hide">Hide</option>
                 </select>
             </div> 
             
