@@ -26,15 +26,16 @@ var view =
     this.calc_interval();
   },
 
-  'pan':function (direction, requestType)
+  pan(direction, requestType)
   {
+    var shiftsize;
     if (direction!=="left" && direction!=="right") {return(false);}
 
     if (requestType==="monthly") {
       var start=new Date(this.start);
       var end=new Date(this.end);
       var numMonths = end.getMonth() - start.getMonth() + (12 * (end.getFullYear() - start.getFullYear()));
-      var shiftsize = Math.round(numMonths*0.2);
+      shiftsize = Math.round(numMonths*0.2);
 
       if (shiftsize===0) { shiftsize=1; }
       if (direction==="left") { shiftsize=-shiftsize; }
@@ -43,16 +44,17 @@ var view =
       this.start = new Date(y, m + shiftsize, 1).getTime();
       var y = end.getFullYear(), m = end.getMonth();
       this.end = new Date(y, m + shiftsize, 1).getTime();
-    } else {
-      var numIntervals = (this.end - this.start) / ( this.interval * 1000);
-      var shiftInervals = Math.round(numIntervals * 0.2);
-      var shiftsize=(shiftInervals===0 ? 1 : shiftInervals) * this.interval * 1000;
-      if (direction==="left") { shiftsize=-shiftsize; }
-
-      this.start += shiftsize;
-      this.end += shiftsize;
-      this.calc_interval();
+      return;
     }
+
+    var numIntervals = (this.end - this.start) / ( this.interval * 1000);
+    var shiftInervals = Math.round(numIntervals * 0.2);
+    shiftsize=(shiftInervals===0 ? 1 : shiftInervals) * this.interval * 1000;
+    if (direction==="left") { shiftsize=-shiftsize; }
+
+    this.start += shiftsize;
+    this.end += shiftsize;
+    this.calc_interval();
   },
 
   'timewindow':function(time)

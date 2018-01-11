@@ -37,9 +37,9 @@ if ($("#showlegend")[0]!=undefined) $("#showlegend")[0].checked = showlegend;
 
 $("#graph_zoomout").click(function () {floatingtime=0; view.zoomout(); graph_reloaddraw();});
 $("#graph_zoomin").click(function () {floatingtime=0; view.zoomin(); graph_reloaddraw();});
-$('#graph_right').click(function () {floatingtime=0; view.pan("right",requesttype); graph_reloaddraw();});
-$('#graph_left').click(function () {floatingtime=0; view.pan("left",requesttype); graph_reloaddraw();});
-$('.graph_time').click(function () {
+$("#graph_right").click(function () {floatingtime=0; view.pan("right",requesttype); graph_reloaddraw();});
+$("#graph_left").click(function () {floatingtime=0; view.pan("left",requesttype); graph_reloaddraw();});
+$(".graph_time").click(function () {
     floatingtime=1; 
     view.timewindow($(this).attr("time")); 
     graph_reloaddraw();
@@ -60,7 +60,9 @@ $('#placeholder').bind("plotselected", function (event, ranges)
 });
 
 $('#placeholder').bind("plothover", function (event, pos, item) {
-    var item_value;
+    var itemValue;
+    var options;
+
     if (item) {
         var z = item.dataIndex;
         if (previousDataIndex !== item.dataIndex || previousSeriesIndex !== item.seriesIndex) {
@@ -71,15 +73,16 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
             $("#tooltip").remove();
             var item_time = item.datapoint[0];
             if (typeof(item.datapoint[2])==="undefined") {
-                item_value=item.datapoint[1].toFixed(dp);
+                itemValue=item.datapoint[1].toFixed(dp);
             } else {
-                item_value=(item.datapoint[1]-item.datapoint[2]).toFixed(dp);
+                itemValue=(item.datapoint[1]-item.datapoint[2]).toFixed(dp);
             }
 
-            if (view.interval<60*60*24)
+            if (view.interval<60*60*24) {
                 options = { month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit", second:"2-digit"};
-            else
+            } else {
                 options = { month:"short", day:"2-digit"};
+            }
 
             var rangeDate=new Date(parseInt(item_time));
             var startDate=rangeDate.toLocaleDateString("en-GB",options);
@@ -93,7 +96,7 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
             var endDate=rangeDate.toLocaleDateString("en-GB",options);
             date=startDate+(view.interval === 60*60*24 ? "" : " - "+endDate);
 
-            tooltip(item.pageX, item.pageY, "<span style='font-size:11px'>"+item.series.label+"</span><br>"+item_value+"<br><span style='font-size:11px'>"+date+"</span>", "#fff", $(this).position());
+            tooltip(item.pageX, item.pageY, "<span style='font-size:11px'>"+item.series.label+"</span><br>"+itemValue+"<br><span style='font-size:11px'>"+date+"</span>", "#fff", $(this).position());
         }
     } else {
         $("#tooltip").remove();
