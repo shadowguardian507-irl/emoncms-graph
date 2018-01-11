@@ -42,7 +42,7 @@ var view =
 
       var y = start.getFullYear(), m = start.getMonth();
       this.start = new Date(y, m + shiftsize, 1).getTime();
-      var y = end.getFullYear(), m = end.getMonth();
+      y = end.getFullYear(), m = end.getMonth();
       this.end = new Date(y, m + shiftsize, 1).getTime();
       return;
     }
