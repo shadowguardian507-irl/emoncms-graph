@@ -121,9 +121,7 @@
                   <input id="request-start" data-format="dd/MM/yyyy hh:mm:ss" type="text" style="width:140px" />
                   <span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
                 </span>
-            </div>
-            
-            <div class="input-prepend input-append" style="padding-right:5px">
+
                 <span class="add-on" style="width:50px">End</span>
                 <span id="datetimepicker2">
                   <input id="request-end" data-format="dd/MM/yyyy hh:mm:ss" type="text" style="width:140px" />
@@ -135,10 +133,10 @@
                 <span class="add-on" style="width:50px">Type</span>
                 <select id="request-type" style="width:120px">
                     <option value="interval">Fixed Interval</option>
-                    <option>Daily</option>
-                    <option>Weekly</option>
-                    <option>Monthly</option>
-                    <option>Annual</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="annual">Annual</option>
                 </select>
                 
             </div>

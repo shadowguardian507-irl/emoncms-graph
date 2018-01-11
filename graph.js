@@ -1,6 +1,6 @@
 var savedgraphs = [];
 var feeds = [];
-feedlist = [];
+var feedlist = [];
 var plotdata = [];
 var datetimepicker1;
 var datetimepicker2;
@@ -23,9 +23,12 @@ var csvtimeformat="datestr";
 var csvnullvalues="show";
 var csvheaders="showNameTag";
 
-var previousPoint = 0;
+var previousDataIndex = null;
+var previousSeriesIndex = null;
 
 var active_histogram_feed = 0;
+
+var multipliers = { y:60*60*24*365, m:60*60*24*30, w:60*60*24*7, d:60*60*24, h:60*60, s:1 };
 
 $("#info").show();
 if ($("#showmissing")[0]!=undefined) $("#showmissing")[0].checked = showmissing;
@@ -34,8 +37,8 @@ if ($("#showlegend")[0]!=undefined) $("#showlegend")[0].checked = showlegend;
 
 $("#graph_zoomout").click(function () {floatingtime=0; view.zoomout(); graph_reloaddraw();});
 $("#graph_zoomin").click(function () {floatingtime=0; view.zoomin(); graph_reloaddraw();});
-$('#graph_right').click(function () {floatingtime=0; view.panright(); graph_reloaddraw();});
-$('#graph_left').click(function () {floatingtime=0; view.panleft(); graph_reloaddraw();});
+$('#graph_right').click(function () {floatingtime=0; view.pan("right",requesttype); graph_reloaddraw();});
+$('#graph_left').click(function () {floatingtime=0; view.pan("left",requesttype); graph_reloaddraw();});
 $('.graph_time').click(function () {
     floatingtime=1; 
     view.timewindow($(this).attr("time")); 
@@ -60,9 +63,10 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
     var item_value;
     if (item) {
         var z = item.dataIndex;
-        if (previousPoint != item.datapoint) {
+        if (previousDataIndex !== item.dataIndex || previousSeriesIndex !== item.seriesIndex) {
             var dp=feedlist[item.seriesIndex].dp;
-            previousPoint = item.datapoint;
+            previousDataIndex = item.dataIndex;
+            previousSeriesIndex = item.seriesIndex;
 
             $("#tooltip").remove();
             var item_time = item.datapoint[0];
@@ -72,21 +76,42 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
                 item_value=(item.datapoint[1]-item.datapoint[2]).toFixed(dp);
             }
 
-            var d = new Date(item_time);
-            var days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-            var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-            var minutes = d.getMinutes();
-            if (minutes<10) minutes = "0"+minutes;
-            var date = d.getHours()+":"+minutes+" "+days[d.getDay()]+", "+months[d.getMonth()]+" "+d.getDate();
-            tooltip(item.pageX, item.pageY, "<span style='font-size:11px'>"+item.series.label+"</span><br>"+item_value+"<br><span style='font-size:11px'>"+date+"</span>", "#fff");
+            if (view.interval<60*60*24)
+                options = { month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit", second:"2-digit"};
+            else
+                options = { month:"short", day:"2-digit"};
+
+            var rangeDate=new Date(parseInt(item_time));
+            var startDate=rangeDate.toLocaleDateString("en-GB",options);
+
+            if (item.dataIndex === item.series.data.length-1 ) {
+                rangeDate = new Date(parseInt(item_time+(view.interval*1000)-1000));
+            } else {
+                rangeDate=new Date(parseInt(item.series.data[item.dataIndex+1][0]-1000));
+            }
+
+            var endDate=rangeDate.toLocaleDateString("en-GB",options);
+            date=startDate+(view.interval === 60*60*24 ? "" : " - "+endDate);
+
+            tooltip(item.pageX, item.pageY, "<span style='font-size:11px'>"+item.series.label+"</span><br>"+item_value+"<br><span style='font-size:11px'>"+date+"</span>", "#fff", $(this).position());
         }
-    } else $("#tooltip").remove();
+    } else {
+        $("#tooltip").remove();
+        // Reset the previous in case user goes back into the same data point
+        previousDataIndex=null;
+    }
 });
 
 $(window).resize(function(){
     if (!embed) sidebar_resize();
     graph_resize();
     graph_draw();
+});
+
+$("#placeholder").bind("touchended", function (event, ranges) {
+    view.start = ranges.xaxis.from;
+    view.end = ranges.xaxis.to;
+    graph_reloaddraw();
 });
 
 function graph_resize() {
@@ -217,6 +242,34 @@ function arrayMove(array,old_index, new_index){
     return array;
 }
 
+function convertReadableToSecs(readable)
+{
+    var duration;
+    var measure="s";
+
+    if ( /^[0-9]+[shdwmy]?$/i.test(readable) ) {
+        duration=readable.match(/^[0-9]+/);
+        measure=readable.match(/[shdwmy]?$/i);
+
+        if (measure[0] === "" ) { measure="s"; }
+        return(duration*multipliers[measure]);
+    } else {
+        alert("Please enter the number of seconds, or a number followed by s, h, d, w, m, y. e.g. '1d', '12h', '1w'");
+        return(false);
+    }
+}
+
+function convertSecsToReadable(secs)
+{
+    for (var i in multipliers) {
+        if ( secs >= multipliers[i] ) {
+            if ( secs % multipliers[i] === 0 ) { return(Math.floor(secs/multipliers[i])+i) }
+        }
+    }
+
+    return(secs);
+}
+
 function graph_init_editor()
 {
 
@@ -270,7 +323,9 @@ function graph_init_editor()
     $("#reload").click(function(){
         reloadDatetimePrep();
 
-        view.interval = $("#request-interval").val();
+        view.displayInterval = $("#request-interval").val();
+        tmp = convertReadableToSecs(view.displayInterval);
+        if (tmp!==false) { view.interval = tmp; }
         view.limitinterval = $("#request-limitinterval")[0].checked*1;
 
         graph_reloaddraw();
@@ -431,26 +486,23 @@ function graph_init_editor()
 
     $("#request-type").val("interval");
     $("#request-type").change(function() {
-        var type = $(this).val();
-        type = type.toLowerCase();
+        requesttype = $(this).val().toLowerCase();
         
-        if (type!="interval") {
+        if (requesttype==="interval") {
+            $(".fixed-interval-options").show();
+        } else { 
             $(".fixed-interval-options").hide();
             view.fixinterval = true;
-        } else { 
-            $(".fixed-interval-options").show();
-            view.fixinterval = false;
+        
+            // Intervals are set here for bar graph bar width sizing
+            if (requesttype=="daily") { view.interval = 86400; }
+            if (requesttype=="weekly") { view.interval = 86400*7; }
+            if (requesttype=="monthly") { view.interval = 86400*30; }
+            if (requesttype=="annual") { view.interval = 86400*365; }
         }
-        
-        requesttype = type;
-        
-        // Intervals are set here for bar graph bar width sizing
-        if (type=="daily") view.interval = 86400;
-        if (type=="weekly") view.interval = 86400*7;
-        if (type=="monthly") view.interval = 86400*30;
-        if (type=="annual") view.interval = 86400*365;
-        
-        $("#request-interval").val(view.interval);
+        view.displayInterval = convertSecsToReadable(view.interval);
+
+        $("#request-interval").val(view.displayInterval);
     });
 
     $("body").on("change",".decimalpoints",function(){
@@ -482,11 +534,13 @@ function graph_init_editor()
     });
     
     $("body").on("change","#yaxis-min",function(){
+        if ( !$.isNumeric($(this).val()) && $(this).val() !== "auto") $(this).val("auto");
         yaxismin = $(this).val();
         graph_draw();
     });
     
     $("body").on("change","#yaxis-max",function(){
+        if ( !$.isNumeric($(this).val()) && $(this).val() !== "auto") $(this).val("auto");
         yaxismax = $(this).val();
         graph_draw();
     });
@@ -547,15 +601,17 @@ function graph_reloaddraw() {
 function graph_reload()
 {
     var intervalms = view.interval * 1000;
-    view.start = Math.round(view.start / intervalms) * intervalms;
-    view.end = Math.round(view.end / intervalms) * intervalms;
+
+    view.calc_interval();
 
     datetimepicker1.setLocalDate(new Date(view.start));
     datetimepicker2.setLocalDate(new Date(view.end));
     datetimepicker1.setEndDate(new Date(view.end));
     datetimepicker2.setStartDate(new Date(view.start));
 
-    $("#request-interval").val(view.interval);
+    view.displayInterval = convertSecsToReadable(view.interval);
+
+    $("#request-interval").val(view.displayInterval);
     $("#request-limitinterval").attr("checked",view.limitinterval);
     
     var errorstr = "";    
@@ -567,7 +623,9 @@ function graph_reload()
         
         var method = "data";
         if (feedlist[z].getaverage) method = "average";
-        var request = path+"feed/"+method+".json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end + mode;
+
+        // If delta, retrieve an additional datapoint to show the date range the user requested, i.e. 4 returned values provides 3 displayable deltas
+        var request = path+"feed/"+method+".json?id="+feedlist[z].id+"&start="+(view.start - view.graphDisplayOffsetStart)+"&end="+(view.end - view.graphDisplayOffsetStart +(feedlist[z].delta ? intervalms : 0 )) + mode;
 
         $.ajax({                                      
             url: request,
@@ -587,7 +645,7 @@ function graph_reload()
                 if (!valid) errorstr += "<div class='alert alert-danger'><b>Request error</b> "+data_in+"</div>";
             }
         });
-        
+
         if (feedlist[z].delta) {
             for (var i=1; i<feedlist[z].data.length; i++) {
                 if (feedlist[z].data[i][1]!=null && feedlist[z].data[i-1][1]!=null) {
@@ -600,7 +658,7 @@ function graph_reload()
             }
             feedlist[z].data[feedlist[z].data.length-1][1] = null;
         }
-        
+
         // Apply a scale to feed values
         var scale = $(".scale[feedid="+feedlist[z].id+"]").val();
         if (scale!=undefined) feedlist[z].scale = scale;
@@ -613,7 +671,7 @@ function graph_reload()
             }
         }
     }
-    
+
     if (errorstr!="") {
         $("#error").html(errorstr).show();
     } else {
@@ -623,18 +681,30 @@ function graph_reload()
 
 function graph_draw()
 {
+    var minTickSize = null;
+
+    if (requesttype === "monthly") {
+        minTickSize = [1, "month"];
+    } else if (requesttype === "weekly" || view.interval === 60*60*24*7 ) {
+        minTickSize = [7, "day"];
+    } else if (requesttype === "daily" || view.interval === 60*60*24 ) {
+        minTickSize = [1, "day"];
+    }
+
     var options = {
         lines: { fill: false },
         xaxis: { 
             mode: "time", timezone: "browser", 
-            min: view.start, max: view.end
+            min: view.start-view.graphDisplayOffsetStart, max: view.end+view.graphDisplayOffsetEnd,
+            minTickSize: minTickSize,
+            tickLength: 10
         },
-	      yaxes: [ { }, {
-			      // align if we are to the right
-			      alignTicksWithAxis: 1,
-			      position: "right"
-			      //tickFormatter: euroFormatter
-		    } ],
+        yaxes: [ { }, {
+            // align if we are to the right
+            alignTicksWithAxis: 1,
+            position: "right"
+            //tickFormatter: euroFormatter
+        } ],
         grid: {hoverable: true, clickable: true},
         selection: { mode: "x" },
         legend: { show: false, position: "nw", toggle: true },
@@ -676,9 +746,13 @@ function graph_draw()
         label += feedlist[z].name;
         var stacked = (typeof(feedlist[z].stack) !== "undefined" && feedlist[z].stack);
         var plot = {label:label, data:data, yaxis:feedlist[z].yaxis, color: feedlist[z].color, stack: stacked};
-        
-        if (feedlist[z].plottype=="lines") { plot.lines = { show: true, fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), fill: feedlist[z].fill } };
-        if (feedlist[z].plottype=="bars") { plot.bars = { align: "center", fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), show: true, barWidth: view.interval * 1000 * 0.75 } };
+
+var align=(feedlist[z].delta ? "left" : "center");
+        if (feedlist[z].plottype=="lines") { plot.lines = { show: true, fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0) } };
+        if (feedlist[z].plottype=="bars") {
+            plot.bars = { align: align, fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), show: true, barWidth: view.interval * 1000 * 0.75 };
+            if (!feedlist[z].delta) { options.xaxis.min=view.start-(view.interval*1000*0.5); }
+        }
 
         plotdata.push(plot);
     }
@@ -693,7 +767,6 @@ function graph_draw()
         var default_linecolor = "000";
         var out = "";
         for (var z in feedlist) {
-            var dp = feedlist[z].dp;
         
             var apiurl = path+"feed/data.json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end+"&interval="+view.interval+"&skipmissing="+skipmissing+"&limitinterval="+view.limitinterval;
 
@@ -701,6 +774,8 @@ function graph_draw()
             out += "<td>";
             if (z > 0) {
                 out += "<a class='move-feed' title='Move up' feedid="+z+" moveby=-1 ><i class='icon-arrow-up'></i></a>";
+            } else {
+                out += "<span style='display: inline-block; width:14px; ' />";
             }
             if (z < feedlist.length-1) {
                 out += "<a class='move-feed' title='Move down' feedid="+z+" moveby=1 ><i class='icon-arrow-down'></i></a>";
@@ -1013,11 +1088,14 @@ $("#graph-select").change(function() {
     view.start = savedgraphs[index].start;
     view.end = savedgraphs[index].end;
     view.interval = savedgraphs[index].interval;
+    view.displayInterval = convertSecsToReadable(view.interval);
     view.limitinterval = savedgraphs[index].limitinterval;
     view.fixinterval = savedgraphs[index].fixinterval;
     floatingtime = savedgraphs[index].floatingtime,
-    yaxismin = savedgraphs[index].yaxismin;
-    yaxismax = savedgraphs[index].yaxismax;
+    yaxismin = (savedgraphs[index].yaxismin==="" ? "auto": savedgraphs[index].yaxismin);
+    yaxismax = (savedgraphs[index].yaxismax==="" ? "auto": savedgraphs[index].yaxismax);
+
+    requesttype = (typeof(savedgraphs[index].requesttype) === "undefined" ? "interval" : savedgraphs[index].requesttype);
 
     // CSV display settings
     csvtimeformat = (typeof(savedgraphs[index].csvtimeformat)==="undefined" ? "datestr" : savedgraphs[index].csvtimeformat);
@@ -1043,6 +1121,19 @@ $("#graph-select").change(function() {
     $("#yaxis-min").val(yaxismin);
     $("#yaxis-max").val(yaxismax);
     $("#request-fixinterval")[0].checked = view.fixinterval;
+    if (view.fixinterval) {
+        $("#request-interval").prop('disabled', true);
+    } else {
+        $("#request-interval").prop('disabled', false);
+    }
+
+    $("#request-type").val(requesttype);
+    if (requesttype!=="interval") {
+        $(".fixed-interval-options").hide();
+    } else {
+        $(".fixed-interval-options").show();
+    }
+
     $("#request-limitinterval")[0].checked = view.limitinterval;
     $("#showmissing")[0].checked = showmissing;
     $("#showtag")[0].checked = showtag;
@@ -1098,6 +1189,7 @@ $("#graph-save").click(function() {
         name: name,
         start: view.start,
         end: view.end,
+        requesttype: requesttype,
         interval: view.interval,
         limitinterval: view.limitinterval,
         fixinterval: view.fixinterval,
@@ -1115,7 +1207,6 @@ $("#graph-save").click(function() {
     };
     
     var updateindex = graph_index_from_name(name);
-    
     // Update or append
     if (updateindex==-1) {
         savedgraphs.push(graph_to_save);
@@ -1137,7 +1228,7 @@ function graph_exists(name) {
 function graph_index_from_name(name) {
     var index = -1;
     for (var z in savedgraphs) {
-        if (savedgraphs[z].name==name) index = z;
+        if (savedgraphs[z].name===name) { index = z; }
     }
     return index;
 }
@@ -1150,11 +1241,12 @@ function graph_load_savedgraphs()
         dataType: "json",
         success: function(result) {
             savedgraphs = result.user;
-            
+
             var out = "<option>Select graph:</option>";
             for (var z in savedgraphs) {
                var name = savedgraphs[z].name;
                out += "<option>"+name+"</option>";
+               savedgraphs[z].interval=Number(savedgraphs[z].interval);
             }
             $("#graph-select").html(out);
         }
