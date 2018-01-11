@@ -94,7 +94,8 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
             }
 
             var endDate=rangeDate.toLocaleDateString("en-GB",options);
-            date=startDate+(view.interval === 60*60*24 ? "" : " - "+endDate);
+            date=startDate;
+            if (feedlist[item.seriesIndex].delta && view.interval !== 60*60*24 ) { date+=" - "+endDate; }
 
             tooltip(item.pageX, item.pageY, "<span style='font-size:11px'>"+item.series.label+"</span><br>"+itemValue+"<br><span style='font-size:11px'>"+date+"</span>", "#fff", $(this).position());
         }
