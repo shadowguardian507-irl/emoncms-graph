@@ -6,9 +6,17 @@ defined('EMONCMS_EXEC') or die('Restricted access');
 function graph_controller()
 {
     global $session,$route,$mysqli,$redis;
-    
+
+    // Check if group module is installed
+    $group = false;
+    $result = $mysqli->query("SHOW TABLES LIKE 'groups'");
+    if ($result->num_rows > 0) {
+        require_once "Modules/group/group_model.php";
+        $group = new Group($mysqli, $redis, null, null, null);
+    }
+
     require_once "Modules/graph/graph_model.php";
-    $graph = new Graph($mysqli);
+    $graph = new Graph($mysqli, $group);
 
     $result = "";
     
@@ -17,6 +25,7 @@ function graph_controller()
         $result = view("Modules/graph/embed.php",array());
     }
     
+    // Standard graph methods
     else if ($session['write'] && $route->action=="create" && isset($_POST['data'])) {
         $route->format="json";
         $result = $graph->create($session['userid'],post('data'));
@@ -43,7 +52,29 @@ function graph_controller()
         $result = $graph->getall($session['userid']);
     }
     
-    else $result = view("Modules/graph/view.php",array("session"=>$session["write"]));
+    // Group graph methods
+    else if ($group && $session['write'] && $route->action == "creategroupgraph" && isset($_POST['data']) && isset($_POST['groupid'])) {
+        $route->format = "json";
+        $result = $graph->creategroupgraph($session['userid'], post('data'), post('groupid'));
+    }
     
-    return array('content'=>$result, 'fullwidth'=>true);
+    else if ($group && $session['write'] && $route->action == "updategroupgraph" && isset($_POST['id']) && isset($_POST['data'])) {
+        $route->format = "json";
+        $result = $graph->updategroupgraph($session['userid'], post('id'), post('data'),post('groupid'));
+    }
+    
+    else if ($group && $session['write'] && $route->action == "deletegroupgraph" && isset($_POST['id'])) {
+        $route->format = "json";
+        $result = $graph->deletegroupgraph($session['userid'], post('id'));
+    }
+    
+    else if ($group && $route->action=="groupgraph") {
+        $result = view("Modules/graph/group_view.php", array("session" => $session["write"], 'group_support' => 1));
+    }
+
+    else {
+        $result = view("Modules/graph/view.php", array("session" => $session["write"]));
+    }
+
+    return array('content' => $result, 'fullwidth' => true);
 }
