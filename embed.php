@@ -55,8 +55,8 @@
 <button class='btn navigation-timewindow' type='button'><i class='icon-resize-horizontal'></i></button>
     <button id='graph_zoomin' class='btn'>+</button>
     <button id='graph_zoomout' class='btn'>-</button>
-    <button id='graph_left' class='btn'><</button>
-    <button id='graph_right' class='btn'>></button>
+    <button id='graph_left' class='btn'>&lt;</button>
+    <button id='graph_right' class='btn'>&gt;</button>
 </div>
 
 <div id="placeholder_bound" style="width:100%; height:100%">

@@ -30,6 +30,10 @@ var active_histogram_feed = 0;
 
 var multipliers = { y:60*60*24*365, m:60*60*24*30, w:60*60*24*7, d:60*60*24, h:60*60, s:1 };
 
+var language = navigator.languages && navigator.languages[0] ||
+               navigator.language ||
+               navigator.userLanguage;
+
 $("#info").show();
 if ($("#showmissing")[0]!=undefined) $("#showmissing")[0].checked = showmissing;
 if ($("#showtag")[0]!=undefined) $("#showtag")[0].checked = showtag;
@@ -72,11 +76,11 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
 
             $("#tooltip").remove();
             var item_time = item.datapoint[0];
-            if (typeof(item.datapoint[2])==="undefined") {
-                itemValue=item.datapoint[1].toFixed(dp);
-            } else {
-                itemValue=(item.datapoint[1]-item.datapoint[2]).toFixed(dp);
+            itemValue=item.datapoint[1];
+            if (typeof(item.datapoint[2])!=="undefined") {
+                itemValue-=item.datapoint[2];
             }
+            itemValue = itemValue.toLocaleString(language, { style: 'decimal', maximumFractionDigits : dp });
 
             if (view.interval<60*60*24) {
                 options = { month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit", second:"2-digit"};
@@ -85,19 +89,19 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
             }
 
             var rangeDate=new Date(parseInt(item_time));
-            var startDate=rangeDate.toLocaleDateString("en-GB",options);
+            var displayDate=rangeDate.toLocaleDateString(language,options);
 
-            if (item.dataIndex === item.series.data.length-1 ) {
-                rangeDate = new Date(parseInt(item_time+(view.interval*1000)-1000));
-            } else {
-                rangeDate=new Date(parseInt(item.series.data[item.dataIndex+1][0]-1000));
+            if (feedlist[item.seriesIndex].delta && view.interval !== 60*60*24 ) {
+                if (item.dataIndex === item.series.data.length-1 ) {
+                    rangeDate = new Date(parseInt(item_time+(view.interval*1000)-1000));
+                } else {
+                    rangeDate = new Date(parseInt(item.series.data[item.dataIndex+1][0]-1000));
+                }
+
+                displayDate+=" - "+rangeDate.toLocaleDateString(language,options);
             }
 
-            var endDate=rangeDate.toLocaleDateString("en-GB",options);
-            date=startDate;
-            if (feedlist[item.seriesIndex].delta && view.interval !== 60*60*24 ) { date+=" - "+endDate; }
-
-            tooltip(item.pageX, item.pageY, "<span style='font-size:11px'>"+item.series.label+"</span><br>"+itemValue+"<br><span style='font-size:11px'>"+date+"</span>", "#fff", $(this).position());
+            tooltip(item.pageX, item.pageY, "<span style='font-size:11px'>"+item.series.label+"</span><br>"+itemValue+"<br><span style='font-size:11px'>"+displayDate+"</span>", "#fff", $(this).position());
         }
     } else {
         $("#tooltip").remove();

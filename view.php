@@ -81,8 +81,8 @@
             <button class='btn graph_time' type='button' time='365'>Y</button>
             <button id='graph_zoomin' class='btn'>+</button>
             <button id='graph_zoomout' class='btn'>-</button>
-            <button id='graph_left' class='btn'><</button>
-            <button id='graph_right' class='btn'>></button>
+            <button id='graph_left' class='btn'>&lt;</button>
+            <button id='graph_right' class='btn'>&gt;</button>
             
             <div class="input-prepend input-append" style="float:right; margin-right:22px">
             <span class="add-on">Show</span>

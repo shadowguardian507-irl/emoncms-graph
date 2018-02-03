@@ -26,7 +26,7 @@ var view =
     this.calc_interval();
   },
 
-  pan(direction, requestType)
+  "pan":function(direction, requestType)
   {
     var shiftsize;
     if (direction!=="left" && direction!=="right") {return(false);}
