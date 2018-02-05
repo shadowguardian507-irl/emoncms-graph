@@ -28,7 +28,7 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
 
 <div id='navigation-timemanual' style='right:1px; display: none;'>
-    <div class='input-prepend input-append' style='margin-bottom:5px' >
+    <div class='input-prepend input-append' style='margin-left:2px;margin-bottom:5px' >
         <span class='add-on'>Select time window</span>
 
         <span class='add-on'>Start:</span>
@@ -55,8 +55,8 @@
 <button class='btn navigation-timewindow' type='button'><i class='icon-resize-horizontal'></i></button>
     <button id='graph_zoomin' class='btn'>+</button>
     <button id='graph_zoomout' class='btn'>-</button>
-    <button id='graph_left' class='btn'><</button>
-    <button id='graph_right' class='btn'>></button>
+    <button id='graph_left' class='btn'>&lt;</button>
+    <button id='graph_right' class='btn'>&gt;</button>
 </div>
 
 <div id="placeholder_bound" style="width:100%; height:100%">
