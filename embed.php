@@ -22,13 +22,37 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.selection.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.touch.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.stack.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js"></script>
+<link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
 
-<div id="navigation" style="padding-bottom:5px;">
+<div id='navigation-timemanual' style='right:1px; display: none;'>
+    <div class='input-prepend input-append' style='margin-bottom:5px' >
+        <span class='add-on'>Select time window</span>
+
+        <span class='add-on'>Start:</span>
+        <span id='datetimepicker1'>
+            <input id='request-start' data-format='dd/MM/yyyy hh:mm:ss' type='text' style='width:140px'/>
+            <span class='add-on'><i data-time-icon='icon-time' data-date-icon='icon-calendar'></i></span>
+        </span>
+
+        <span class='add-on'>End:</span>
+        <span id='datetimepicker2'>
+            <input id='request-end' data-format='dd/MM/yyyy hh:mm:ss' type='text' style='width:140px'/>
+            <span class='add-on'><i data-time-icon='icon-time' data-date-icon='icon-calendar'></i></span>
+        </span>
+
+        <button class='btn navigation-timewindow-set' type='button'><i class='icon-ok'></i></button>
+    </div>
+</div>
+
+<div id="navigation" style="padding-bottom:5px;" >
     <button class='btn graph_time' type='button' time='1'>D</button>
     <button class='btn graph_time' type='button' time='7'>W</button>
     <button class='btn graph_time' type='button' time='30'>M</button>
     <button class='btn graph_time' type='button' time='365'>Y</button>
+<button class='btn navigation-timewindow' type='button'><i class='icon-resize-horizontal'></i></button>
     <button id='graph_zoomin' class='btn'>+</button>
     <button id='graph_zoomout' class='btn'>-</button>
     <button id='graph_left' class='btn'><</button>
@@ -87,6 +111,7 @@
             else
                 vis_mode = 'user';
 
+            datetimepickerInit();
             graph_resize();
             graph_reloaddraw();
         }
@@ -94,4 +119,3 @@
     
 
 </script>
-
