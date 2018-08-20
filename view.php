@@ -136,10 +136,10 @@
                 <span class="add-on" style="width:50px">Type</span>
                 <select id="request-type" style="width:120px">
                     <option value="interval">Fixed Interval</option>
-                    <option>Daily</option>
-                    <option>Weekly</option>
-                    <option>Monthly</option>
-                    <option>Annual</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="annual">Annual</option>
                 </select>
                 
             </div>

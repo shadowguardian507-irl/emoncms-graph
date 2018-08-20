@@ -1022,6 +1022,10 @@ $("#graph-select").change(function() {
     floatingtime = savedgraphs[index].floatingtime,
     yaxismin = savedgraphs[index].yaxismin;
     yaxismax = savedgraphs[index].yaxismax;
+    if (savedgraphs[index].requesttype!=undefined) {
+        requesttype = savedgraphs[index].requesttype
+        $("#request-type").val(requesttype);
+    }
 
     // CSV display settings
     csvtimeformat = (typeof(savedgraphs[index].csvtimeformat)==="undefined" ? "datestr" : savedgraphs[index].csvtimeformat);
@@ -1105,6 +1109,7 @@ $("#graph-save").click(function() {
         interval: view.interval,
         limitinterval: view.limitinterval,
         fixinterval: view.fixinterval,
+        requesttype: requesttype,
         floatingtime: floatingtime,
         yaxismin: yaxismin,
         yaxismax: yaxismax,
