@@ -715,7 +715,7 @@ function graph_draw()
             }
             out += "</td>";
 
-            out += "<td>"+feedlist[z].id+":"+feedlist[z].tag+":"+feedlist[z].name+"</td>";
+            out += "<td>"+feedlist[z].id+":"+feedlist[z].tag+":"+feedlist[z].name + ' (' + getFeedUnit(feedlist[z].id)+")</td>";
             out += "<td><select class='plottype' feedid="+feedlist[z].id+" style='width:80px'>";
 
             var selected = "";
