@@ -213,6 +213,7 @@
 </div>
 
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=1"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/moment.min.js"></script>
 
 <script>
     var path = "<?php echo $path; ?>";
