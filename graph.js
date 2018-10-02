@@ -59,7 +59,7 @@ function getFeedUnit(id){
     let unit = ''
     for(let key in feeds) {
         if (feeds[key].id == id){
-            unit = feeds[key].unit
+            unit = feeds[key].unit || ''
         }
     }
     return unit
