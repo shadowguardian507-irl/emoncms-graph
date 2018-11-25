@@ -63,7 +63,8 @@
     <div id="placeholder"></div>
 </div>
 
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=1"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/moment.min.js"></script>
 
 <script>
     $("body").css("background","none");
