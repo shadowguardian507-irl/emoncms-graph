@@ -1150,7 +1150,7 @@ function graph_index_from_name(name) {
     return index;
 }
 
-function graph_load_savedgraphs(fn)
+function graph_load_savedgraphs(fn=false)
 {
     $.ajax({                                      
         url: path+"/graph/getall"+apikeystr,
@@ -1165,7 +1165,7 @@ function graph_load_savedgraphs(fn)
                out += "<option>"+name+"</option>";
             }
             $("#graph-select").html(out);
-            fn();
+            if (fn) fn();
         }
     });
 }

@@ -318,7 +318,7 @@
                 load_saved_graph(load_saved);
             });
         } else {
-            graph_load_savedgraphs(false);
+            graph_load_savedgraphs();
         }
     }
     graph_resize();
