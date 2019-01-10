@@ -20,7 +20,13 @@
     if (isset($_GET['feedidsLH'])) $feedidsLH = $_GET['feedidsLH'];
 
     $feedidsRH = "";
-    if (isset($_GET['feedidsRH'])) $feedidsRH = $_GET['feedidsRH'];    
+    if (isset($_GET['feedidsRH'])) $feedidsRH = $_GET['feedidsRH'];  
+
+    $load_saved = "";
+    if (isset($_GET['load'])) $load_saved = $_GET['load'];
+    
+    $apikey = "";
+    if (isset($_GET['apikey'])) $apikey = $_GET['apikey'];
 ?>
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
@@ -226,11 +232,16 @@
     var userid = <?php echo $userid; ?>;
     var feedidsLH = "<?php echo $feedidsLH; ?>";
     var feedidsRH = "<?php echo $feedidsRH; ?>";
+    var load_saved = "<?php echo $load_saved; ?>";
+    var apikey = "<?php echo $apikey; ?>";
+    
+    var apikeystr = "";
+    if (apikey!="") apikeystr = "&apikey="+apikey;
     
     // Load user feeds
     if (session) {
         $.ajax({                                      
-            url: path+"feed/list.json", async: false, dataType: "json",
+            url: path+"feed/list.json"+apikeystr, async: false, dataType: "json",
             success: function(data_in) { feeds = data_in; }
         });
     // Load public feeds for a particular user
@@ -248,55 +259,68 @@
     } else {
         copyToClipboardCustomMsg = function () {}
     }
-
-    // Assign active feedid from URL
-    var urlparts = window.location.pathname.split("graph/");
-    if (urlparts.length==2) {
-        var feedids = urlparts[1].split(",");
-		    for (var z in feedids) {
-		        var feedid = parseInt(feedids[z]);
-		         
-		        if (feedid) {
-		            var f = getfeed(feedid);
-                if (f==false) f = getfeedpublic(feedid);
-                if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
-			      }		
-		    }
-    }
     
-    // Left hand feed ids property
-    if (feedidsLH!="") {
-        var feedids = feedidsLH.split(",");
-		    for (var z in feedids) {
-		        var feedid = parseInt(feedids[z]);
-		         
-		        if (feedid) {
-		            var f = getfeed(feedid);
-                if (f==false) f = getfeedpublic(feedid);
-                if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
-			      }		
-		    }
-    }
+    if (load_saved=="") {
 
-    // Right hand feed ids property
-    if (feedidsRH!="") {
-        var feedids = feedidsRH.split(",");
-		    for (var z in feedids) {
-		        var feedid = parseInt(feedids[z]);
-		         
-		        if (feedid) {
-		            var f = getfeed(feedid);
-                if (f==false) f = getfeedpublic(feedid);
-                if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:2, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
-			      }		
-		    }
-    }   
+        // Assign active feedid from URL
+        var urlparts = window.location.pathname.split("graph/");
+        if (urlparts.length==2) {
+            var feedids = urlparts[1].split(",");
+		        for (var z in feedids) {
+		            var feedid = parseInt(feedids[z]);
+		             
+		            if (feedid) {
+		                var f = getfeed(feedid);
+                    if (f==false) f = getfeedpublic(feedid);
+                    if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+			          }		
+		        }
+        }
+        
+        // Left hand feed ids property
+        if (feedidsLH!="") {
+            var feedids = feedidsLH.split(",");
+		        for (var z in feedids) {
+		            var feedid = parseInt(feedids[z]);
+		             
+		            if (feedid) {
+		                var f = getfeed(feedid);
+                    if (f==false) f = getfeedpublic(feedid);
+                    if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+			          }		
+		        }
+        }
+
+        // Right hand feed ids property
+        if (feedidsRH!="") {
+            var feedids = feedidsRH.split(",");
+		        for (var z in feedids) {
+		            var feedid = parseInt(feedids[z]);
+		             
+		            if (feedid) {
+		                var f = getfeed(feedid);
+                    if (f==false) f = getfeedpublic(feedid);
+                    if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:2, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
+			          }		
+		        }
+        }
+    }
     
     sidebar_resize();
     graph_init_editor();
     
     load_feed_selector(); 
-    if (!session) $("#mygraphs").hide();
+    if (!session) {
+        $("#mygraphs").hide();
+    } else {
+        if (load_saved!="") {
+            graph_load_savedgraphs(function(){
+                load_saved_graph(load_saved);
+            });
+        } else {
+            graph_load_savedgraphs(false);
+        }
+    }
     graph_resize();
     
     var timeWindow = 3600000*24.0*7;

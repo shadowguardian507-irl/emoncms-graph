@@ -226,8 +226,6 @@ function arrayMove(array,old_index, new_index){
 
 function graph_init_editor()
 {
-
-    if (session) graph_load_savedgraphs();
     if (!session && !userid) feeds = feedlist;
             
     var numberoftags = 0;
@@ -577,7 +575,7 @@ function graph_reload()
         var request = path+"feed/"+method+".json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end + mode;
 
         $.ajax({                                      
-            url: request,
+            url: request+apikeystr,
             async: false,
             dataType: "text",
             success: function(data_in) {
@@ -702,8 +700,6 @@ function graph_draw()
         var out = "";
         for (var z in feedlist) {
             var dp = feedlist[z].dp;
-        
-            var apiurl = path+"feed/data.json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end+"&interval="+view.interval+"&skipmissing="+skipmissing+"&limitinterval="+view.limitinterval;
 
             out += "<tr>";
             out += "<td>";
@@ -790,7 +786,7 @@ function getfeed(id)
 function getfeedpublic(feedid) {
     var f = {};
     $.ajax({                                      
-        url: path+"feed/aget.json?id="+feedid,
+        url: path+"feed/aget.json?id="+feedid+apikeystr,
         async: false,
         dataType: "json",
         success: function(result) {
@@ -1011,6 +1007,10 @@ function histogram(feedid,type,resolution)
 //----------------------------------------------------------------------------------------
 $("#graph-select").change(function() {
     var name = $(this).val();
+    load_saved_graph(name);
+});
+
+function load_saved_graph(name) {
     $("#graph-name").val(name);
     $("#graph-delete").show();
     var index = graph_index_from_name(name);
@@ -1065,7 +1065,7 @@ $("#graph-select").change(function() {
     $("#csvnullvalues").val(csvnullvalues);
     $("#csvheaders").val(csvheaders);
     csvShowHide(tmpCsv);
-});
+}
 
 $("#graph-name").keyup(function(){
     var name = $(this).val();
@@ -1150,10 +1150,10 @@ function graph_index_from_name(name) {
     return index;
 }
 
-function graph_load_savedgraphs()
+function graph_load_savedgraphs(fn)
 {
     $.ajax({                                      
-        url: path+"/graph/getall",
+        url: path+"/graph/getall"+apikeystr,
         async: true,
         dataType: "json",
         success: function(result) {
@@ -1165,6 +1165,7 @@ function graph_load_savedgraphs()
                out += "<option>"+name+"</option>";
             }
             $("#graph-select").html(out);
+            fn();
         }
     });
 }
