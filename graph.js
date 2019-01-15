@@ -583,16 +583,13 @@ function graph_reload()
         ids: ids.join(','),
         start: view.start,
         end: view.end,
+        interval: view.interval,
+        skipmissing: skipmissing,
+        limitinterval: view.limitinterval,
         apikey: apikey
     }
     if (requesttype!="interval") {
         data.mode = requesttype;
-    } else {
-        $.extend({}, data, {
-            interval: view.interval,
-            skipmissing: skipmissing,
-            limitinterval: view.limitinterval
-        });
     }
 
     $.getJSON(url, data, function(response){
