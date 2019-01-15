@@ -593,7 +593,19 @@ function graph_reload()
     }
 
     $.getJSON(url, data, function(response){
-        console.log(response);
+        // loop through feedlist and add response data to data property
+        for (i in feedlist) {
+            let feed = feedlist[i];
+            for (j in response) {
+                let item = response[j];
+                if (feed.id === parseInt(item.feedid)) {
+                    feed.data = item.data;
+                }
+            }
+        }
+        // alter feedlist base on user selection
+        console.log('feedlist',feedlist);
+        set_feedlist();
     })
         //     url: request,
             
