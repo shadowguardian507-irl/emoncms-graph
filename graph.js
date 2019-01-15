@@ -592,6 +592,8 @@ function graph_reload()
         data.mode = requesttype;
     }
 
+    var valid = true;
+
     $.getJSON(url, data, function(response){
         // loop through feedlist and add response data to data property
         for (i in feedlist) {
@@ -601,39 +603,39 @@ function graph_reload()
                 if (feed.id === parseInt(item.feedid)) {
                     feed.data = item.data;
                 }
+                if (typeof item.data.success !== 'undefined') {
+                    valid = false;
+                }
             }
         }
         // alter feedlist base on user selection
-        console.log('feedlist',feedlist);
-        set_feedlist();
+        if (valid) set_feedlist();
     })
-        //     url: request,
-            
-        //     dataType: "text",
-        //     success: function(data_in) {
-            
-        //         // 1) Check validity of json data, or show error
-        //         var valid = true;
-        //         try {
-        //             feedlist[z].data = JSON.parse(data_in);
-        //             if (feedlist[z].data.success!=undefined) valid = false;
-        //         } catch (e) {
-        //             valid = false;
-        //         }
-        //         set_feedlist();
+    .error(function(jqXHR, error, message){
+        valid = false;
+    })
+    .always(function(response){
+        // display message to user if response not valid
+        var message = '';
+        var messages = [];
 
-                
-        //         if (!valid) errorstr += "<div class='alert alert-danger'><b>Request error</b> "+data_in+"</div>";
-        //     }
-        // });
-        
+        for (i in response) {
+            var item = response[i];
+            if (typeof item.data.success !== 'undefined' && !item.data.success) {
+                messages.push(item.data.message);
+            }
+        }
+        message = messages.join(', ');
+        var errorstr = valid ? '': '<div class="alert alert-danger"><strong>Request error</strong> ' + message + '</div>';
+        if (errorstr != '') {
+            $('#error').html(errorstr).show();
+        } else {
+            $('#error').hide();
+        }
+    });
+}  
     
-    if (errorstr!="") {
-        $("#error").html(errorstr).show();
-    } else {
-        $("#error").hide();
-    }
-}
+
 function set_feedlist() {
     for (var z in feedlist)
     {
