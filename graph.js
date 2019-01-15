@@ -564,35 +564,71 @@ function graph_reload()
     $("#request-limitinterval").attr("checked",view.limitinterval);
     
     var errorstr = "";    
+    var ids = [];
+    var method = "data";
+
+    // create array of selected feed ids
+    for (var z in feedlist) {
+        ids.push(feedlist[z].id);
+    }
+    // change the api call if any feeds are set to 'average'
+    for (var z in feedlist) {
+        if (feedlist[z].getaverage) {
+            method = "average";
+            break;
+        }
+    }
+    var url = path+"feed/"+method+".json";
+    var data = {
+        ids: ids.join(','),
+        start: view.start,
+        end: view.end,
+        apikey: apikey
+    }
+    if (requesttype!="interval") {
+        data.mode = requesttype;
+    } else {
+        $.extend({}, data, {
+            interval: view.interval,
+            skipmissing: skipmissing,
+            limitinterval: view.limitinterval
+        });
+    }
+
+    $.getJSON(url, data, function(response){
+        console.log(response);
+    })
+        //     url: request,
+            
+        //     dataType: "text",
+        //     success: function(data_in) {
+            
+        //         // 1) Check validity of json data, or show error
+        //         var valid = true;
+        //         try {
+        //             feedlist[z].data = JSON.parse(data_in);
+        //             if (feedlist[z].data.success!=undefined) valid = false;
+        //         } catch (e) {
+        //             valid = false;
+        //         }
+        //         set_feedlist();
+
+                
+        //         if (!valid) errorstr += "<div class='alert alert-danger'><b>Request error</b> "+data_in+"</div>";
+        //     }
+        // });
+        
     
+    if (errorstr!="") {
+        $("#error").html(errorstr).show();
+    } else {
+        $("#error").hide();
+    }
+}
+function set_feedlist() {
     for (var z in feedlist)
     {
-        var mode = "&interval="+view.interval+"&skipmissing="+skipmissing+"&limitinterval="+view.limitinterval;
-        if (requesttype!="interval") mode = "&mode="+requesttype;
-        
-        var method = "data";
-        if (feedlist[z].getaverage) method = "average";
-        var request = path+"feed/"+method+".json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end + mode;
-
-        $.ajax({                                      
-            url: request+apikeystr,
-            async: false,
-            dataType: "text",
-            success: function(data_in) {
-            
-                // 1) Check validity of json data, or show error
-                var valid = true;
-                try {
-                    feedlist[z].data = JSON.parse(data_in);
-                    if (feedlist[z].data.success!=undefined) valid = false;
-                } catch (e) {
-                    valid = false;
-                }
-                
-                if (!valid) errorstr += "<div class='alert alert-danger'><b>Request error</b> "+data_in+"</div>";
-            }
-        });
-        
+        // Apply delta adjustement to feed values
         if (feedlist[z].delta) {
             for (var i=1; i<feedlist[z].data.length; i++) {
                 if (feedlist[z].data[i][1]!=null && feedlist[z].data[i-1][1]!=null) {
@@ -618,14 +654,7 @@ function graph_reload()
             }
         }
     }
-    
-    if (errorstr!="") {
-        $("#error").html(errorstr).show();
-    } else {
-        $("#error").hide();
-    }
 }
-
 function graph_draw()
 {
     var options = {
