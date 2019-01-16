@@ -564,82 +564,35 @@ function graph_reload()
     $("#request-limitinterval").attr("checked",view.limitinterval);
     
     var errorstr = "";    
-    var ids = [];
-    var method = "data";
-
-    // create array of selected feed ids
-    for (var z in feedlist) {
-        ids.push(feedlist[z].id);
-    }
-    // change the api call if any feeds are set to 'average'
-    for (var z in feedlist) {
-        if (feedlist[z].getaverage) {
-            method = "average";
-            break;
-        }
-    }
-    var url = path+"feed/"+method+".json";
-    var data = {
-        ids: ids.join(','),
-        start: view.start,
-        end: view.end,
-        interval: view.interval,
-        skipmissing: skipmissing,
-        limitinterval: view.limitinterval,
-        apikey: apikey
-    }
-    if (requesttype!="interval") {
-        data.mode = requesttype;
-    }
-
-    var valid = true;
-
-    $.getJSON(url, data, function(response){
-        // loop through feedlist and add response data to data property
-        for (i in feedlist) {
-            let feed = feedlist[i];
-            for (j in response) {
-                let item = response[j];
-                if (feed.id === parseInt(item.feedid)) {
-                    feed.data = item.data;
-                }
-                if (typeof item.data.success !== 'undefined') {
-                    valid = false;
-                }
-            }
-        }
-        // alter feedlist base on user selection
-        if (valid) set_feedlist();
-    })
-    .error(function(jqXHR, error, message){
-        valid = false;
-    })
-    .always(function(response){
-        // display message to user if response not valid
-        var message = '';
-        var messages = [];
-
-        for (i in response) {
-            var item = response[i];
-            if (typeof item.data.success !== 'undefined' && !item.data.success) {
-                messages.push(item.data.message);
-            }
-        }
-        message = messages.join(', ');
-        var errorstr = valid ? '': '<div class="alert alert-danger"><strong>Request error</strong> ' + message + '</div>';
-        if (errorstr != '') {
-            $('#error').html(errorstr).show();
-        } else {
-            $('#error').hide();
-        }
-    });
-}  
     
-
-function set_feedlist() {
     for (var z in feedlist)
     {
-        // Apply delta adjustement to feed values
+        var mode = "&interval="+view.interval+"&skipmissing="+skipmissing+"&limitinterval="+view.limitinterval;
+        if (requesttype!="interval") mode = "&mode="+requesttype;
+        
+        var method = "data";
+        if (feedlist[z].getaverage) method = "average";
+        var request = path+"feed/"+method+".json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end + mode;
+
+        $.ajax({                                      
+            url: request+apikeystr,
+            async: false,
+            dataType: "text",
+            success: function(data_in) {
+            
+                // 1) Check validity of json data, or show error
+                var valid = true;
+                try {
+                    feedlist[z].data = JSON.parse(data_in);
+                    if (feedlist[z].data.success!=undefined) valid = false;
+                } catch (e) {
+                    valid = false;
+                }
+                
+                if (!valid) errorstr += "<div class='alert alert-danger'><b>Request error</b> "+data_in+"</div>";
+            }
+        });
+        
         if (feedlist[z].delta) {
             for (var i=1; i<feedlist[z].data.length; i++) {
                 if (feedlist[z].data[i][1]!=null && feedlist[z].data[i-1][1]!=null) {
@@ -665,7 +618,14 @@ function set_feedlist() {
             }
         }
     }
+    
+    if (errorstr!="") {
+        $("#error").html(errorstr).show();
+    } else {
+        $("#error").hide();
+    }
 }
+
 function graph_draw()
 {
     var options = {
