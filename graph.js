@@ -546,7 +546,6 @@ function pushfeedlist(feedid, yaxis) {
 
 function graph_reloaddraw() {
     graph_reload();
-    graph_draw();
 }
 
 function graph_reload()
@@ -600,12 +599,8 @@ function graph_reload()
             let feed = feedlist[i];
             for (j in response) {
                 let item = response[j];
-                if (feed.id === parseInt(item.feedid)) {
-                    if (typeof item.data !== 'undefinded') {
-                        feed.data = item.data;
-                    } else {
-                        //console.log('feed ',feed.id,' has no data');
-                    }
+                if (parseInt(feed.id) === parseInt(item.feedid)) {
+                    feed.data = item.data;
                 }
                 if (typeof item.data.success !== 'undefined') {
                     valid = false;
@@ -625,7 +620,7 @@ function graph_reload()
 
         for (i in response) {
             var item = response[i];
-            if (item.data && typeof item.data.success !== 'undefined' && !item.data.success) {
+            if (typeof item.data.success !== 'undefined' && !item.data.success) {
                 messages.push(item.data.message);
             }
         }
@@ -669,6 +664,8 @@ function set_feedlist() {
             }
         }
     }
+    // call graph_draw() once feedlist is altered
+    graph_draw();
 }
 function graph_draw()
 {
