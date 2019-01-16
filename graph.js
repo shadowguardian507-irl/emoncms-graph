@@ -590,8 +590,17 @@ function graph_reload()
     if (requesttype!="interval") {
         data.mode = requesttype;
     }
-
+   
     var valid = true;
+    if (ids.length === 0) {
+        valid = false;
+        var title = _lang['Select a feed'];
+        var message = _lang['Please select a feed from the Feeds List'];
+        $('#error')
+        .show()
+        .html('<div class="alert alert-info"><strong>' + title + '</strong> ' + message + '</div>');
+        return false;
+    }
 
     $.getJSON(url, data, function(response){
         // loop through feedlist and add response data to data property
@@ -620,8 +629,13 @@ function graph_reload()
 
         for (i in response) {
             var item = response[i];
-            if (typeof item.data.success !== 'undefined' && !item.data.success) {
-                messages.push(item.data.message);
+            if (typeof item.data !== 'undefined') {
+                if (typeof item.data.success !== 'undefined' && !item.data.success) {
+                    messages.push(item.data.message);
+                }
+            } else {
+                // response is jqXHR object
+                messages.push(response.responseText);
             }
         }
         message = messages.join(', ');
@@ -1200,7 +1214,7 @@ function graph_load_savedgraphs(fn=false)
         success: function(result) {
             savedgraphs = result.user;
             
-            var out = "<option>Select graph:</option>";
+            var out = "<option>" + _lang['Select graph'] + ":</option>";
             for (var z in savedgraphs) {
                var name = savedgraphs[z].name;
                out += "<option>"+name+"</option>";
