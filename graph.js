@@ -601,7 +601,11 @@ function graph_reload()
             for (j in response) {
                 let item = response[j];
                 if (feed.id === parseInt(item.feedid)) {
-                    feed.data = item.data;
+                    if (typeof item.data !== 'undefinded') {
+                        feed.data = item.data;
+                    } else {
+                        //console.log('feed ',feed.id,' has no data');
+                    }
                 }
                 if (typeof item.data.success !== 'undefined') {
                     valid = false;
@@ -621,7 +625,7 @@ function graph_reload()
 
         for (i in response) {
             var item = response[i];
-            if (typeof item.data.success !== 'undefined' && !item.data.success) {
+            if (item.data && typeof item.data.success !== 'undefined' && !item.data.success) {
                 messages.push(item.data.message);
             }
         }
