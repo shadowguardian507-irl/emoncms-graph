@@ -119,3 +119,6 @@ input.feed-tag-checkbox{
 input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
     margin:0 5px;
 }
+#tooltip {
+    z-index: 1001;
+}
