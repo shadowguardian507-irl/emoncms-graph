@@ -626,12 +626,16 @@ function graph_reload()
     }
 }
 function group_legend_values(_flot, placeholder) {
+    var legend = document.getElementById('legend');
     var current_legend = placeholder[0].nextSibling;
+    if (!current_legend) {
+        legend.innerHTML = '';
+        return;
+    }
     var current_legend_labels = current_legend.querySelector('table tbody');
     var rows = Object.values(current_legend_labels.childNodes);
     var left = [];
     var right = [];
-    var legend = document.getElementById('legend');
     var output = "";
 
     for (n in rows){
