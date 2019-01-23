@@ -129,3 +129,38 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
 
 .legendLabel .label-right,
 .flot-y2-axis .flot-tick-label{color: #b94a48}
+
+#legend {
+    width: 100%;
+    float: right;
+    position: relative;
+    z-index: 2;
+    font-size: 13px;
+}
+#legend .grid-container {
+    margin: 1em 3em 0 3.2em;
+    position: relative;
+}
+#legend .col {
+    position: absolute;
+    top: 0
+}
+#legend .right{
+    right: 0;
+}
+#legend .left{
+    left: 0;
+}
+#legend .legendColorBox {
+    display: inline-block;
+    margin-right: .3em;
+}
+#legend .legendColorBox > div > div{
+    width: .3em!important;
+    border-width: .4em!important;
+}
+@media(max-width: 512px) {
+    #legend .col {
+        position: relative; left: 0;
+    }
+}

@@ -625,7 +625,52 @@ function graph_reload()
         $("#error").hide();
     }
 }
+function group_legend_values(_flot, placeholder) {
+    var current_legend = placeholder[0].nextSibling;
+    var current_legend_labels = current_legend.querySelector('table tbody');
+    var rows = Object.values(current_legend_labels.childNodes);
+    var left = [];
+    var right = [];
+    var legend = document.getElementById('legend');
+    var output = "";
 
+    for (n in rows){
+        var row = rows[n];
+        var isRight = row.querySelector('.label-right');
+        if (isRight){
+            right.push(row);
+        } else {
+            left.push(row);
+        }
+
+    }
+
+    output += '<div class="grid-container">';
+    output += '    <div class="col left">';
+    output += '      <ul class="unstyled">';
+    output += build_rows(left);
+    output += '      </ul>';
+    output += '    </div>';
+    output += '    <div class="col right">';
+    output += '      <ul class="unstyled">';
+    output += build_rows(right);
+    output += '      </ul>';
+    output += '    </div>';
+    output += '</div>';
+    
+    legend.innerHTML = output;
+    current_legend.style.display = 'none';
+}
+function build_rows(rows) {
+    var output = "";
+    for (x in rows) {
+        var row = rows[x];
+        var label = row.querySelector('.legendLabel').innerText
+        var colour = '<div class="legendColorBox">' + row.querySelector('.legendColorBox').innerHTML + '</div>'
+        output += '      <li>'+colour + label+'</li>';
+    }
+    return output;
+}
 function graph_draw()
 {
     var options = {
@@ -661,7 +706,10 @@ function graph_draw()
             },
         },
         toggle: { scale: "visible" },
-        touch: { pan: "x", scale: "x" }
+        touch: { pan: "x", scale: "x" },
+        hooks: {
+            bindEvents: [group_legend_values]
+        }
     }
 
     if (showlegend) options.legend.show = true;
