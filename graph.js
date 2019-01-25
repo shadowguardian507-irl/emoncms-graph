@@ -42,10 +42,6 @@ $('.graph_time').click(function () {
     graph_reloaddraw();
 });
 
-$('#placeholder').bind("legendclick", function (event, ranges) {
-  console.log(event);
-});
-
 $('#placeholder').bind("plotselected", function (event, ranges)
 {
     floatingtime=0; 
@@ -646,7 +642,6 @@ function group_legend_values(_flot, placeholder) {
         } else {
             left.push(row);
         }
-
     }
 
     output += '<div class="grid-container">';
@@ -661,17 +656,44 @@ function group_legend_values(_flot, placeholder) {
     output += '      </ul>';
     output += '    </div>';
     output += '</div>';
-    
+    // populate new legend with html
     legend.innerHTML = output;
+    // hide old legend
     current_legend.style.display = 'none';
+    // add onclick events to links within legend
+    var items = legend.querySelectorAll('[data-legend-series]');
+    for(i = 0; i < items.length; i++) {
+        var item = items[i];
+        var link = item.querySelector('a');
+        // handle click of legend link
+        if (!link) continue;
+        link.addEventListener('click', onClickLegendLink)
+    }
+}
+function onClickLegendLink(event) {
+    event.preventDefault();
+    var link = event.target;
+    // toggle opacity of the link
+    link.classList.toggle('faded');
+    // re-draw the chart with the plot lines hidden/shown
+    var index = link.dataset.index;
+    var current_data = plot_statistics.getData()
+    current_data[index].lines.show = !current_data[index].lines.show;
+    plot_statistics.setData(current_data);
+    // re-draw
+    plot_statistics.draw();
 }
 function build_rows(rows) {
     var output = "";
     for (x in rows) {
         var row = rows[x];
-        var label = row.querySelector('.legendLabel').innerText
+        var label = row.querySelector('.legendLabel')
+        var span = label.querySelector('span');
+        var index = span.dataset.index;
+        var id = span.dataset.id;
         var colour = '<div class="legendColorBox">' + row.querySelector('.legendColorBox').innerHTML + '</div>'
-        output += '      <li>'+colour + label+'</li>';
+        // add <li> to the html
+        output += '      <li data-legend-series><a href="' + path + 'graph/' + id + '" data-index="' + index + '" data-id="' + id + '">' + colour + label.innerText + '</a></li>';
     }
     return output;
 }
@@ -696,17 +718,15 @@ function graph_draw()
             position: "nw",
             toggle: true,
             labelFormatter: function(label, item){
-                // text = '[←]' + label;
                 text = label;
                 cssClass = 'label-left';
                 title = 'Left Axis';
-                
                 if (item.isRight) {
-                    text = label + ' [→]';
                     cssClass = 'label-right';
                     title = 'Right Axis';
                 }
-                return '<span class="' + cssClass + '" title="'+title+'">' + text +'</span>'
+                data_attr = ' data-id="' + item.id + '" data-index="' + item.index + '"';
+                return '<span' + data_attr + ' class="' + cssClass + '" title="'+title+'">' + text +'</span>'
             },
         },
         toggle: { scale: "visible" },
@@ -755,9 +775,11 @@ function graph_draw()
         if (feedlist[z].plottype=="lines") { plot.lines = { show: true, fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), fill: feedlist[z].fill } };
         if (feedlist[z].plottype=="bars") { plot.bars = { align: "center", fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), show: true, barWidth: view.interval * 1000 * 0.75 } };
         plot.isRight = feedlist[z].yaxis === 2;
+        plot.id = feedlist[z].id;
+        plot.index = z;
         plotdata.push(plot);
     }
-    $.plot($('#placeholder'), plotdata, options);
+    plot_statistics = $.plot($('#placeholder'), plotdata, options);
 
     if (!embed) {
         
