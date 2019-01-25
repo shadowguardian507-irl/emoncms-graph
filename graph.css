@@ -123,13 +123,6 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
     z-index: 1001;
 }
 
-/* Multi Axes label colours */
-.legendLabel .label-left,
-.flot-y1-axis .flot-tick-label{color: inherit}
-
-.legendLabel .label-right,
-.flot-y2-axis .flot-tick-label{color: inherit}
-
 #legend {
     width: 100%;
     float: right;
