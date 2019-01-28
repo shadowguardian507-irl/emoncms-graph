@@ -562,22 +562,17 @@ function graph_reload()
     $("#request-interval").val(view.interval);
     $("#request-limitinterval").attr("checked",view.limitinterval);
     
-    var errorstr = "";    
     var ids = [];
-    var method = "data";
+    var average_ids = [];
 
     // create array of selected feed ids
     for (var z in feedlist) {
-        ids.push(feedlist[z].id);
-    }
-    // change the api call if any feeds are set to 'average'
-    for (var z in feedlist) {
         if (feedlist[z].getaverage) {
-            method = "average";
-            break;
+            average_ids.push(feedlist[z].id);
+        } else {
+            ids.push(feedlist[z].id);
         }
     }
-    var url = path+"feed/"+method+".json";
     var data = {
         ids: ids.join(','),
         start: view.start,
@@ -591,9 +586,7 @@ function graph_reload()
         data.mode = requesttype;
     }
    
-    var valid = true;
-    if (ids.length === 0) {
-        valid = false;
+    if (ids.length + average_ids.length === 0) {
         var title = _lang['Select a feed'];
         var message = _lang['Please select a feed from the Feeds List'];
         $('#error')
@@ -601,53 +594,68 @@ function graph_reload()
         .html('<div class="alert alert-info"><strong>' + title + '</strong> ' + message + '</div>');
         return false;
     }
-
-    $.getJSON(url, data, function(response){
-        // loop through feedlist and add response data to data property
-        for (i in feedlist) {
-            let feed = feedlist[i];
-            for (j in response) {
-                let item = response[j];
-                if (parseInt(feed.id) === parseInt(item.feedid)) {
-                    feed.data = item.data;
-                }
-                if (typeof item.data.success !== 'undefined') {
-                    valid = false;
-                }
-            }
-        }
-        // alter feedlist base on user selection
-        if (valid) set_feedlist();
-    })
-    .error(function(jqXHR, error, message){
-        valid = false;
-    })
-    .always(function(response){
-        // display message to user if response not valid
-        var message = '';
-        var messages = [];
-
-        for (i in response) {
-            var item = response[i];
-            if (typeof item.data !== 'undefined') {
-                if (typeof item.data.success !== 'undefined' && !item.data.success) {
-                    messages.push(item.data.message);
-                }
-            } else {
-                // response is jqXHR object
-                messages.push(response.responseText);
-            }
-        }
-        message = messages.join(', ');
-        var errorstr = valid ? '': '<div class="alert alert-danger"><strong>Request error</strong> ' + message + '</div>';
-        if (errorstr != '') {
-            $('#error').html(errorstr).show();
-        } else {
-            $('#error').hide();
-        }
-    });
+    if (ids.length > 0) {
+        // get feedlist data
+        $.getJSON(path+"feed/data.json", data, addFeedlistData)
+        .error(handleFeedlistDataError)
+        .always(checkFeedlistData);
+    }
+    if (average_ids.length > 0) {
+        // get feedlist average data
+        var average_ajax_data = $.extend({}, data, {ids: average_ids.join(',')});
+        $.getJSON(path+"feed/average.json", average_ajax_data, addFeedlistData)
+        .error(handleFeedlistDataError)
+        .always(checkFeedlistData);
+    }
 }  
     
+
+function addFeedlistData(response){
+    // loop through feedlist and add response data to data property
+    var valid = false;
+    for (i in feedlist) {
+        let feed = feedlist[i];
+        for (j in response) {
+            let item = response[j];
+            if (parseInt(feed.id) === parseInt(item.feedid)) {
+                feed.data = item.data;
+            }
+            if (typeof item.data.success === 'undefined') {
+                valid = true;
+            }
+        }
+    }
+    // alter feedlist base on user selection
+    if (valid) set_feedlist();
+}
+function handleFeedlistDataError(jqXHR, error, message){
+    // @todo: notify the user that the the data api was unreachable;
+}
+function checkFeedlistData(response){
+    // display message to user if response not valid
+    var message = '';
+    var messages = [];
+
+    for (i in response) {
+        var item = response[i];
+        if (typeof item.data !== 'undefined') {
+            if (typeof item.data.success !== 'undefined' && !item.data.success) {
+                messages.push(item.data.message);
+            }
+        } else {
+            // response is jqXHR object
+            messages.push(response.responseText);
+        }
+    }
+    message = messages.join(', ');
+    var errorstr = '';
+    if (messages.length > 0) {
+        errorstr = '<div class="alert alert-danger"><strong>Request error</strong> ' + message + '</div>';
+        $('#error').html(errorstr).show();
+    } else {
+        $('#error').hide();
+    }
+}
 
 function set_feedlist() {
     for (var z in feedlist)
