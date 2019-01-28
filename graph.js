@@ -697,7 +697,24 @@ function graph_draw()
 		    } ],
         grid: {hoverable: true, clickable: true},
         selection: { mode: "x" },
-        legend: { show: false, position: "nw", toggle: true },
+        legend: { 
+            show: false,
+            position: "nw",
+            toggle: true,
+            labelFormatter: function(label, item){
+                // text = '[←]' + label;
+                text = label;
+                cssClass = 'label-left';
+                title = 'Left Axis';
+                
+                if (item.isRight) {
+                    text = label + ' [→]';
+                    cssClass = 'label-right';
+                    title = 'Right Axis';
+                }
+                return '<span class="' + cssClass + '" title="'+title+'">' + text +'</span>'
+            },
+        },
         toggle: { scale: "visible" },
         touch: { pan: "x", scale: "x" }
     }
@@ -740,7 +757,7 @@ function graph_draw()
         
         if (feedlist[z].plottype=="lines") { plot.lines = { show: true, fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), fill: feedlist[z].fill } };
         if (feedlist[z].plottype=="bars") { plot.bars = { align: "center", fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), show: true, barWidth: view.interval * 1000 * 0.75 } };
-
+        plot.isRight = feedlist[z].yaxis === 2;
         plotdata.push(plot);
     }
     $.plot($('#placeholder'), plotdata, options);
