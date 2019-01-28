@@ -169,7 +169,7 @@
                 </span>
             </div>
             <div class="input-prepend input-append" style="padding-right:5px">
-                <span class="add-on">Timezone</span>
+                <span class="add-on"><?php echo _('Timezone') ?></span>
                 <span class="timezone-options">
                     <select id="timezone">
                         <optgroup label="<?php echo _('System') ?>">
