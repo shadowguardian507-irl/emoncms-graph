@@ -38,7 +38,6 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.touch.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/timezone-js/src/date.js"></script>
 <!--
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/flot.min.js"></script>
 -->
@@ -49,10 +48,10 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
 <link href="<?php echo $path; ?>Modules/graph/graph.css" rel="stylesheet">
 
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/misc/date.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Modules/graph/Lib/date.js"></script>
 <script>
         var timezones_ready = false;
-        timezoneJS.timezone.zoneFileBasePath = '<?php echo $path; ?>Lib/timezone-js/tz';
+        timezoneJS.timezone.zoneFileBasePath = '<?php echo $path; ?>Modules/graph/Lib/tz';
         timezoneJS.timezone.defaultZoneFile = ['europe'];
         timezoneJS.timezone.init({callback: function() {
             timezones_ready = true;
