@@ -1250,7 +1250,7 @@ function graph_load_savedgraphs(fn=false)
         success: function(result) {
             savedgraphs = result.user;
             
-            var out = "<option>Select graph:</option>";
+            var out = "<option>" + _lang['Select graph'] + ":</option>";
             for (var z in savedgraphs) {
                var name = savedgraphs[z].name;
                out += "<option>"+name+"</option>";
