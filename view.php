@@ -245,6 +245,12 @@
 
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=1"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/moment.min.js"></script>
+<script>
+    var user = {};
+    var path = "<?php echo $path; ?>";
+    user.lang = "<?php echo $_SESSION['lang']; ?>";
+</script>
+<script src="<?php echo $path; ?>Lib/user_locale.js"></script>
 
 <script>
     var path = "<?php echo $path; ?>";
