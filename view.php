@@ -174,8 +174,8 @@
             <div class="feed-options hide">
                 <div class="feed-options-header">
                     <div class="feed-options-title"><?php echo _('Feeds in view') ?></div>
-                    <div class="feed-options-show-options btn btn-default hide"><?php echo _('Show options') ?></div>
-                    <div class="feed-options-show-stats btn btn-default"><?php echo _('Show statistics') ?></div>
+                    <a href="#" class="feed-options-show-options btn btn-default hide"><?php echo _('Show options') ?></a>
+                    <a href="#" class="feed-options-show-stats btn btn-default"><?php echo _('Show statistics') ?></a>
                 </div>
 
                 
