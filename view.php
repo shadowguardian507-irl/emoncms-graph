@@ -246,9 +246,14 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=1"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/moment.min.js"></script>
 <script>
-    var user = {};
     var path = "<?php echo $path; ?>";
-    user.lang = "<?php echo $_SESSION['lang']; ?>";
+    var user = {
+        lang : "<?php echo $_SESSION['lang']; ?>"
+    }
+    _locale_loaded = function (event){
+        // callback when locale file loaded
+        graph_reloaddraw(); // redraw xaxis with correct monthNames and dayNames
+    }
 </script>
 <script src="<?php echo $path; ?>Lib/user_locale.js"></script>
 
