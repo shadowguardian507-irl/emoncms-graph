@@ -115,7 +115,7 @@
             
             <button id="histogram-back" class="btn" style="float:right"><?php echo _('Back to main view') ?></button>
         </div>
-
+        <div id="legend"></div>
         <div id="placeholder_bound" style="width:100%; height:400px;">
             <div id="placeholder"></div>
         </div>
