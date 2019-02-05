@@ -252,7 +252,7 @@
 <script>
     var path = "<?php echo $path; ?>";
     var user = {
-        lang : "<?php echo $_SESSION['lang']; ?>"
+        lang : "<?php if (isset($_SESSION['lang'])) echo $_SESSION['lang']; ?>"
     }
     _locale_loaded = function (event){
         // callback when locale file loaded
