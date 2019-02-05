@@ -173,41 +173,45 @@
             
             <div class="feed-options hide">
                 <div class="feed-options-header">
-                    <div class="feed-options-title"><?php echo _('Feeds in view') ?></div>
                     <div class="feed-options-show-options hide"><?php echo _('Show options') ?></div>
                     <div class="feed-options-show-stats"><?php echo _('Show statistics') ?></div>
+                    <a href="#tables" class="feed-options-title">
+                        <span class="caret pull-left"></span>
+                        <?php echo _('Feeds in view') ?>
+                    </a>
                 </div>
 
-                
-                <table id="feed-options-table" class="table">
-                    <tr>
-                        <th></th>
-                        <th><?php echo _('Feed') ?></th>
-                        <th><?php echo _('Type') ?></th>
-                        <th><?php echo _('Color') ?></th>
-                        <th><?php echo _('Fill') ?></th>
-                        <th><?php echo _('Stack') ?></th>
-                        <th style='text-align:center'><?php echo _('Scale') ?></th>
-                        <th style='text-align:center'><?php echo _('Delta') ?></th>
-                        <th style='text-align:center'><?php echo _('Average') ?></th>
-                        <th><?php echo _('DP') ?></th><th style="width:120px"></th>
-                    </tr>
-                    <tbody id="feed-controls"></tbody>
-                </table>
-                
-                <table id="feed-stats-table" class="table hide">
-                    <tr>
-                        <th><?php echo _('Feed') ?></th>
-                        <th><?php echo _('Quality') ?></th>
-                        <th><?php echo _('Min') ?></th>
-                        <th><?php echo _('Max') ?></th>
-                        <th><?php echo _('Diff') ?></th>
-                        <th><?php echo _('Mean') ?></th>
-                        <th><?php echo _('Stdev') ?></th>
-                        <th><?php echo _('Wh') ?></th>
-                    </tr>
-                    <tbody id="feed-stats"></tbody>
-                </table>
+                <div id="tables" class="collapse">
+                    <table id="feed-options-table" class="table">
+                        <tr>
+                            <th></th>
+                            <th><?php echo _('Feed') ?></th>
+                            <th><?php echo _('Type') ?></th>
+                            <th><?php echo _('Color') ?></th>
+                            <th><?php echo _('Fill') ?></th>
+                            <th><?php echo _('Stack') ?></th>
+                            <th style='text-align:center'><?php echo _('Scale') ?></th>
+                            <th style='text-align:center'><?php echo _('Delta') ?></th>
+                            <th style='text-align:center'><?php echo _('Average') ?></th>
+                            <th><?php echo _('DP') ?></th><th style="width:120px"></th>
+                        </tr>
+                        <tbody id="feed-controls"></tbody>
+                    </table>
+                    
+                    <table id="feed-stats-table" class="table hide">
+                        <tr>
+                            <th><?php echo _('Feed') ?></th>
+                            <th><?php echo _('Quality') ?></th>
+                            <th><?php echo _('Min') ?></th>
+                            <th><?php echo _('Max') ?></th>
+                            <th><?php echo _('Diff') ?></th>
+                            <th><?php echo _('Mean') ?></th>
+                            <th><?php echo _('Stdev') ?></th>
+                            <th><?php echo _('Wh') ?></th>
+                        </tr>
+                        <tbody id="feed-stats"></tbody>
+                    </table>
+                </div>
             </div>
             <br>
             
@@ -358,5 +362,18 @@
     
     graph_reloaddraw();
     
+
+    $(function(){
+        // manually add hide/show
+        $('#tables').collapse()
+
+        // trigger hide/show
+        $('.feed-options-title').on('click', function (event) {
+            event.preventDefault();
+            event.target.querySelector('.caret').classList.toggle('open');
+            $('#tables').collapse('toggle');
+            console.log(event.type)
+        })
+    });
 </script>
 
