@@ -518,7 +518,8 @@ function graph_init_editor()
         $(".feed-options-show-options").show();
         $(".feed-options-show-stats").hide();
         event.preventDefault();
-    });    
+    });
+
     
     $(".feed-options-show-options").click(function(event){
         $("#feed-options-table").show();

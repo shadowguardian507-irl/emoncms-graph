@@ -61,6 +61,7 @@
 .feed-options-show-stats{
     cursor: pointer;
 }
+
 .feed-options-show-options {
 	float:right;
 	padding:10px;
@@ -70,11 +71,8 @@
 }
 
 .feed-options-show-stats {
-	float:right;
-	padding:10px;
-	width:150px;
-	text-align:center;
-	border-left: 1px solid #eee;
+    float: right;
+    margin: 5px;
 }
 
 #vis-mode-toggle, #vis-mode-user, #vis-mode-groups{
