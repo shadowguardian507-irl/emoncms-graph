@@ -512,18 +512,20 @@ function graph_init_editor()
         //   console.log(country);
     }); 
 
-    $(".feed-options-show-stats").click(function(){
+    $(".feed-options-show-stats").click(function(event){
         $("#feed-options-table").hide();
         $("#feed-stats-table").show();
         $(".feed-options-show-options").show();
         $(".feed-options-show-stats").hide();
+        event.preventDefault();
     });    
     
-    $(".feed-options-show-options").click(function(){
+    $(".feed-options-show-options").click(function(event){
         $("#feed-options-table").show();
         $("#feed-stats-table").hide();
         $(".feed-options-show-options").hide();
         $(".feed-options-show-stats").show();
+        event.preventDefault();
     });
 }
 
@@ -702,15 +704,19 @@ function graph_draw()
     var options = {
         lines: { fill: false },
         xaxis: { 
-            mode: "time", timezone: "browser", 
-            min: view.start, max: view.end
+            mode: "time",
+            timezone: "browser", 
+            min: view.start,
+            max: view.end,
+            monthNames: moment ? moment.monthsShort() : null,
+            dayNames: moment ? moment.weekdaysMin() : null
         },
-	      yaxes: [ { }, {
-			      // align if we are to the right
-			      alignTicksWithAxis: 1,
-			      position: "right"
-			      //tickFormatter: euroFormatter
-		    } ],
+        yaxes: [ { }, {
+            // align if we are to the right
+            alignTicksWithAxis: 1,
+            position: "right"
+            //tickFormatter: euroFormatter
+        } ],
         grid: {hoverable: true, clickable: true},
         selection: { mode: "x" },
         legend: { 
