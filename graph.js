@@ -544,7 +544,6 @@ function pushfeedlist(feedid, yaxis) {
 
 function graph_reloaddraw() {
     graph_reload();
-    graph_draw();
 }
 
 function graph_reload()
@@ -561,36 +560,105 @@ function graph_reload()
     $("#request-interval").val(view.interval);
     $("#request-limitinterval").attr("checked",view.limitinterval);
     
-    var errorstr = "";    
+    var ids = [];
+    var average_ids = [];
+
+    // create array of selected feed ids
+    for (var z in feedlist) {
+        if (feedlist[z].getaverage) {
+            average_ids.push(feedlist[z].id);
+        } else {
+            ids.push(feedlist[z].id);
+        }
+    }
+    var data = {
+        ids: ids.join(','),
+        start: view.start,
+        end: view.end,
+        interval: view.interval,
+        skipmissing: skipmissing,
+        limitinterval: view.limitinterval,
+        apikey: apikey
+    }
+    if (requesttype!="interval") {
+        data.mode = requesttype;
+    }
+   
+    if (ids.length + average_ids.length === 0) {
+        var title = _lang['Select a feed'];
+        var message = _lang['Please select a feed from the Feeds List'];
+        $('#error')
+        .show()
+        .html('<div class="alert alert-info"><strong>' + title + '</strong> ' + message + '</div>');
+        return false;
+    }
+    if (ids.length > 0) {
+        // get feedlist data
+        $.getJSON(path+"feed/data.json", data, addFeedlistData)
+        .error(handleFeedlistDataError)
+        .always(checkFeedlistData);
+    }
+    if (average_ids.length > 0) {
+        // get feedlist average data
+        var average_ajax_data = $.extend({}, data, {ids: average_ids.join(',')});
+        $.getJSON(path+"feed/average.json", average_ajax_data, addFeedlistData)
+        .error(handleFeedlistDataError)
+        .always(checkFeedlistData);
+    }
+}  
     
+
+function addFeedlistData(response){
+    // loop through feedlist and add response data to data property
+    var valid = false;
+    for (i in feedlist) {
+        let feed = feedlist[i];
+        for (j in response) {
+            let item = response[j];
+            if (parseInt(feed.id) === parseInt(item.feedid)) {
+                feed.data = item.data;
+            }
+            if (typeof item.data.success === 'undefined') {
+                valid = true;
+            }
+        }
+    }
+    // alter feedlist base on user selection
+    if (valid) set_feedlist();
+}
+function handleFeedlistDataError(jqXHR, error, message){
+    // @todo: notify the user that the the data api was unreachable;
+}
+function checkFeedlistData(response){
+    // display message to user if response not valid
+    var message = '';
+    var messages = [];
+
+    for (i in response) {
+        var item = response[i];
+        if (typeof item.data !== 'undefined') {
+            if (typeof item.data.success !== 'undefined' && !item.data.success) {
+                messages.push(item.data.message);
+            }
+        } else {
+            // response is jqXHR object
+            messages.push(response.responseText);
+        }
+    }
+    message = messages.join(', ');
+    var errorstr = '';
+    if (messages.length > 0) {
+        errorstr = '<div class="alert alert-danger"><strong>Request error</strong> ' + message + '</div>';
+        $('#error').html(errorstr).show();
+    } else {
+        $('#error').hide();
+    }
+}
+
+function set_feedlist() {
     for (var z in feedlist)
     {
-        var mode = "&interval="+view.interval+"&skipmissing="+skipmissing+"&limitinterval="+view.limitinterval;
-        if (requesttype!="interval") mode = "&mode="+requesttype;
-        
-        var method = "data";
-        if (feedlist[z].getaverage) method = "average";
-        var request = path+"feed/"+method+".json?id="+feedlist[z].id+"&start="+view.start+"&end="+view.end + mode;
-
-        $.ajax({                                      
-            url: request+apikeystr,
-            async: false,
-            dataType: "text",
-            success: function(data_in) {
-            
-                // 1) Check validity of json data, or show error
-                var valid = true;
-                try {
-                    feedlist[z].data = JSON.parse(data_in);
-                    if (feedlist[z].data.success!=undefined) valid = false;
-                } catch (e) {
-                    valid = false;
-                }
-                
-                if (!valid) errorstr += "<div class='alert alert-danger'><b>Request error</b> "+data_in+"</div>";
-            }
-        });
-        
+        // Apply delta adjustement to feed values
         if (feedlist[z].delta) {
             for (var i=1; i<feedlist[z].data.length; i++) {
                 if (feedlist[z].data[i][1]!=null && feedlist[z].data[i-1][1]!=null) {
@@ -616,13 +684,10 @@ function graph_reload()
             }
         }
     }
-    
-    if (errorstr!="") {
-        $("#error").html(errorstr).show();
-    } else {
-        $("#error").hide();
-    }
+    // call graph_draw() once feedlist is altered
+    graph_draw();
 }
+
 function group_legend_values(_flot, placeholder) {
     var legend = document.getElementById('legend');
     var current_legend = placeholder[0].nextSibling;
@@ -699,6 +764,7 @@ function build_rows(rows) {
     }
     return output;
 }
+
 function graph_draw()
 {
     var options = {
