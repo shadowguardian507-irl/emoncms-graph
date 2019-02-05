@@ -44,10 +44,6 @@ $('.graph_time').click(function () {
     graph_reloaddraw();
 });
 
-$('#placeholder').bind("legendclick", function (event, ranges) {
-  console.log(event);
-});
-
 $('#placeholder').bind("plotselected", function (event, ranges)
 {
     floatingtime=0; 
@@ -518,18 +514,20 @@ function graph_init_editor()
         //   console.log(country);
     }); 
 
-    $(".feed-options-show-stats").click(function(){
+    $(".feed-options-show-stats").click(function(event){
         $("#feed-options-table").hide();
         $("#feed-stats-table").show();
         $(".feed-options-show-options").show();
         $(".feed-options-show-stats").hide();
+        event.preventDefault();
     });    
     
-    $(".feed-options-show-options").click(function(){
+    $(".feed-options-show-options").click(function(event){
         $("#feed-options-table").show();
         $("#feed-stats-table").hide();
         $(".feed-options-show-options").hide();
         $(".feed-options-show-stats").show();
+        event.preventDefault();
     });
 }
 
@@ -632,22 +630,101 @@ function graph_reload()
         $("#error").hide();
     }
 }
+function group_legend_values(_flot, placeholder) {
+    var legend = document.getElementById('legend');
+    var current_legend = placeholder[0].nextSibling;
+    if (!current_legend) {
+        legend.innerHTML = '';
+        return;
+    }
+    var current_legend_labels = current_legend.querySelector('table tbody');
+    var rows = Object.values(current_legend_labels.childNodes);
+    var left = [];
+    var right = [];
+    var output = "";
 
+    for (n in rows){
+        var row = rows[n];
+        var isRight = row.querySelector('.label-right');
+        if (isRight){
+            right.push(row);
+        } else {
+            left.push(row);
+        }
+    }
+
+    output += '<div class="grid-container">';
+    output += '    <div class="col left">';
+    output += '      <ul class="unstyled">';
+    output += build_rows(left);
+    output += '      </ul>';
+    output += '    </div>';
+    output += '    <div class="col right">';
+    output += '      <ul class="unstyled">';
+    output += build_rows(right);
+    output += '      </ul>';
+    output += '    </div>';
+    output += '</div>';
+    // populate new legend with html
+    legend.innerHTML = output;
+    // hide old legend
+    current_legend.style.display = 'none';
+    // add onclick events to links within legend
+    var items = legend.querySelectorAll('[data-legend-series]');
+    for(i = 0; i < items.length; i++) {
+        var item = items[i];
+        var link = item.querySelector('a');
+        // handle click of legend link
+        if (!link) continue;
+        link.addEventListener('click', onClickLegendLink)
+    }
+}
+function onClickLegendLink(event) {
+    event.preventDefault();
+    var link = event.target;
+    // toggle opacity of the link
+    link.classList.toggle('faded');
+    // re-draw the chart with the plot lines hidden/shown
+    var index = link.dataset.index;
+    var current_data = plot_statistics.getData()
+    current_data[index].lines.show = !current_data[index].lines.show;
+    plot_statistics.setData(current_data);
+    // re-draw
+    plot_statistics.draw();
+}
+function build_rows(rows) {
+    var output = "";
+    for (x in rows) {
+        var row = rows[x];
+        var label = row.querySelector('.legendLabel')
+        var span = label.querySelector('span');
+        var index = span.dataset.index;
+        var id = span.dataset.id;
+        var colour = '<div class="legendColorBox">' + row.querySelector('.legendColorBox').innerHTML + '</div>'
+        // add <li> to the html
+        output += '      <li data-legend-series><a href="' + path + 'graph/' + id + '" data-index="' + index + '" data-id="' + id + '">' + colour + label.innerText + '</a></li>';
+    }
+    return output;
+}
 function graph_draw()
 {
     var timezone = _TIMEZONE || "browser";
     var options = {
         lines: { fill: false },
         xaxis: { 
-            mode: "time", timezone: timezone, 
-            min: view.start, max: view.end
+            mode: "time",
+            timezone: "browser", 
+            min: view.start,
+            max: view.end,
+            monthNames: moment ? moment.monthsShort() : null,
+            dayNames: moment ? moment.weekdaysMin() : null
         },
-	      yaxes: [ { }, {
-			      // align if we are to the right
-			      alignTicksWithAxis: 1,
-			      position: "right"
-			      //tickFormatter: euroFormatter
-		    } ],
+        yaxes: [ { }, {
+            // align if we are to the right
+            alignTicksWithAxis: 1,
+            position: "right"
+            //tickFormatter: euroFormatter
+        } ],
         grid: {hoverable: true, clickable: true},
         selection: { mode: "x" },
         legend: { 
@@ -655,21 +732,22 @@ function graph_draw()
             position: "nw",
             toggle: true,
             labelFormatter: function(label, item){
-                // text = '[←]' + label;
                 text = label;
                 cssClass = 'label-left';
                 title = 'Left Axis';
-                
                 if (item.isRight) {
-                    text = label + ' [→]';
                     cssClass = 'label-right';
                     title = 'Right Axis';
                 }
-                return '<span class="' + cssClass + '" title="'+title+'">' + text +'</span>'
+                data_attr = ' data-id="' + item.id + '" data-index="' + item.index + '"';
+                return '<span' + data_attr + ' class="' + cssClass + '" title="'+title+'">' + text +'</span>'
             },
         },
         toggle: { scale: "visible" },
-        touch: { pan: "x", scale: "x" }
+        touch: { pan: "x", scale: "x" },
+        hooks: {
+            bindEvents: [group_legend_values]
+        }
     }
 
     if (showlegend) options.legend.show = true;
@@ -711,9 +789,11 @@ function graph_draw()
         if (feedlist[z].plottype=="lines") { plot.lines = { show: true, fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), fill: feedlist[z].fill } };
         if (feedlist[z].plottype=="bars") { plot.bars = { align: "center", fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), show: true, barWidth: view.interval * 1000 * 0.75 } };
         plot.isRight = feedlist[z].yaxis === 2;
+        plot.id = feedlist[z].id;
+        plot.index = z;
         plotdata.push(plot);
     }
-    $.plot($('#placeholder'), plotdata, options);
+    plot_statistics = $.plot($('#placeholder'), plotdata, options);
 
     if (!embed) {
         
@@ -1184,7 +1264,7 @@ function graph_load_savedgraphs(fn=false)
         success: function(result) {
             savedgraphs = result.user;
             
-            var out = "<option>Select graph:</option>";
+            var out = "<option>" + _lang['Select graph'] + ":</option>";
             for (var z in savedgraphs) {
                var name = savedgraphs[z].name;
                out += "<option>"+name+"</option>";
