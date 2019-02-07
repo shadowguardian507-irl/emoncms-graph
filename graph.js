@@ -244,8 +244,12 @@ function graph_init_editor()
     for (var tag in feedsbytag) {
        tagname = tag;
        if (tag=="") tagname = "undefined";
-       out += "<tr class='tagheading' tag='"+tagname+"' style='background-color:#aaa; cursor:pointer'><td style='font-size:12px; padding:4px; padding-left:8px; font-weight:bold'>"+tagname+"</td><td></td><td></td></tr>";
-       out += "<tbody class='tagbody' tag='"+tagname+"'>";
+       out += "<thead>";
+       out += "<tr class='tagheading' data-tag='"+tagname+"'>";
+       out += "<th colspan='3'><span class='caret'></span>"+tagname+"</th>";
+       out += "</tr>";
+       out += "</thead>";
+       out += "<tbody class='tagbody' data-tag='"+tagname+"'>";
        for (var z in feedsbytag[tag]) 
        {
            out += "<tr>";
@@ -253,9 +257,9 @@ function graph_init_editor()
            if (name.length>20) {
                name = name.substr(0,20)+"..";
            }
-           out += "<td>"+name+"</td>";
-           out += "<td><input class='feed-select-left' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
-           out += "<td><input class='feed-select-right' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
+           out += "<th class='feed-title' data-feedid='"+feedsbytag[tag][z].id+"'>"+name+"</th>";
+           out += "<td><input class='feed-select-left' data-feedid='"+feedsbytag[tag][z].id+"' type='checkbox'></td>";
+           out += "<td><input class='feed-select-right' data-feedid='"+feedsbytag[tag][z].id+"' type='checkbox'></td>";
            out += "</tr>";
        }
        out += "</tbody>";
@@ -353,8 +357,13 @@ function graph_init_editor()
         graph_draw();
     });
 
+    $("body").on("click",".feed-title",function(event){
+        event.preventDefault();
+        var feedid = $(this).data("feedid");
+        $('.feed-select-left[data-feedid="' + feedid + '"]').click();
+    });
     $("body").on("click",".feed-select-left",function(){
-        var feedid = $(this).attr("feedid");
+        var feedid = $(this).data("feedid");
         var checked = $(this)[0].checked;
         
         var loaded = false;
@@ -365,7 +374,7 @@ function graph_init_editor()
                } else {
                    feedlist[z].yaxis = 1;
                    loaded = true;
-                   $(".feed-select-right[feedid="+feedid+"]")[0].checked = false;
+                   $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = false;
                }
            }
         }
@@ -379,7 +388,7 @@ function graph_init_editor()
     });
 
     $("body").on("click",".feed-select-right",function(){
-        var feedid = $(this).attr("feedid");
+        var feedid = $(this).data("feedid");
         var checked = $(this)[0].checked;
         
         var loaded = false;
@@ -390,7 +399,7 @@ function graph_init_editor()
                } else {
                    feedlist[z].yaxis = 2;
                    loaded = true;
-                   $(".feed-select-left[feedid="+feedid+"]")[0].checked = false;
+                   $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = false;
                }
            }
         }
@@ -401,8 +410,8 @@ function graph_init_editor()
     });
     
     $("body").on("click",".tagheading",function(){
-        var tag = $(this).attr("tag");
-        var e = $(".tagbody[tag='"+tag+"']");
+        var tag = $(this).data("tag");
+        var e = $(".tagbody[data-tag='"+tag+"']");
         if (e.is(":visible")) e.hide(); else e.show();
     });
 
@@ -1427,16 +1436,16 @@ function sidebar_resize() {
 function load_feed_selector() {
     for (var z in feeds) {
         var feedid = feeds[z].id;
-        $(".feed-select-left[feedid="+feedid+"]")[0].checked = false;
-        $(".feed-select-right[feedid="+feedid+"]")[0].checked = false;
+        $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = false;
+        $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = false;
     }
     
     for (var z=0; z<feedlist.length; z++) {
         var feedid = feedlist[z].id;
         var tag = feedlist[z].tag;
         if (tag=="") tag = "undefined";
-        if (feedlist[z].yaxis==1) { $(".feed-select-left[feedid="+feedid+"]")[0].checked = true; $(".tagbody[tag='"+tag+"']").show(); }
-        if (feedlist[z].yaxis==2) { $(".feed-select-right[feedid="+feedid+"]")[0].checked = true; $(".tagbody[tag='"+tag+"']").show(); }
+        if (feedlist[z].yaxis==1) { $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = true; $(".tagbody[data-tag='"+tag+"']").show(); }
+        if (feedlist[z].yaxis==2) { $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = true; $(".tagbody[data-tag='"+tag+"']").show(); }
     }
 }
 

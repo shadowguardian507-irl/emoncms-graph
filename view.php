@@ -48,11 +48,10 @@
 <link href="<?php echo $path; ?>Modules/graph/graph.css" rel="stylesheet">
 
 <div id="wrapper">
+    <?php /*
     <div id="sidebar-wrapper">
             <div style="padding-left:10px;">
-                <div id="sidebar-close" style="float:right; cursor:pointer; padding:10px;"><i class="icon-remove"></i></div>
                 <h3><?php echo _('Feeds') ?></h3>
-                
             </div>
             <div style="overflow-x: hidden; background-color:#f3f3f3; width:100%">
                 <table class="table" id="feeds">
@@ -73,15 +72,15 @@
                 <button id="graph-save" class="btn"><?php echo _('Save') ?></button>
             </div>
     </div>
-
+    */ ?>
     <div id="page-content-wrapper" style="max-width:1280px">
         
-        <h3><?php echo _('Data viewer') ?></h3> 
-
+        <a href="#" data-toggle="slide-collapse" data-target="#sidebar"><h3>&#9776; <?php echo _('Data viewer'); ?></h3></a>
+        
         <div id="error" style="display:none"></div>
 
         <div id="navigation" style="padding-bottom:5px;">
-            <button class="btn" id="sidebar-open"><i class="icon-list"></i></button>
+            <button class="btn" href="#" data-toggle="slide-collapse" data-target="#sidebar"><i class="icon-list"></i></button>
             <button class='btn graph_time' type='button' time='1' title="<?php echo _('Day') ?>"><?php echo _('D') ?></button>
             <button class='btn graph_time' type='button' time='7' title="<?php echo _('Week') ?>"><?php echo _('W') ?></button>
             <button class='btn graph_time' type='button' time='30' title="<?php echo _('Month') ?>"><?php echo _('M') ?></button>

@@ -72,6 +72,7 @@ function graph_controller()
     }
 
     else {
+        $route->sidebar = view("Modules/graph/Views/sidebar.php");
         $result = view("Modules/graph/view.php", array("session" => $session["write"]));
     }
 

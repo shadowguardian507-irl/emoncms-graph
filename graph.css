@@ -180,6 +180,40 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
 #legend [data-legend-series] a{
     outline: none;
 }
+
+table#feeds.table{width:99%}
+table#feeds.table thead th{
+    border-top: 4px solid #333;
+     font-weight: normal !important;
+     color: #777;
+     cursor: pointer;
+     transition: all .3s ease-in
+}
+table#feeds.table thead th:hover{
+    color: #f8f9fa;
+    text-decoration: underline;
+}
+table#feeds.table input[type="checkbox"] { margin: 0 }
+table#feeds.table thead tr th:first-child{padding-left: .5em}
+table#feeds.table tbody tr > *{
+    border-color: #444;
+}
+table#feeds.table tbody tr th{
+    cursor: pointer;
+    padding-left: 1.5em;
+    transition: all .3s ease-in
+}
+table#feeds.table tbody tr th:hover{
+    text-decoration: underline;
+}
+
+table#feeds.table .caret {
+    border-top-color: currentColor !important;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: .4em;
+}
+
 @media(max-width: 512px) {
     #legend .col {
         position: relative; left: 0;
