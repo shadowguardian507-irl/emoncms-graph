@@ -172,8 +172,8 @@
             
             <div class="feed-options hide">
                 <div class="feed-options-header">
-                    <div class="feed-options-show-options hide"><?php echo _('Show options') ?></div>
-                    <div class="feed-options-show-stats"><?php echo _('Show statistics') ?></div>
+                    <div class="feed-options-show-options btn btn-default hide"><?php echo _('Show options') ?></div>
+                    <div class="feed-options-show-stats btn btn-default"><?php echo _('Show statistics') ?></div>
                     <a href="#tables" class="feed-options-title">
                         <span class="caret pull-left"></span>
                         <?php echo _('Feeds in view') ?>

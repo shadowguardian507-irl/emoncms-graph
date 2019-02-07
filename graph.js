@@ -524,8 +524,8 @@ function graph_init_editor()
     $(".feed-options-show-stats").click(function(event){
         $("#feed-options-table").hide();
         $("#feed-stats-table").show();
-        $(".feed-options-show-options").show();
-        $(".feed-options-show-stats").hide();
+        $(".feed-options-show-options").removeClass('hide');
+        $(".feed-options-show-stats").addClass('hide');
         event.preventDefault();
     });
 
@@ -533,8 +533,8 @@ function graph_init_editor()
     $(".feed-options-show-options").click(function(event){
         $("#feed-options-table").show();
         $("#feed-stats-table").hide();
-        $(".feed-options-show-options").hide();
-        $(".feed-options-show-stats").show();
+        $(".feed-options-show-options").addClass('hide');
+        $(".feed-options-show-stats").removeClass('hide');
         event.preventDefault();
     });
 }
