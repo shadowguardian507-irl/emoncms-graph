@@ -14,6 +14,9 @@
     $fullwidth = true;
     
     $graphid = get("graphid");
+    
+    $apikey = "";
+    if (isset($_GET['apikey'])) $apikey = $_GET['apikey'];
 ?>
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
@@ -73,6 +76,10 @@
     var path = "<?php echo $path; ?>";
     
     var graphid = "<?php echo $graphid; ?>";
+
+    var apikey = "<?php echo $apikey; ?>";
+    var apikeystr = "";
+    if (apikey!="") apikeystr = "&apikey="+apikey;
     
     $.ajax({                                      
         url: path+"/graph/get?id="+graphid,
