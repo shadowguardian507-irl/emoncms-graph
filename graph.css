@@ -4,22 +4,23 @@
   padding-left: 250px;
 }
 
-#sidebar-wrapper {
-  margin-top:-10px;
-  margin-left: -250px;
-  left: 250px;
-  width: 250px;
-  background: #eee;
-  position: fixed;
-  overflow-y: auto;
-  z-index: 1000;
-}
-
 #page-content-wrapper {
   width: 100%;
   padding-left:0px;
 }
 
+
+#sub_nav li{
+    transition: all .2s ease-out;
+    height: 0;
+    border-bottom-width: 0;
+    overflow: hidden;
+}
+#sub_nav.expanded li,
+#sub_nav li.active{
+    height: 3.125rem;
+    border-bottom-width: 1px;
+}
 
 .feed-options {
     background-color:#eee;
@@ -202,6 +203,26 @@ table#feeds.table .caret {
     display: inline-block;
     vertical-align: middle;
     margin-right: .4em;
+}
+
+#mygraphs h4{
+    margin-bottom: 0;
+}
+#mygraphs h4 a:hover{
+    text-decoration: underline;
+}
+#mygraphs #graph-list{
+    width:14rem;
+    padding-left:1rem;
+    overflow:hidden;
+    position: relative;
+    margin-bottom: 3rem;
+}
+#mygraphs #graph-list input{
+    width:12rem;
+}
+#mygraphs #graph-list select{
+    width:13rem;
 }
 
 @media(max-width: 512px) {
