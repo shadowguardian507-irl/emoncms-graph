@@ -52,7 +52,7 @@
     <div id="error" style="display:none"></div>
 
     <div id="navigation" style="padding-bottom:5px;">
-        <button class="btn<?php if($fullwidth) echo ' collapsed' ?>" href="#" data-toggle="slide-collapse" data-target="#sidebar"></button>
+        <button class="btn<?php if(!$fullwidth) echo ' collapsed' ?>" href="#" data-toggle="slide-collapse" data-target="#sidebar"><i class="icon-list"></i></button>
         <button class='btn graph_time' type='button' time='1' title="<?php echo _('Day') ?>"><?php echo _('D') ?></button>
         <button class='btn graph_time' type='button' time='7' title="<?php echo _('Week') ?>"><?php echo _('W') ?></button>
         <button class='btn graph_time' type='button' time='30' title="<?php echo _('Month') ?>"><?php echo _('M') ?></button>
@@ -342,7 +342,6 @@
     view.calc_interval();
     
     graph_reloaddraw();
-    
 
     $(function(){
         // manually add hide/show
@@ -357,12 +356,12 @@
         })
 
         $('#sub_nav li.active a')
-        .append('<svg class="icon pull-right"><use xlink:href="#icon-expand"></use></svg>')
-        .append('<svg class="icon pull-right" style="display:none"><use xlink:href="#icon-contract"></use></svg>')
+        // .append('<svg class="icon pull-right"><use xlink:href="#icon-expand"></use></svg>')
+        // .append('<svg class="icon pull-right" style="display:none"><use xlink:href="#icon-contract"></use></svg>')
         .on('click', function(event){
             event.preventDefault();
             event.stopPropagation();
-            $('#sub_nav').toggleClass('expanded');
+            $('#sub_nav, #feeds').toggleClass('in');
             $(this).find('.icon.pull-right').toggle();
         })
     });

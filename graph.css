@@ -16,7 +16,8 @@
     border-bottom-width: 0;
     overflow: hidden;
 }
-#sub_nav.expanded li,
+/* show all menu items when 'in' class added */
+#sub_nav.in li,
 #sub_nav li.active{
     height: 3.125rem;
     border-bottom-width: 1px;
@@ -172,7 +173,19 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
     outline: none;
 }
 
-table#feeds.table{width:99%}
+table#feeds.table, #mygraphs{
+    width: 0;
+    height: 0;
+    opacity: 0;
+    transition: all .2s ease-out;
+    overflow: hidden;
+}
+/* show #feeds when expanded */
+table#feeds.table.in{
+    width: 99%;
+    opacity: 1;
+}
+
 table#feeds.table thead th{
     border-top: 4px solid #333;
      font-weight: normal !important;
@@ -203,6 +216,19 @@ table#feeds.table .caret {
     display: inline-block;
     vertical-align: middle;
     margin-right: .4em;
+}
+
+table#feeds.table, #mygraphs{
+    width: 0;
+    height: 0;
+    opacity: 0;
+    transition: all .2s ease-out;
+    overflow: hidden;
+}
+/* show #feeds when expanded */
+#mygraphs.in{
+    width: 99%;
+    opacity: 1;
 }
 
 #mygraphs h4{

@@ -1,8 +1,7 @@
 <?php
-    $domain = "messages";
-    bindtextdomain($domain, "Modules/graph/locale");
-    bind_textdomain_codeset($domain, 'UTF-8');
-    // $menu_dropdown_config[] = array('name'=> dgettext($domain,"Graphs"), 'icon'=>'icon-retweet', 'path'=>"graph" , 'session'=>"write", 'order' => 25 );
+    // $domain = "messages";
+    // bindtextdomain($domain, "Modules/graph/locale");
+    // bind_textdomain_codeset($domain, 'UTF-8');
 
     $menu['setup'][] = array(
         'text' => _("Graphs"),
@@ -12,6 +11,6 @@
         'li_id' => 'graph-link'
     );
 
-    // @todo: use os specific directory separators
+    // @todo: use os specific directory separators for windows boxes
     // implode(DIRECTORY_SEPARATOR, explode(',','Modules,graph,Views,sidebar.php'));
     $menu['includes']['graph'][] = view('Modules/graph/Views/sidebar.php');
