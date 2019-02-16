@@ -1188,7 +1188,9 @@ function load_saved_graph(name) {
     $("#graph-delete").show();
     var index = graph_index_from_name(name);
     
-    $("#graph-id").html(savedgraphs[index].id);
+    if(savedgraphs[index]){
+        $("#graph-id").html(savedgraphs[index].id);
+    }
     
     // view settings
     view.start = savedgraphs[index].start;
