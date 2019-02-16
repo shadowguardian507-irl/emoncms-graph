@@ -181,9 +181,11 @@ table#feeds.table, #mygraphs{
     overflow: hidden;
 }
 /* show #feeds when expanded */
-table#feeds.table.in{
+table#feeds.table.in,
+#mygraphs.in{
     width: 99%;
     opacity: 1;
+    height: auto;
 }
 
 table#feeds.table thead th{
