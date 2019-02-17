@@ -595,6 +595,8 @@ function graph_reload()
     }
    
     if (ids.length + average_ids.length === 0) {
+        graph_resize();
+        graph_draw();
         var title = _lang['Select a feed'];
         var message = _lang['Please select a feed from the Feeds List'];
         $('#error')
