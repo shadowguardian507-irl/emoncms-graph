@@ -602,7 +602,11 @@ function graph_reload()
         $('#error')
         .show()
         .html('<div class="alert alert-info"><strong>' + title + '</strong> ' + message + '</div>');
+
+        $('#graph-wrapper').addClass('empty');
         return false;
+    } else {
+        $('#graph-wrapper').removeClass('empty');
     }
     if (ids.length > 0) {
         // get feedlist data

@@ -259,6 +259,17 @@ table#feeds.table, #mygraphs{
     margin-bottom: 0;
     padding-right: 1em;
 }
+#error .alert{
+    margin-bottom: 0;
+    padding-right: 1em;
+}
+#graph-wrapper{
+    transition: all .3s ease-out;
+}
+#graph-wrapper.empty{
+    opacity: .3;
+    transform: scale(.99);
+}
 @media(max-width: 512px) {
     #legend .col {
         position: relative; left: 0;
