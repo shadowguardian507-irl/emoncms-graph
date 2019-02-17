@@ -252,7 +252,13 @@ table#feeds.table, #mygraphs{
 #mygraphs #graph-list select{
     width:13rem;
 }
-
+#error {
+    margin-left: 1em;
+}
+#error .alert{
+    margin-bottom: 0;
+    padding-right: 1em;
+}
 @media(max-width: 512px) {
     #legend .col {
         position: relative; left: 0;

@@ -46,11 +46,10 @@
 <link href="<?php echo $path; ?>Modules/graph/graph.css" rel="stylesheet">
 
 <div id="page-content-wrapper" style="max-width:1280px">
-    
-    <h3><?php echo _('Data viewer'); ?></h3>
-    
-    <div id="error" style="display:none"></div>
-
+    <div style="display: flex; align-items: center;">
+        <h3><?php echo _('Data viewer'); ?></h3>
+        <div id="error" style="display:none"></div>
+    </div>
     <div id="navigation" style="padding-bottom:5px;">
         <button class="btn<?php if(!$fullwidth) echo ' collapsed' ?>" href="#" data-toggle="slide-collapse" data-target="#sidebar"><i class="icon-list"></i></button>
         <button class='btn graph_time' type='button' time='1' title="<?php echo _('Day') ?>"><?php echo _('D') ?></button>
