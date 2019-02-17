@@ -603,10 +603,26 @@ function graph_reload()
         .show()
         .html('<div class="alert alert-info"><strong>' + title + '</strong> ' + message + '</div>');
 
+        // duplicate the 'show sidebar' button before fading out the toolbar
         $('#graph-wrapper').addClass('empty');
+        if($('#cloned_toggle').length == 0) {
+            $('#graph-wrapper [data-toggle="slide-collapse"]')
+            .first().clone().insertBefore('#graph-wrapper')
+            .attr('id','cloned_toggle')
+            .css({
+                margin: '.2rem .3rem',
+                position: 'absolute',
+                transform: 'scale(.99)',
+                zIndex: 1
+            })
+            .hide()
+            .delay(200)
+            .fadeIn();
+        }
         return false;
     } else {
         $('#graph-wrapper').removeClass('empty');
+        $('#cloned_toggle').remove();
     }
     if (ids.length > 0) {
         // get feedlist data
