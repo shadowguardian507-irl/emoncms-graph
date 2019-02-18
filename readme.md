@@ -15,7 +15,7 @@ And ensure you are runing latest version and Emoncms
 
 Check for Database upates in Admin
 
-## 2. Make Emoncms use graph module as defauld feed viewer
+## 2. Make Emoncms use graph module as default feed viewer
 
 Add (or change) `$feedviewpath = "graph/";` in `settings.php`
 
