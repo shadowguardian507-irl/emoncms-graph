@@ -87,7 +87,6 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
 });
 
 $(window).resize(function(){
-    if (!embed) sidebar_resize();
     graph_resize();
     graph_draw();
 });
@@ -106,7 +105,6 @@ function graph_resize() {
     placeholder_bound.height(height-top_offset);
     placeholder.height(height-top_offset);
 }
-
 function datetimepickerInit()
 {
     $("#datetimepicker1").datetimepicker({
@@ -1424,42 +1422,16 @@ function graph_delete(id) {
     graph_load_savedgraphs();
 }
 
-// ----------------------------------------------------------------------------------------
-// Sidebar
-// ----------------------------------------------------------------------------------------
-$("#sidebar-open").click(function(){
-    $("#sidebar-wrapper").css("left","250px");
-    $("#sidebar-close").show();
-});
-
-$("#sidebar-close").click(function(){
-    $("#sidebar-wrapper").css("left","0");
-    $("#sidebar-close").hide();
-});
-
-function sidebar_resize() {
-    var width = $(window).width();
-    var height = $(window).height();
-    $("#sidebar-wrapper").height(height-41);
-    
-    if (width<1024) {
-        $("#sidebar-wrapper").css("left","0");
-        $("#wrapper").css("padding-left","0");
-        $("#sidebar-open").show();
-    } else {
-        $("#sidebar-wrapper").css("left","250px");
-        $("#wrapper").css("padding-left","250px");
-        $("#sidebar-open").hide();
-        $("#sidebar-close").hide();
-    }
-}
 
 // ----------------------------------------------------------------------------------------
 function load_feed_selector() {
     for (var z in feeds) {
         var feedid = feeds[z].id;
-        $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = false;
-        $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = false;
+        var left = $(".feed-select-left[data-feedid="+feedid+"]");
+        if (left.length>0) $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = false;
+
+        var right = $(".feed-select-left[data-feedid="+feedid+"]");
+        if (right.length>0) $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = false;
     }
     
     for (var z=0; z<feedlist.length; z++) {

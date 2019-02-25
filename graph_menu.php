@@ -3,14 +3,12 @@
     // bindtextdomain($domain, "Modules/graph/locale");
     // bind_textdomain_codeset($domain, 'UTF-8');
 
-    $menu['setup'][] = array(
+    $menu['sidebar']['setup'][] = array(
         'text' => _("Graphs"),
         'path' => 'graph',
         'icon' => 'show_chart',
-        'sort' => 2,
+        'order' => 2,
         'li_id' => 'graph-link'
     );
 
-    // @todo: use os specific directory separators for windows boxes
-    // implode(DIRECTORY_SEPARATOR, explode(',','Modules,graph,Views,sidebar.php'));
-    $menu['includes']['graph'][] = view('Modules/graph/Views/sidebar.php');
+    $menu['sidebar']['includes']['setup'][] = view('Modules/graph/Views/sidebar.php');

@@ -319,7 +319,6 @@
         }
     }
     
-    sidebar_resize();
     graph_init_editor();
     
     load_feed_selector(); 
@@ -353,21 +352,21 @@
             event.preventDefault();
             event.target.querySelector('.caret').classList.toggle('open');
             $('#tables').collapse('toggle');
-            console.log(event.type)
         })
 
-        $('#sub_nav li.active a')
         // .append('<svg class="icon pull-right"><use xlink:href="#icon-expand"></use></svg>')
         // .append('<svg class="icon pull-right" style="display:none"><use xlink:href="#icon-contract"></use></svg>')
-        .on('click', function(event){
+        $(document).on('click', '#menu-setup li.active a', function(event){
             event.preventDefault();
             event.stopPropagation();
-            $('#sub_nav, #feeds').toggleClass('in');
-            $(this).find('.icon.pull-right').toggle();
-        })
+            $('#setup-sidebar-include .include-container').toggleClass('in');
+            $('#menu-setup li').not('.active').toggle('hidden');
+            // $(this).find('.icon.pull-right').toggle();
+        });
+        setTimeout(function(){
+            $('#setup-sidebar-include .include-container').toggleClass('in');
+            $('#menu-setup li').not('.active').toggle('hidden');
+        }, 500)
     });
 
-
-
 </script>
-

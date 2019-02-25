@@ -173,21 +173,6 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
     outline: none;
 }
 
-table#feeds.table, #mygraphs{
-    width: 0;
-    height: 0;
-    opacity: 0;
-    transition: all .2s ease-out;
-    overflow: hidden;
-}
-/* show #feeds when expanded */
-table#feeds.table.in,
-#mygraphs.in{
-    width: 99%;
-    opacity: 1;
-    height: auto;
-}
-
 table#feeds.table thead th{
     border-top: 4px solid #333;
      font-weight: normal !important;
@@ -219,39 +204,43 @@ table#feeds.table .caret {
     vertical-align: middle;
     margin-right: .4em;
 }
-
-table#feeds.table, #mygraphs{
+/* 
+#setup-sidebar-include{
     width: 0;
     height: 0;
     opacity: 0;
     transition: all .2s ease-out;
     overflow: hidden;
 }
-/* show #feeds when expanded */
-#mygraphs.in{
+#setup-sidebar-include.in{
     width: 99%;
     opacity: 1;
+    height: auto;
 }
 
-#mygraphs h4{
-    margin-bottom: 0;
+#setup-sidebar-include h4{
+    padding: 1rem;
 }
-#mygraphs h4 a:hover{
+#setup-sidebar-include h4 a{
+    color: white;
+    display: block;
+}
+#setup-sidebar-include h4 a:hover{
     text-decoration: underline;
 }
-#mygraphs #graph-list{
-    width:14rem;
-    padding-left:1rem;
-    overflow:hidden;
+#setup-sidebar-include #graph-list{
+    width: 14rem;
+    padding-left: 1rem;
+    overflow: hidden;
     position: relative;
     margin-bottom: 3rem;
 }
-#mygraphs #graph-list input{
+#setup-sidebar-include #graph-list input{
     width:12rem;
 }
-#mygraphs #graph-list select{
+#setup-sidebar-include #graph-list select{
     width:13rem;
-}
+} */
 #error {
     margin-left: 1em;
 }
