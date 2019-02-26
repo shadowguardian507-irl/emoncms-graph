@@ -1,0 +1,327 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2019-02-19 09:18+0100\n"
+"PO-Revision-Date: 2019-02-19 18:16+0100\n"
+"Last-Translator: Aymeric THIBAUT\n"
+"Language-Team: Aymeric THIBAUT\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+"X-Poedit-Basepath: ../../..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: graph_menu.php:5
+msgid "Graphs"
+msgstr "Graphiques"
+
+#: view.php:54
+msgid "Feeds"
+msgstr "Flux"
+
+#: view.php:63
+msgid "My Graphs"
+msgstr "Mes graphiques"
+
+#: view.php:69
+msgid "Graph Name"
+msgstr "Nom Graphique"
+
+#: view.php:71
+msgid "Selected graph id"
+msgstr "ID Graphique sélectionné"
+
+#: view.php:71
+msgid "None selected"
+msgstr "Aucun sélectionné"
+
+#: view.php:72
+msgid "Delete"
+msgstr "Supprimer"
+
+#: view.php:73
+msgid "Save"
+msgstr "Enregistrer"
+
+#: view.php:79
+msgid "Data viewer"
+msgstr "Visualiseur de données"
+
+#: view.php:85
+msgid "Day"
+msgstr "Jour"
+
+#: view.php:85
+msgid "D"
+msgstr ""
+
+#: view.php:86
+msgid "Week"
+msgstr "Semaine"
+
+#: view.php:86
+msgid "W"
+msgstr ""
+
+#: view.php:87
+msgid "Month"
+msgstr "Mois"
+
+#: view.php:87
+msgid "M"
+msgstr ""
+
+#: view.php:88
+msgid "Year"
+msgstr "Année"
+
+#: view.php:88
+msgid "Y"
+msgstr ""
+
+#: view.php:89
+msgid "Zoom In"
+msgstr "Zoom avant"
+
+#: view.php:90
+msgid "Zoom Out"
+msgstr "Zoom arrière"
+
+#: view.php:91
+msgid "Earlier"
+msgstr "Avant"
+
+#: view.php:92
+msgid "Later"
+msgstr "Après"
+
+#: view.php:95 view.php:228
+msgid "Show"
+msgstr "Afficher"
+
+#: view.php:96
+msgid "missing data"
+msgstr "données manquantes"
+
+#: view.php:97
+msgid "legend"
+msgstr "légende"
+
+#: view.php:98
+msgid "feed tag"
+msgstr "étiquette flux"
+
+#: view.php:106
+msgid "Histogram"
+msgstr "Histogramme"
+
+#: view.php:107 view.php:142 view.php:189
+msgid "Type"
+msgstr "Type"
+
+#: view.php:109
+msgid "Time at value"
+msgstr "Temps à la valeur"
+
+#: view.php:110
+msgid "kWh at Power"
+msgstr "kWh à la Puissance"
+
+#: view.php:112
+msgid "Resolution"
+msgstr "Résolution"
+
+#: view.php:116
+msgid "Back to main view"
+msgstr "Retour à la vue principale"
+
+#: view.php:126
+msgid "Start"
+msgstr "Début"
+
+#: view.php:134
+msgid "End"
+msgstr "Fin"
+
+#: view.php:144
+msgid "Fixed Interval"
+msgstr "Intervalle fixe"
+
+#: view.php:145
+msgid "Daily"
+msgstr "Quotiden"
+
+#: view.php:146
+msgid "Weekly"
+msgstr "Hebdomadaire"
+
+#: view.php:147
+msgid "Monthly"
+msgstr "Mensuel"
+
+#: view.php:148
+msgid "Annual"
+msgstr "Annuel"
+
+#: view.php:156
+msgid "Fix"
+msgstr "Réparer"
+
+#: view.php:157
+msgid "Limit to data interval"
+msgstr "Limiter à l'intervalle de données"
+
+#: view.php:162
+msgid "Y-axis"
+msgstr "Axe-Y"
+
+#: view.php:163
+msgid "min"
+msgstr "min"
+
+#: view.php:166
+msgid "max"
+msgstr "max"
+
+#: view.php:169
+msgid "Reload"
+msgstr "Recharger"
+
+#: view.php:176
+msgid "Show options"
+msgstr "Afficher options"
+
+#: view.php:177
+msgid "Show statistics"
+msgstr "Afficher statistiques"
+
+#: view.php:180
+msgid "Feeds in view"
+msgstr "Flux dans la vue"
+
+#: view.php:188 view.php:203
+msgid "Feed"
+msgstr "Flux"
+
+#: view.php:190
+msgid "Color"
+msgstr "Couleur"
+
+#: view.php:191
+msgid "Fill"
+msgstr "Remplissage"
+
+#: view.php:192
+msgid "Stack"
+msgstr "Empilement"
+
+#: view.php:193
+msgid "Scale"
+msgstr "Échelle"
+
+#: view.php:194
+msgid "Delta"
+msgstr "Delta"
+
+#: view.php:195
+msgid "Average"
+msgstr "Moyenne"
+
+#: view.php:196
+msgid "DP"
+msgstr ""
+
+#: view.php:204
+msgid "Quality"
+msgstr "Qualité"
+
+#: view.php:205
+msgid "Min"
+msgstr "Min"
+
+#: view.php:206
+msgid "Max"
+msgstr "Max"
+
+#: view.php:207
+msgid "Diff"
+msgstr "Différence"
+
+#: view.php:208
+msgid "Mean"
+msgstr "Médiane"
+
+#: view.php:209
+msgid "Stdev"
+msgstr "Écart-type"
+
+#: view.php:210
+msgid "Wh"
+msgstr "Wh"
+
+#: view.php:219
+msgid "Show CSV Output"
+msgstr "Afficher sortie CSV"
+
+#: view.php:220
+msgid "Time format"
+msgstr "Format temps"
+
+#: view.php:222
+msgid "Unix timestamp"
+msgstr "Horodatage Unix"
+
+#: view.php:223
+msgid "Seconds since start"
+msgstr "Secondes depuis le départ"
+
+#: view.php:224
+msgid "Date-time string"
+msgstr "Chaîne Date-temps"
+
+#: view.php:226
+msgid "Null values"
+msgstr "Valeurs nulles"
+
+#: view.php:229
+msgid "Replace with last value"
+msgstr "Remplacer avec la dernière valeur"
+
+#: view.php:230
+msgid "Remove whole line"
+msgstr "Retirer la ligne entière"
+
+#: view.php:232
+msgid "Headers"
+msgstr "En-têtes"
+
+#: view.php:234
+msgid "Show name and tag"
+msgstr "Afficher nom et étiquette"
+
+#: view.php:235
+msgid "Show name"
+msgstr "Afficher nom"
+
+#: view.php:236
+msgid "Hide"
+msgstr "Masquer"
+
+#: view.php:241
+msgid "Copy"
+msgstr "Copier"
+
+#: view.php:273
+msgid "Select a feed"
+msgstr "Sélectionner un flux"
+
+#: view.php:274
+msgid "Please select a feed from the Feeds List"
+msgstr "Sélectionner SVP un flux à partir de la liste Flux"
+
+#: view.php:275
+msgid "Select graph"
+msgstr "Sélectionner graphique"
