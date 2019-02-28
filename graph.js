@@ -616,7 +616,8 @@ function addFeedlistData(response){
         let feed = feedlist[i];
         for (j in response) {
             let item = response[j];
-            if (parseInt(feed.id) === parseInt(item.feedid)) {
+            if (parseInt(feed.id) === parseInt(item.feedid) && item.data!=undefined) {
+                feed.postprocessed = false;
                 feed.data = item.data;
             }
             if (typeof item.data.success === 'undefined') {
@@ -659,28 +660,34 @@ function checkFeedlistData(response){
 function set_feedlist() {
     for (var z in feedlist)
     {
-        // Apply delta adjustement to feed values
-        if (feedlist[z].delta) {
-            for (var i=1; i<feedlist[z].data.length; i++) {
-                if (feedlist[z].data[i][1]!=null && feedlist[z].data[i-1][1]!=null) {
-                    var delta = feedlist[z].data[i][1] - feedlist[z].data[i-1][1];
-                    feedlist[z].data[i-1][1] = delta;
-                } else {
-                    feedlist[z].data[i][1] = 0;
-                    feedlist[z].data[i-1][1] = null;
-                }
-            }
-            feedlist[z].data[feedlist[z].data.length-1][1] = null;
-        }
-        
-        // Apply a scale to feed values
         var scale = $(".scale[feedid="+feedlist[z].id+"]").val();
         if (scale!=undefined) feedlist[z].scale = scale;
-        
-        if (feedlist[z].scale!=undefined && feedlist[z].scale!=1.0) {
-            for (var i=0; i<feedlist[z].data.length; i++) {
-                if (feedlist[z].data[i][1]!=null) {
-                    feedlist[z].data[i][1] = feedlist[z].data[i][1] * feedlist[z].scale;
+            
+        // check to ensure feed scaling and data are only applied once
+        if (feedlist[z].postprocessed==false) {
+            feedlist[z].postprocessed = true;
+            console.log("postprocessing feed "+feedlist[z].id+" "+feedlist[z].name);
+            
+            // Apply delta adjustement to feed values
+            if (feedlist[z].delta) {
+                for (var i=1; i<feedlist[z].data.length; i++) {
+                    if (feedlist[z].data[i][1]!=null && feedlist[z].data[i-1][1]!=null) {
+                        var delta = feedlist[z].data[i][1] - feedlist[z].data[i-1][1];
+                        feedlist[z].data[i-1][1] = delta;
+                    } else {
+                        feedlist[z].data[i][1] = 0;
+                        feedlist[z].data[i-1][1] = null;
+                    }
+                }
+                feedlist[z].data[feedlist[z].data.length-1][1] = null;
+            }
+            
+            // Apply a scale to feed values            
+            if (feedlist[z].scale!=undefined && feedlist[z].scale!=1.0) {
+                for (var i=0; i<feedlist[z].data.length; i++) {
+                    if (feedlist[z].data[i][1]!=null) {
+                        feedlist[z].data[i][1] = feedlist[z].data[i][1] * feedlist[z].scale;
+                    }
                 }
             }
         }
