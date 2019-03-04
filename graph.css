@@ -176,7 +176,7 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
 table#feeds.table thead th{
     border-top: 4px solid #333;
      font-weight: normal !important;
-     color: #777;
+     color: #adadad;
      cursor: pointer;
      transition: all .3s ease-in
 }
@@ -191,8 +191,9 @@ table#feeds.table tbody tr > *{
 }
 table#feeds.table tbody tr th{
     cursor: pointer;
-    padding-left: 1.5em;
-    transition: all .3s ease-in
+    padding-left: .7em;
+    transition: all .3s ease-in;
+    font-weight: normal;
 }
 table#feeds.table tbody tr th:hover{
     text-decoration: underline;
