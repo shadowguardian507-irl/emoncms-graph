@@ -645,7 +645,7 @@ function addFeedlistData(response){
         let feed = feedlist[i];
         for (j in response) {
             let item = response[j];
-            if (parseInt(feed.id) === parseInt(item.feedid)) {
+            if (parseInt(feed.id) === parseInt(item.feedid) && item.data!=undefined) {
                 feed.postprocessed = false;
                 feed.data = item.data;
             }

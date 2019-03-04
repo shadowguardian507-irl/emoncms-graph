@@ -74,7 +74,7 @@
 
         <div id="histogram-controls" style="padding-bottom:5px; display:none;">
             <div class="input-prepend input-append">
-                <span class="add-on" style="width:75px"><b><?php echo _('Histogram') ?></b></span>
+                <span class="add-on" style="width:100px"><b><?php echo _('Histogram') ?></b></span>
                 <span class="add-on" style="width:75px"><?php echo _('Type') ?></span>
                 <select id="histogram-type" style="width:150px">
                     <option value="timeatvalue" ><?php echo _('Time at value') ?></option>
@@ -111,7 +111,7 @@
             
             <div class="input-prepend input-append" style="padding-right:5px">
                 <span class="add-on" style="width:50px"><?php echo _('Type') ?></span>
-                <select id="request-type" style="width:120px">
+                <select id="request-type" style="width:130px">
                     <option value="interval"><?php echo _('Fixed Interval') ?></option>
                     <option><?php echo _('Daily') ?></option>
                     <option><?php echo _('Weekly') ?></option>

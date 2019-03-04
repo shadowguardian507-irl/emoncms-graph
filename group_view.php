@@ -109,7 +109,7 @@
 
         <div id="histogram-controls" style="padding-bottom:5px; display:none;">
             <div class="input-prepend input-append">
-                <span class="add-on" style="width:75px"><b>Histogram</b></span>
+                <span class="add-on" style="width:100px"><b>Histogram</b></span>
                 <span class="add-on" style="width:75px">Type</span>
                 <select id="histogram-type" style="width:150px">
                     <option value="timeatvalue" >Time at value</option>
@@ -140,7 +140,7 @@
             
             <div class="input-prepend input-append" style="padding-right:5px">
                 <span class="add-on" style="width:50px">Type</span>
-                <select id="request-type" style="width:120px">
+                <select id="request-type" style="width:130px">
                     <option value="interval">Fixed Interval</option>
                     <option>Daily</option>
                     <option>Weekly</option>
