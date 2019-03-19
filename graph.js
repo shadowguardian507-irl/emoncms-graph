@@ -882,7 +882,7 @@ function graph_draw()
             }
             out += "</td>";
 
-            out += "<td>"+feedlist[z].id+":"+feedlist[z].tag+":"+feedlist[z].name + getFeedUnit(feedlist[z].id)+"</td>";
+            out += "<td>"+getFeedName(feedlist[z])+"</td>";
             out += "<td><select class='plottype' feedid="+feedlist[z].id+" style='width:80px'>";
 
             var selected = "";
@@ -910,7 +910,8 @@ function graph_draw()
         var out = "";
         for (var z in feedlist) {
             out += "<tr>";
-            out += "<td>"+feedlist[z].id+":"+feedlist[z].tag+": "+feedlist[z].name+"</td>";
+            out += "<td></td>";
+            out += "<td>"+getFeedName(feedlist[z])+"</td>";
             var quality = Math.round(100 * (1-(feedlist[z].stats.npointsnull/feedlist[z].stats.npoints)));
             out += "<td>"+quality+"% ("+(feedlist[z].stats.npoints-feedlist[z].stats.npointsnull)+"/"+feedlist[z].stats.npoints+")</td>";
             var dp = feedlist[z].dp;
@@ -943,7 +944,22 @@ function graph_draw()
         if (showcsv) printcsv();
     }
 }
+function getFeedName(item) {
+    var values = [];
+    if (typeof item !== 'object') {
+        return item;
+    }
+    if(item.hasOwnProperty('id') && item.hasOwnProperty('tag') && item.hasOwnProperty('name')) {
+        values.push(item.id);
+        values.push(item.tag);
+        values.push(item.name);
+    }
+    var name = values.join(':');
 
+    name += ' (' + getFeedUnit(item.id) + ')';
+
+    return name;
+}
 function getfeed(id) 
 {
     for (var z in feeds) {
