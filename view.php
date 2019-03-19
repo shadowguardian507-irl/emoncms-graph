@@ -353,20 +353,6 @@
             event.target.querySelector('.caret').classList.toggle('open');
             $('#tables').collapse('toggle');
         })
-
-        // .append('<svg class="icon pull-right"><use xlink:href="#icon-expand"></use></svg>')
-        // .append('<svg class="icon pull-right" style="display:none"><use xlink:href="#icon-contract"></use></svg>')
-        $(document).on('click', '#menu-setup li.active a', function(event){
-            event.preventDefault();
-            event.stopPropagation();
-            $('#setup-sidebar-include .include-container').toggleClass('in');
-            $('#menu-setup li').not('.active').toggle('hidden');
-            // $(this).find('.icon.pull-right').toggle();
-        });
-        setTimeout(function(){
-            $('#setup-sidebar-include .include-container').toggleClass('in');
-            $('#menu-setup li').not('.active').toggle('hidden');
-        }, 500)
     });
 
 </script>

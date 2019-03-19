@@ -23,6 +23,21 @@
     border-bottom-width: 1px;
 }
 
+/* sidebar #mygraphs */
+#graph-list{
+    width: 14rem;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 3rem;
+}
+#graph-list input{
+    width:12rem;
+}
+#graph-list select{
+    width:13rem;
+}
+/* end of sidebar #mygraphs */
+
 .feed-options {
     background-color:#eee;
     overflow-x: scroll;
@@ -175,73 +190,37 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
 
 table#feeds.table thead th{
     border-top: 4px solid #333;
-     font-weight: normal !important;
-     color: #adadad;
-     cursor: pointer;
-     transition: all .3s ease-in
+    font-weight: normal !important;
+    color: #adadad;
+    cursor: pointer;
+    transition: all .3s ease-in;
+    padding-left: 0;
 }
 table#feeds.table thead th:hover{
     color: #f8f9fa;
     text-decoration: underline;
 }
 table#feeds.table input[type="checkbox"] { margin: 0 }
-table#feeds.table thead tr th:first-child{padding-left: .5em}
 table#feeds.table tbody tr > *{
     border-color: #444;
 }
 table#feeds.table tbody tr th{
     cursor: pointer;
-    padding-left: .7em;
     transition: all .3s ease-in;
     font-weight: normal;
 }
 table#feeds.table tbody tr th:hover{
     text-decoration: underline;
 }
-
 table#feeds.table .caret {
     border-top-color: currentColor !important;
     display: inline-block;
     vertical-align: middle;
     margin-right: .4em;
 }
-/* 
-#setup-sidebar-include{
-    width: 0;
-    height: 0;
-    opacity: 0;
-    transition: all .2s ease-out;
-    overflow: hidden;
+#sidebar .include-container{
+    padding: .5rem .95rem .5rem .95rem
 }
-#setup-sidebar-include.in{
-    width: 99%;
-    opacity: 1;
-    height: auto;
-}
-
-#setup-sidebar-include h4{
-    padding: 1rem;
-}
-#setup-sidebar-include h4 a{
-    color: white;
-    display: block;
-}
-#setup-sidebar-include h4 a:hover{
-    text-decoration: underline;
-}
-#setup-sidebar-include #graph-list{
-    width: 14rem;
-    padding-left: 1rem;
-    overflow: hidden;
-    position: relative;
-    margin-bottom: 3rem;
-}
-#setup-sidebar-include #graph-list input{
-    width:12rem;
-}
-#setup-sidebar-include #graph-list select{
-    width:13rem;
-} */
 #error {
     margin-left: 1em;
 }
