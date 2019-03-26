@@ -43,7 +43,7 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/misc/clipboard.js"></script>
 <link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
-<link href="<?php echo $path; ?>Modules/graph/graph.css" rel="stylesheet">
+<link href="<?php echo $path; ?>Modules/graph/graph.css?v=<?php echo $v; ?>" rel="stylesheet">
 
 <div id="page-content-wrapper" style="max-width:1280px">
     <div style="display: flex; align-items: center;">
@@ -52,7 +52,7 @@
     </div>
     <div id="graph-wrapper">
         <div id="navigation" style="padding-bottom:5px;">
-            <button class="btn<?php if(!$fullwidth) echo ' collapsed' ?>" href="#" data-toggle="slide-collapse" data-target="#sidebar"><i class="icon-list"></i></button>
+            <!-- <button class="btn<?php if(!$fullwidth) echo ' collapsed' ?>" href="#" data-toggle="slide-collapse" data-target="#sidebar" title="<?php echo _('Open sidebar') ?>"><i class="icon-list"></i></button> -->
             <button class='btn graph_time' type='button' time='1' title="<?php echo _('Day') ?>"><?php echo _('D') ?></button>
             <button class='btn graph_time' type='button' time='7' title="<?php echo _('Week') ?>"><?php echo _('W') ?></button>
             <button class='btn graph_time' type='button' time='30' title="<?php echo _('Month') ?>"><?php echo _('M') ?></button>
@@ -62,11 +62,11 @@
             <button id='graph_left' class='btn' title="<?php echo _('Earlier') ?>"><</button>
             <button id='graph_right' class='btn' title="<?php echo _('Later') ?>">></button>
             
-            <div class="input-prepend input-append" style="float:right; margin-right:22px">
-            <span class="add-on"><?php echo _('Show') ?></span>
-            <span class="add-on"><?php echo _('missing data') ?>: <input type="checkbox" id="showmissing" style="margin-top:1px" /></span>
-            <span class="add-on"><?php echo _('legend') ?>: <input type="checkbox" id="showlegend" style="margin-top:1px" /></span>
-            <span class="add-on"><?php echo _('feed tag') ?>: <input type="checkbox" id="showtag" style="margin-top:1px" /></span>
+            <div class="input-prepend input-append pull-right">
+                <span class="add-on"><?php echo _('Show') ?></span>
+                <span class="add-on"><label><?php echo _('missing data') ?>: <input type="checkbox" id="showmissing"></label></span>
+                <span class="add-on"><label><label><?php echo _('legend') ?>: <input type="checkbox" id="showlegend"></label></span>
+                <span class="add-on"><label><?php echo _('feed tag') ?>: <input type="checkbox" id="showtag"></label></span>
             </div>
             
             <div style="clear:both"></div>
@@ -124,8 +124,8 @@
                 
                 <span class="fixed-interval-options">
                     <input id="request-interval" type="text" style="width:60px" />
-                    <span class="add-on"><?php echo _('Fix') ?> <input id="request-fixinterval" type="checkbox" style="margin-top:1px" /></span>
-                    <span class="add-on"><?php echo _('Limit to data interval') ?> <input id="request-limitinterval" type="checkbox" style="margin-top:1px" /></span>
+                    <span class="add-on"><label><?php echo _('Fix') ?> <input id="request-fixinterval" type="checkbox"></label></span>
+                    <span class="add-on"><label><?php echo _('Limit to data interval') ?> <input id="request-limitinterval" type="checkbox"></label></span>
                 </span>
             </div>
             

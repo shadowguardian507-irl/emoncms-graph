@@ -595,28 +595,12 @@ function graph_reload()
     if (ids.length + average_ids.length === 0) {
         graph_resize();
         graph_draw();
-        var title = _lang['Select a feed'];
+        var title = _lang['Select a feed'] + '.';
         var message = _lang['Please select a feed from the Feeds List'];
-        $('#error')
-        .show()
-        .html('<div class="alert alert-info"><strong>' + title + '</strong> ' + message + '</div>');
-
-        // duplicate the 'show sidebar' button before fading out the toolbar
-        $('#graph-wrapper').addClass('empty');
-        if($('#cloned_toggle').length == 0) {
-            $('#graph-wrapper [data-toggle="slide-collapse"]')
-            .first().clone().insertBefore('#graph-wrapper')
-            .attr('id','cloned_toggle')
-            .css({
-                margin: '.2rem .3rem',
-                position: 'absolute',
-                transform: 'scale(.99)',
-                zIndex: 1
-            })
-            .hide()
-            .delay(200)
-            .fadeIn();
-        }
+        var icon = '<svg class="icon show_chart"><use xlink:href="#icon-show_chart"></use></svg>';
+        var markup = ['<div class="alert alert-info"><a href="#" class="open-sidebar"><strong>',icon,title,'</strong>',message,'</a></div>'].join(' ');
+        $('#error').show()
+        .html(markup);
         return false;
     } else {
         $('#graph-wrapper').removeClass('empty');
@@ -635,8 +619,17 @@ function graph_reload()
         .error(handleFeedlistDataError)
         .always(checkFeedlistData);
     }
-}  
-    
+}
+/**
+ * show sidebar if mobile view hiding sidebar
+ */
+$(document).on('click', '.alert a.open-sidebar', function(event) {
+    if (typeof show_sidebar !== 'undefined') {
+        show_sidebar();
+        // @todo: ensure the 3rd level graph menu is open
+    }
+    return false;
+});
 
 function addFeedlistData(response){
     // loop through feedlist and add response data to data property
