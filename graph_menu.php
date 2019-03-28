@@ -3,6 +3,7 @@
     $menu['sidebar']['setup'][] = array(
         'text' => _("Graphs"),
         'path' => 'graph',
+        'active'=>'graph',
         'icon' => 'show_chart',
         'order' => 2,
         'li_id' => 'graph-link',
