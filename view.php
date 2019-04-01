@@ -14,7 +14,7 @@
     $menucollapses = true;
     
     $userid = 0;
-    $v = 1;
+    $v = 2;
     
     if (isset($_GET['userid'])) $userid = (int) $_GET['userid'];
     
