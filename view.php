@@ -201,6 +201,7 @@
                     
                     <table id="feed-stats-table" class="table hide">
                         <tr>
+                            <th></th>
                             <th><?php echo _('Feed') ?></th>
                             <th><?php echo _('Quality') ?></th>
                             <th><?php echo _('Min') ?></th>
