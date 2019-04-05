@@ -168,7 +168,7 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
     top: 0
 }
 #legend .right{
-    right: 0;
+    right: .8em;
 }
 #legend .left{
     left: 0;
