@@ -10,4 +10,4 @@
         'data'=> array('sidebar' => '#sidebar_graph')
     );
 
-    $menu['sidebar']['includes']['setup']['graph'] = view('Modules/graph/Views/sidebar.php');
+    $menu['sidebar']['includes']['setup']['graph'] = view('Modules/graph/Views/sidebar.php',array());
