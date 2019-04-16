@@ -239,9 +239,49 @@
                 </select>
             </div>
 
+            <div id="download-buttons" class="csvoptions btn-group input-prepend">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    <?php echo _('Download') ?>
+                    <span class="caret" style="border-top-color:black!important"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <form id="download_csv" data-download>
+                            <input type="hidden" data-format value="csv">
+                            <input type="hidden" data-path value="<?php echo $path ?>">
+                            <input type="hidden" data-action value="graph/download">
+                            <input type="hidden" name="ids">
+                            <input type="hidden" name="start">
+                            <input type="hidden" name="end">
+                            <input type="hidden" name="headers">
+                            <input type="hidden" name="timeformat">
+                            <input type="hidden" name="interval">
+                            <input type="hidden" name="nullvalues">
+                            <button class="btn btn-link csvoptions">CSV</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form id="download_json" data-download>
+                            <input type="hidden" data-format value="json">
+                            <input type="hidden" data-path value="<?php echo $path ?>">
+                            <input type="hidden" data-action value="graph/download">
+                            <input type="hidden" name="ids">
+                            <input type="hidden" name="start">
+                            <input type="hidden" name="end">
+                            <input type="hidden" name="headers">
+                            <input type="hidden" name="timeformat">
+                            <input type="hidden" name="interval">
+                            <input type="hidden" name="nullvalues">
+                            <button class="btn btn-link csvoptions">JSON</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
             <div class="input-append"><!-- just to match the styling of the other items -->
                 <button onclick="copyToClipboardCustomMsg(document.getElementById('csv'), 'copy-csv-feedback','Copied')" class="csvoptions btn hidden" id="copy-csv" type="button"><?php echo _('Copy') ?> <i class="icon-share-alt"></i></button>
             </div>
+
             <span id="copy-csv-feedback" class="csvoptions"></span>
             
             <textarea id="csv" style="width:98%; height:500px; display:none; margin-top:10px"></textarea>
