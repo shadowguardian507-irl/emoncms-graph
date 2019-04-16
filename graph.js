@@ -27,6 +27,8 @@ var previousPoint = 0;
 
 var active_histogram_feed = 0;
 
+var _TIMEZONE = null;
+
 $("#info").show();
 if ($("#showmissing")[0]!=undefined) $("#showmissing")[0].checked = showmissing;
 if ($("#showtag")[0]!=undefined) $("#showtag")[0].checked = showtag;
@@ -547,6 +549,11 @@ function graph_reloaddraw() {
     graph_reload();
 }
 
+function graph_changeTimezone(tz) {
+    _TIMEZONE = tz;
+    graph_draw();
+}
+
 function graph_reload()
 {
     var intervalms = view.interval * 1000;
@@ -775,6 +782,7 @@ function build_rows(rows) {
 
 function graph_draw()
 {
+    var timezone = _TIMEZONE || "browser";
     var options = {
         lines: { fill: false },
         xaxis: { 

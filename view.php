@@ -38,6 +38,7 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.selection.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.touch.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
 <!--
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/flot.min.js"></script>
 -->
@@ -47,6 +48,16 @@
 <link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
 <link href="<?php echo $path; ?>Modules/graph/graph.css?v=<?php echo $v; ?>" rel="stylesheet">
+
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Modules/graph/Lib/date.js"></script>
+<script>
+        var timezones_ready = false;
+        timezoneJS.timezone.zoneFileBasePath = '<?php echo $path; ?>Modules/graph/Lib/tz';
+        timezoneJS.timezone.defaultZoneFile = ['europe'];
+        timezoneJS.timezone.init({callback: function() {
+            timezones_ready = true;
+        }});
+</script>
 
 <div id="wrapper">
     <div id="sidebar-wrapper">
@@ -158,7 +169,19 @@
                     <span class="add-on"><?php echo _('Limit to data interval') ?> <input id="request-limitinterval" type="checkbox" style="margin-top:1px" /></span>
                 </span>
             </div>
-            
+            <div class="input-prepend input-append" style="padding-right:5px">
+                <span class="add-on"><?php echo _('Timezone') ?></span>
+                <span class="timezone-options">
+                    <select id="timezone">
+                        <optgroup label="<?php echo _('System') ?>">
+                            <option id="browser_timezone"></option>
+                            <option id="user_timezone"></option>
+                        </optgroup>
+                        <optgroup label="<?php echo _('World Timezones') ?>" id="all_timezones">
+                        </optgroup>
+                    </select>
+                </span>
+            </div>
             <div class="input-prepend input-append">
                 <span class="add-on" style="width:50px"><?php echo _('Y-axis') ?>:</span>
                 <span class="add-on" style="width:30px"><?php echo _('min') ?></span>
@@ -430,3 +453,42 @@
     });
 </script>
 
+
+<script>
+    $(function () {
+        var user = {};
+        var timezones = [];
+        var $timezone = $('#timezone');
+        var $all_timezones = $('#all_timezones');
+        var $user_timezone = $('#user_timezone');
+        var $browser_timezone = $('#browser_timezone');
+
+        $.getJSON(path + 'user/gettimezones.json')
+        .done( function(result) {
+            var out = '';
+            for (t in result) {
+                var tz = result[t];
+                out += '<option value="' + tz.id + '">' + tz.id + ' (' + tz.gmt_offset_text + ')</option>';
+                timezones[tz.id] = {
+                    label: tz.gmt_offset_text,
+                    value: tz.gmt_offset_secs
+                }
+            }
+            $all_timezones.html(out);
+        }).then( function() {
+            $.getJSON(path + 'user/get.json')
+            .done( function(user) {
+                $user_timezone.val(user.timezone).text('User: ' + user.timezone +' (' + timezones[user.timezone].label + ')');
+            })
+            .then (function() {
+                let browser_tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                $browser_timezone.val(browser_tz).text('Browser: ' + browser_tz + ' ('+ timezones[browser_tz].label + ')');
+            })
+        })
+
+        $timezone.on('change', function(event) {
+            graph_changeTimezone($(event.target).val());
+        });
+
+    })
+</script>
