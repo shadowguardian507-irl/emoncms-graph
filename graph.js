@@ -862,6 +862,7 @@ function graph_draw()
         
         if (feedlist[z].plottype=="lines") { plot.lines = { show: true, fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), fill: feedlist[z].fill } };
         if (feedlist[z].plottype=="bars") { plot.bars = { align: "center", fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), show: true, barWidth: view.interval * 1000 * 0.75 } };
+        if (feedlist[z].plottype == 'points') plot.points = {show: true, radius: 3};
         plot.isRight = feedlist[z].yaxis === 2;
         plot.id = feedlist[z].id;
         plot.index = z;
@@ -898,6 +899,8 @@ function graph_draw()
             out += "<option value='lines' "+selected+">Lines</option>";
             if (feedlist[z].plottype == "bars") selected = "selected"; else selected = "";
             out += "<option value='bars' "+selected+">Bars</option>";
+            if (feedlist[z].plottype == "points") selected = "selected"; else selected = "";
+            out += "<option value='points' "+selected+">Points</option>";
             out += "</select></td>";
             out += "<td><input class='linecolor' feedid="+feedlist[z].id+" style='width:50px' type='color' value='#"+default_linecolor+"'></td>";
             out += "<td><input class='fill' type='checkbox' feedid="+feedlist[z].id+"></td>";
