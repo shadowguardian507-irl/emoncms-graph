@@ -28,7 +28,7 @@
     width: 14rem;
     overflow: hidden;
     position: relative;
-    margin-bottom: 3rem;
+    /* margin-bottom: 3rem; */
 }
 #graph-list input{
     width:12rem;

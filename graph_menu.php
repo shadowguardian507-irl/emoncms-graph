@@ -1,6 +1,6 @@
 <?php
 
-    $menu['sidebar']['setup'][] = array(
+    $menu['sidebar']['emoncms'][] = array(
         'text' => _("Graphs"),
         'path' => 'graph',
         'active'=>'graph',
@@ -10,4 +10,4 @@
         'data'=> array('sidebar' => '#sidebar_graph')
     );
 
-    $menu['sidebar']['includes']['setup']['graph'] = view('Modules/graph/Views/sidebar.php',array());
+    $menu['sidebar']['includes']['emoncms']['graph'] = view('Modules/graph/Views/sidebar.php',array());
