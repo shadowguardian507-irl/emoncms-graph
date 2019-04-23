@@ -760,7 +760,14 @@ function onClickLegendLink(event) {
     // re-draw the chart with the plot lines hidden/shown
     var index = link.dataset.index;
     var current_data = plot_statistics.getData()
-    current_data[index].lines.show = !current_data[index].lines.show;
+    var feed = feedlist.find(function(item) { return item.id == this; }, current_data[index].id);
+    console.log(feed);
+    if (feed == undefined) return;
+    switch (feed.plottype) {
+        case 'lines': current_data[index].lines.show = !current_data[index].lines.show; break;
+        case 'bars': current_data[index].bars.show = !current_data[index].bars.show; break;
+        case 'points': current_data[index].points.show = !current_data[index].points.show; break;
+    }
     plot_statistics.setData(current_data);
     // re-draw
     plot_statistics.draw();
