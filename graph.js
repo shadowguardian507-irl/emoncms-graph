@@ -761,7 +761,6 @@ function onClickLegendLink(event) {
     var index = link.dataset.index;
     var current_data = plot_statistics.getData()
     var feed = feedlist.find(function(item) { return item.id == this; }, current_data[index].id);
-    console.log(feed);
     if (feed == undefined) return;
     switch (feed.plottype) {
         case 'lines': current_data[index].lines.show = !current_data[index].lines.show; break;
