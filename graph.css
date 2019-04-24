@@ -188,6 +188,7 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
     outline: none;
 }
 
+<<<<<<< HEAD
 table#feeds.table thead th{
     border-top: 4px solid #333;
     font-weight: normal !important;
@@ -239,6 +240,20 @@ table#feeds.table .caret {
     opacity: .3;
     transform: scale(.99);
 }
+=======
+#download-buttons form{
+    margin: 0;
+    padding: 0;
+}
+#download-buttons form button { 
+    width: 100%;
+    text-align: left;
+}
+.csvoptions{
+    width: auto;
+}
+
+>>>>>>> ce6dd74d1cfcd9fd48c1ef97d88385bf1629d5e2
 @media(max-width: 512px) {
     #legend .col {
         position: relative; left: 0;
