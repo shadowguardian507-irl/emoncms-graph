@@ -257,7 +257,7 @@ function graph_init_editor()
            if (name.length>20) {
                name = name.substr(0,20)+"..";
            }
-           out += "<th class='feed-title' data-feedid='"+feedsbytag[tag][z].id+"'>"+name+"</th>";
+           out += "<th class='feed-title' title='"+name+"' data-feedid='"+feedsbytag[tag][z].id+"'><span class='text-truncate d-inline-block'>"+name+"</span></th>";
            out += "<td><input class='feed-select-left' data-feedid='"+feedsbytag[tag][z].id+"' type='checkbox'></td>";
            out += "<td><input class='feed-select-right' data-feedid='"+feedsbytag[tag][z].id+"' type='checkbox'></td>";
            out += "</tr>";

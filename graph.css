@@ -212,6 +212,10 @@ table#feeds.table tbody tr th{
 table#feeds.table tbody tr th:hover{
     text-decoration: underline;
 }
+table#feeds.table tbody tr th.feed-title span{
+    max-width:9em;
+}
+
 table#feeds.table .caret {
     border-top-color: currentColor !important;
     display: inline-block;
