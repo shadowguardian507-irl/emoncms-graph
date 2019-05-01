@@ -13,6 +13,7 @@
   position: fixed;
   overflow-y: auto;
   z-index: 1000;
+  height: 100%;
 }
 
 #page-content-wrapper {
@@ -25,7 +26,14 @@
     background-color:#eee;
     overflow-x: scroll;
 }
-
+table#feeds thead tr th .caret{
+    border-top-color: black!important;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+table#feeds tbody tr th {
+    font-weight: normal
+}
 .feed-options-header {
     height:40px;
     background-color:#ccc;
