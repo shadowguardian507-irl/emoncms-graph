@@ -390,7 +390,6 @@
     view.calc_interval();
     
     graph_reloaddraw();
-    
 
     $(function(){
         // manually add hide/show
@@ -401,7 +400,6 @@
             event.preventDefault();
             event.target.querySelector('.caret').classList.toggle('open');
             $('#tables').collapse('toggle');
-            console.log(event.type)
         })
     });
 
