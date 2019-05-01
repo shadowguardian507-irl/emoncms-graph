@@ -662,8 +662,8 @@ function addFeedlistData(response){
     if (valid) set_feedlist();
 }
 function handleFeedlistDataError(jqXHR, error, message){
-    error = error === 'parsererror' ? 'Received data not in correct format. Check the logs for more details': error;
-    var errorstr = '<div class="alert alert-danger" title="'+message+'"><strong>Request error</strong> ' + error + '</div>';
+    error = error === 'parsererror' ? gettext('Received data not in correct format. Check the logs for more details'): error;
+    var errorstr = '<div class="alert alert-danger" title="'+message+'"><strong>'+gettext('Request error')+':</strong> ' + error + '</div>';
     $('#error').html(errorstr).show();
 }
 function checkFeedlistData(response){
@@ -685,7 +685,7 @@ function checkFeedlistData(response){
     message = messages.join(', ');
     var errorstr = '';
     if (messages.length > 0) {
-        errorstr = '<div class="alert alert-danger"><strong>Request error</strong> ' + message + '</div>';
+        errorstr = '<div class="alert alert-danger"><strong>'+gettext('Request error')+':</strong> ' + message + '</div>';
         $('#error').html(errorstr).show();
     } else {
         $('#error').hide();
