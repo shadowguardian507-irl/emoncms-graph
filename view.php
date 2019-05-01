@@ -10,11 +10,9 @@
     */
 
     global $path, $embed;
-    global $fullwidth;
-    $fullwidth = true;
-    $v = 2; // force js & css cache reload
-    
     $userid = 0;
+    $v = 3;
+    
     if (isset($_GET['userid'])) $userid = (int) $_GET['userid'];
     
     $feedidsLH = "";
