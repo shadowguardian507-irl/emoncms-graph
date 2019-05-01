@@ -620,15 +620,15 @@ function graph_reload()
     if (ids.length > 0) {
         // get feedlist data
         $.getJSON(path+"feed/data.json", data, addFeedlistData)
-        .error(handleFeedlistDataError)
-        .always(checkFeedlistData);
+        .fail(handleFeedlistDataError)
+        .done(checkFeedlistData);
     }
     if (average_ids.length > 0) {
         // get feedlist average data
         var average_ajax_data = $.extend({}, data, {ids: average_ids.join(',')});
         $.getJSON(path+"feed/average.json", average_ajax_data, addFeedlistData)
-        .error(handleFeedlistDataError)
-        .always(checkFeedlistData);
+        .fail(handleFeedlistDataError)
+        .done(checkFeedlistData);
     }
 }
 /**
@@ -662,7 +662,9 @@ function addFeedlistData(response){
     if (valid) set_feedlist();
 }
 function handleFeedlistDataError(jqXHR, error, message){
-    // @todo: notify the user that the the data api was unreachable;
+    error = error === 'parsererror' ? gettext('Received data not in correct format. Check the logs for more details'): error;
+    var errorstr = '<div class="alert alert-danger" title="'+message+'"><strong>'+gettext('Request error')+':</strong> ' + error + '</div>';
+    $('#error').html(errorstr).show();
 }
 function checkFeedlistData(response){
     // display message to user if response not valid
@@ -683,7 +685,7 @@ function checkFeedlistData(response){
     message = messages.join(', ');
     var errorstr = '';
     if (messages.length > 0) {
-        errorstr = '<div class="alert alert-danger"><strong>Request error</strong> ' + message + '</div>';
+        errorstr = '<div class="alert alert-danger"><strong>'+gettext('Request error')+':</strong> ' + message + '</div>';
         $('#error').html(errorstr).show();
     } else {
         $('#error').hide();

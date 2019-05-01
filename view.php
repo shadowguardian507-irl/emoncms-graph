@@ -404,6 +404,18 @@
             console.log(event.type)
         })
     });
+
+    <?php
+    $translations = array(
+        "Received data not in correct format. Check the logs for more details" => _("Received data not in correct format. Check the logs for more details"),
+        "Request error" => _("Request error")
+    );
+    echo 'var translations = '.json_encode($translations);
+    ?>
+
+    function gettext(key) {
+        return translations.hasOwnProperty(key) ? translations[key] : key
+    }
 </script>
 
 
