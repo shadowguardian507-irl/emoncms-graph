@@ -21,7 +21,7 @@
     if (isset($_GET['feedidsLH'])) $feedidsLH = $_GET['feedidsLH'];
 
     $feedidsRH = "";
-    if (isset($_GET['feedidsRH'])) $feedidsRH = $_GET['feedidsRH'];  
+    if (isset($_GET['feedidsRH'])) $feedidsRH = $_GET['feedidsRH'];
 
     $load_saved = "";
     if (isset($_GET['load'])) $load_saved = $_GET['load'];
@@ -38,6 +38,7 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.selection.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.touch.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
 <!--
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/flot.min.js"></script>
 -->
@@ -47,6 +48,16 @@
 <link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
 <link href="<?php echo $path; ?>Modules/graph/graph.css?v=<?php echo $v; ?>" rel="stylesheet">
+
+<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Modules/graph/Lib/date.js"></script>
+<script>
+        var timezones_ready = false;
+        timezoneJS.timezone.zoneFileBasePath = '<?php echo $path; ?>Modules/graph/Lib/tz';
+        timezoneJS.timezone.defaultZoneFile = ['europe'];
+        timezoneJS.timezone.init({callback: function() {
+            timezones_ready = true;
+        }});
+</script>
 
 <div id="wrapper">
     <div id="sidebar-wrapper">
@@ -77,7 +88,7 @@
 
     <div id="page-content-wrapper" style="max-width:1280px">
         
-        <h3><?php echo _('Data viewer') ?></h3> 
+        <h3><?php echo _('Data viewer') ?></h3>
 
         <div id="error" style="display:none"></div>
 
@@ -158,7 +169,19 @@
                     <span class="add-on"><?php echo _('Limit to data interval') ?> <input id="request-limitinterval" type="checkbox" style="margin-top:1px" /></span>
                 </span>
             </div>
-            
+            <div class="input-prepend input-append" style="padding-right:5px">
+                <span class="add-on"><?php echo _('Timezone') ?></span>
+                <span class="timezone-options">
+                    <select id="timezone">
+                        <optgroup label="<?php echo _('System') ?>">
+                            <option id="browser_timezone"></option>
+                            <option id="user_timezone"></option>
+                        </optgroup>
+                        <optgroup label="<?php echo _('World Timezones') ?>" id="all_timezones">
+                        </optgroup>
+                    </select>
+                </span>
+            </div>
             <div class="input-prepend input-append">
                 <span class="add-on" style="width:50px"><?php echo _('Y-axis') ?>:</span>
                 <span class="add-on" style="width:30px"><?php echo _('min') ?></span>
@@ -239,9 +262,49 @@
                 </select>
             </div>
 
+            <div id="download-buttons" class="csvoptions btn-group input-prepend">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    <?php echo _('Download') ?>
+                    <span class="caret" style="border-top-color:black!important"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <form id="download_csv" data-download>
+                            <input type="hidden" data-format value="csv">
+                            <input type="hidden" data-path value="<?php echo $path ?>">
+                            <input type="hidden" data-action value="graph/download">
+                            <input type="hidden" name="ids">
+                            <input type="hidden" name="start">
+                            <input type="hidden" name="end">
+                            <input type="hidden" name="headers">
+                            <input type="hidden" name="timeformat">
+                            <input type="hidden" name="interval">
+                            <input type="hidden" name="nullvalues">
+                            <button class="btn btn-link csvoptions">CSV</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form id="download_json" data-download>
+                            <input type="hidden" data-format value="json">
+                            <input type="hidden" data-path value="<?php echo $path ?>">
+                            <input type="hidden" data-action value="graph/download">
+                            <input type="hidden" name="ids">
+                            <input type="hidden" name="start">
+                            <input type="hidden" name="end">
+                            <input type="hidden" name="headers">
+                            <input type="hidden" name="timeformat">
+                            <input type="hidden" name="interval">
+                            <input type="hidden" name="nullvalues">
+                            <button class="btn btn-link csvoptions">JSON</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
             <div class="input-append"><!-- just to match the styling of the other items -->
                 <button onclick="copyToClipboardCustomMsg(document.getElementById('csv'), 'copy-csv-feedback','Copied')" class="csvoptions btn hidden" id="copy-csv" type="button"><?php echo _('Copy') ?> <i class="icon-share-alt"></i></button>
             </div>
+
             <span id="copy-csv-feedback" class="csvoptions"></span>
             
             <textarea id="csv" style="width:98%; height:500px; display:none; margin-top:10px"></textarea>
@@ -284,19 +347,19 @@
     
     // Load user feeds
     if (session) {
-        $.ajax({                                      
+        $.ajax({
             url: path+"feed/list.json"+apikeystr, async: false, dataType: "json",
             success: function(data_in) { feeds = data_in; }
         });
     // Load public feeds for a particular user
     } else if (userid) {
-        $.ajax({                                      
+        $.ajax({
             url: path+"feed/list.json?userid="+userid, async: false, dataType: "json",
             success: function(data_in) { feeds = data_in; }
         });
     }
 
-    // stops a part upgrade error - this change requires emoncms/emoncms repo to also be updated 
+    // stops a part upgrade error - this change requires emoncms/emoncms repo to also be updated
     // keep button hidden if new version of clipboard.js is not available
     if (typeof copyToClipboardCustomMsg === 'function') {
         document.getElementById('copy-csv').classList.remove('hidden');
@@ -317,7 +380,7 @@
 		                var f = getfeed(feedid);
                     if (f==false) f = getfeedpublic(feedid);
                     if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
-			          }		
+			          }
 		        }
         }
         
@@ -331,7 +394,7 @@
 		                var f = getfeed(feedid);
                     if (f==false) f = getfeedpublic(feedid);
                     if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:1, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
-			          }		
+			          }
 		        }
         }
 
@@ -345,7 +408,7 @@
 		                var f = getfeed(feedid);
                     if (f==false) f = getfeedpublic(feedid);
                     if (f!=false) feedlist.push({id:feedid, name:f.name, tag:f.tag, yaxis:2, fill:0, scale: 1.0, delta:false, dp:1, plottype:'lines'});
-			          }		
+			          }
 		        }
         }
     }
@@ -353,7 +416,7 @@
     sidebar_resize();
     graph_init_editor();
     
-    load_feed_selector(); 
+    load_feed_selector();
     if (!session) {
         $("#mygraphs").hide();
     } else {
@@ -390,3 +453,42 @@
     });
 </script>
 
+
+<script>
+    $(function () {
+        var user = {};
+        var timezones = [];
+        var $timezone = $('#timezone');
+        var $all_timezones = $('#all_timezones');
+        var $user_timezone = $('#user_timezone');
+        var $browser_timezone = $('#browser_timezone');
+
+        $.getJSON(path + 'user/gettimezones.json')
+        .done( function(result) {
+            var out = '';
+            for (t in result) {
+                var tz = result[t];
+                out += '<option value="' + tz.id + '">' + tz.id + ' (' + tz.gmt_offset_text + ')</option>';
+                timezones[tz.id] = {
+                    label: tz.gmt_offset_text,
+                    value: tz.gmt_offset_secs
+                }
+            }
+            $all_timezones.html(out);
+        }).then( function() {
+            $.getJSON(path + 'user/get.json')
+            .done( function(user) {
+                $user_timezone.val(user.timezone).text('User: ' + user.timezone +' (' + timezones[user.timezone].label + ')');
+            })
+            .then (function() {
+                let browser_tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                $browser_timezone.val(browser_tz).text('Browser: ' + browser_tz + ' ('+ timezones[browser_tz].label + ')');
+            })
+        })
+
+        $timezone.on('change', function(event) {
+            graph_changeTimezone($(event.target).val());
+        });
+
+    })
+</script>

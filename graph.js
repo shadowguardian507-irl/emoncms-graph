@@ -27,6 +27,8 @@ var previousPoint = 0;
 
 var active_histogram_feed = 0;
 
+var _TIMEZONE = null;
+
 $("#info").show();
 if ($("#showmissing")[0]!=undefined) $("#showmissing")[0].checked = showmissing;
 if ($("#showtag")[0]!=undefined) $("#showtag")[0].checked = showtag;
@@ -87,7 +89,6 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
 });
 
 $(window).resize(function(){
-    if (!embed) sidebar_resize();
     graph_resize();
     graph_draw();
 });
@@ -106,7 +107,6 @@ function graph_resize() {
     placeholder_bound.height(height-top_offset);
     placeholder.height(height-top_offset);
 }
-
 function datetimepickerInit()
 {
     $("#datetimepicker1").datetimepicker({
@@ -244,8 +244,12 @@ function graph_init_editor()
     for (var tag in feedsbytag) {
        tagname = tag;
        if (tag=="") tagname = "undefined";
-       out += "<tr class='tagheading' tag='"+tagname+"' style='background-color:#aaa; cursor:pointer'><td style='font-size:12px; padding:4px; padding-left:8px; font-weight:bold'>"+tagname+"</td><td></td><td></td></tr>";
-       out += "<tbody class='tagbody' tag='"+tagname+"'>";
+       out += "<thead>";
+       out += "<tr class='tagheading' data-tag='"+tagname+"'>";
+       out += "<th colspan='3'><span class='caret'></span>"+tagname+"</th>";
+       out += "</tr>";
+       out += "</thead>";
+       out += "<tbody class='tagbody' data-tag='"+tagname+"'>";
        for (var z in feedsbytag[tag]) 
        {
            out += "<tr>";
@@ -253,9 +257,9 @@ function graph_init_editor()
            if (name.length>20) {
                name = name.substr(0,20)+"..";
            }
-           out += "<td>"+name+"</td>";
-           out += "<td><input class='feed-select-left' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
-           out += "<td><input class='feed-select-right' feedid="+feedsbytag[tag][z].id+" type='checkbox'></td>";
+           out += "<th class='feed-title' data-feedid='"+feedsbytag[tag][z].id+"'>"+name+"</th>";
+           out += "<td><input class='feed-select-left' data-feedid='"+feedsbytag[tag][z].id+"' type='checkbox'></td>";
+           out += "<td><input class='feed-select-right' data-feedid='"+feedsbytag[tag][z].id+"' type='checkbox'></td>";
            out += "</tr>";
        }
        out += "</tbody>";
@@ -353,8 +357,13 @@ function graph_init_editor()
         graph_draw();
     });
 
+    $("body").on("click",".feed-title",function(event){
+        event.preventDefault();
+        var feedid = $(this).data("feedid");
+        $('.feed-select-left[data-feedid="' + feedid + '"]').click();
+    });
     $("body").on("click",".feed-select-left",function(){
-        var feedid = $(this).attr("feedid");
+        var feedid = $(this).data("feedid");
         var checked = $(this)[0].checked;
         
         var loaded = false;
@@ -365,7 +374,7 @@ function graph_init_editor()
                } else {
                    feedlist[z].yaxis = 1;
                    loaded = true;
-                   $(".feed-select-right[feedid="+feedid+"]")[0].checked = false;
+                   $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = false;
                }
            }
         }
@@ -379,7 +388,7 @@ function graph_init_editor()
     });
 
     $("body").on("click",".feed-select-right",function(){
-        var feedid = $(this).attr("feedid");
+        var feedid = $(this).data("feedid");
         var checked = $(this)[0].checked;
         
         var loaded = false;
@@ -390,7 +399,7 @@ function graph_init_editor()
                } else {
                    feedlist[z].yaxis = 2;
                    loaded = true;
-                   $(".feed-select-left[feedid="+feedid+"]")[0].checked = false;
+                   $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = false;
                }
            }
         }
@@ -401,8 +410,8 @@ function graph_init_editor()
     });
     
     $("body").on("click",".tagheading",function(){
-        var tag = $(this).attr("tag");
-        var e = $(".tagbody[tag='"+tag+"']");
+        var tag = $(this).data("tag");
+        var e = $(".tagbody[data-tag='"+tag+"']");
         if (e.is(":visible")) e.hide(); else e.show();
     });
 
@@ -547,6 +556,11 @@ function graph_reloaddraw() {
     graph_reload();
 }
 
+function graph_changeTimezone(tz) {
+    _TIMEZONE = tz;
+    graph_draw();
+}
+
 function graph_reload()
 {
     var intervalms = view.interval * 1000;
@@ -586,12 +600,18 @@ function graph_reload()
     }
    
     if (ids.length + average_ids.length === 0) {
-        var title = _lang['Select a feed'];
+        graph_resize();
+        graph_draw();
+        var title = _lang['Select a feed'] + '.';
         var message = _lang['Please select a feed from the Feeds List'];
-        $('#error')
-        .show()
-        .html('<div class="alert alert-info"><strong>' + title + '</strong> ' + message + '</div>');
+        var icon = '<svg class="icon show_chart"><use xlink:href="#icon-show_chart"></use></svg>';
+        var markup = ['<div class="alert alert-info"><a href="#" class="open-sidebar"><strong>',icon,title,'</strong>',message,'</a></div>'].join(' ');
+        $('#error').show()
+        .html(markup);
         return false;
+    } else {
+        $('#graph-wrapper').removeClass('empty');
+        $('#cloned_toggle').remove();
     }
     if (ids.length > 0) {
         // get feedlist data
@@ -606,8 +626,17 @@ function graph_reload()
         .error(handleFeedlistDataError)
         .always(checkFeedlistData);
     }
-}  
-    
+}
+/**
+ * show sidebar if mobile view hiding sidebar
+ */
+$(document).on('click', '.alert a.open-sidebar', function(event) {
+    if (typeof show_sidebar !== 'undefined') {
+        show_sidebar();
+        // @todo: ensure the 3rd level graph menu is open
+    }
+    return false;
+});
 
 function addFeedlistData(response){
     // loop through feedlist and add response data to data property
@@ -775,6 +804,7 @@ function build_rows(rows) {
 
 function graph_draw()
 {
+    var timezone = _TIMEZONE || "browser";
     var options = {
         lines: { fill: false },
         xaxis: { 
@@ -1011,6 +1041,7 @@ function printcsv()
     var line = [];
     var lastvalue = [];
     var start_time = feedlist[0].data[0][0];
+    var end_time = feedlist[feedlist.length-1].data[feedlist[feedlist.length-1].data.length-1][0];
     var showName=false;
     var showTag=false;
 
@@ -1088,6 +1119,26 @@ function printcsv()
         }
     }
     $("#csv").val(csvout);
+
+    // populate download form
+    for (f in feedlist) {
+        var meta = feedlist[f];
+
+        $("[data-download]").each(function(i,elem){
+            $form = $(this);
+            var path = $form.find('[data-path]').val();
+            var action = $form.find('[data-action]').val();
+            var format = $form.find('[data-format]').val();
+            $form.attr('action', path + action + '.' + format);
+            $form.find('[name="ids"]').val(meta.id);
+            $form.find('[name="start"]').val(start_time);
+            $form.find('[name="end"]').val(end_time);
+            $form.find('[name="headers"]').val('names');
+            $form.find('[name="timeformat"]').val(csvtimeformat);
+            $form.find('[name="interval"]').val(view.interval);
+            $form.find('[name="nullvalues"]').val(csvnullvalues);
+        });
+    }
 }
 
 //----------------------------------------------------------------------------------------
@@ -1202,7 +1253,7 @@ function load_saved_graph(name) {
     $("#graph-delete").show();
     var index = graph_index_from_name(name);
     
-    $("#graph-id").html(savedgraphs[index].id);
+    if(typeof savedgraphs[index] === 'undefined') return;
     
     // view settings
     view.start = savedgraphs[index].start;
@@ -1416,50 +1467,24 @@ function graph_delete(id) {
     graph_load_savedgraphs();
 }
 
-// ----------------------------------------------------------------------------------------
-// Sidebar
-// ----------------------------------------------------------------------------------------
-$("#sidebar-open").click(function(){
-    $("#sidebar-wrapper").css("left","250px");
-    $("#sidebar-close").show();
-});
-
-$("#sidebar-close").click(function(){
-    $("#sidebar-wrapper").css("left","0");
-    $("#sidebar-close").hide();
-});
-
-function sidebar_resize() {
-    var width = $(window).width();
-    var height = $(window).height();
-    $("#sidebar-wrapper").height(height-41);
-    
-    if (width<1024) {
-        $("#sidebar-wrapper").css("left","0");
-        $("#wrapper").css("padding-left","0");
-        $("#sidebar-open").show();
-    } else {
-        $("#sidebar-wrapper").css("left","250px");
-        $("#wrapper").css("padding-left","250px");
-        $("#sidebar-open").hide();
-        $("#sidebar-close").hide();
-    }
-}
 
 // ----------------------------------------------------------------------------------------
 function load_feed_selector() {
     for (var z in feeds) {
         var feedid = feeds[z].id;
-        $(".feed-select-left[feedid="+feedid+"]")[0].checked = false;
-        $(".feed-select-right[feedid="+feedid+"]")[0].checked = false;
+        var left = $(".feed-select-left[data-feedid="+feedid+"]");
+        if (left.length>0) $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = false;
+
+        var right = $(".feed-select-left[data-feedid="+feedid+"]");
+        if (right.length>0) $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = false;
     }
     
     for (var z=0; z<feedlist.length; z++) {
         var feedid = feedlist[z].id;
         var tag = feedlist[z].tag;
         if (tag=="") tag = "undefined";
-        if (feedlist[z].yaxis==1) { $(".feed-select-left[feedid="+feedid+"]")[0].checked = true; $(".tagbody[tag='"+tag+"']").show(); }
-        if (feedlist[z].yaxis==2) { $(".feed-select-right[feedid="+feedid+"]")[0].checked = true; $(".tagbody[tag='"+tag+"']").show(); }
+        if (feedlist[z].yaxis==1) { $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = true; $(".tagbody[data-tag='"+tag+"']").show(); }
+        if (feedlist[z].yaxis==2) { $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = true; $(".tagbody[data-tag='"+tag+"']").show(); }
     }
 }
 

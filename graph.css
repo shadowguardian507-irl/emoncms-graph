@@ -75,11 +75,11 @@
 }
 
 #group-table .user-name{
-    font-size:12px; 
-    padding:4px; 
-    padding-left:8px; 
+    font-size:12px;
+    padding:4px;
+    padding-left:8px;
     font-weight:bold;
-    background-color:#aaa; 
+    background-color:#aaa;
     cursor:pointer
 }
 
@@ -105,11 +105,11 @@
 
 .feed-tag{
     padding:5px 0 1px 5px;
-    margin:0px 0px 2px 3px;
+    margin:0 0 2px 3px;
     cursor: pointer
 }
 
-input.feed-tag-checkbox{
+.feed-tag-checkbox{
     margin:5px;
 }
 
@@ -170,6 +170,19 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
 #legend [data-legend-series] a{
     outline: none;
 }
+
+#download-buttons form{
+    margin: 0;
+    padding: 0;
+}
+#download-buttons form button {
+    width: 100%;
+    text-align: left;
+}
+.csvoptions{
+    width: auto;
+}
+
 @media(max-width: 512px) {
     #legend .col {
         position: relative; left: 0;
