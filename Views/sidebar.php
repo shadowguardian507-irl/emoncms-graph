@@ -1,6 +1,6 @@
-<table class="table table-condensed" id="feeds"></table>
+<table class="table table-condensed mx-3" id="feeds"></table>
 
-<div id="mygraphs">
+<div id="mygraphs" class="px-3">
     <h4><a href="#" class="collapsed" data-toggle="collapse" data-target="#graph-list">
         <?php echo _('My Graphs') ?> <span class="arrow arrow-down pull-right"></span>
     </a></h4>

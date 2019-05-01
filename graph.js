@@ -40,7 +40,7 @@ $('#graph_right').click(function () {floatingtime=0; view.panright(); graph_relo
 $('#graph_left').click(function () {floatingtime=0; view.panleft(); graph_reloaddraw();});
 $('.graph_time').click(function () {
     floatingtime=1; 
-    view.timewindow($(this).attr("time")); 
+    view.timewindow($(this).data("time")); 
     graph_reloaddraw();
 });
 
@@ -567,10 +567,14 @@ function graph_reload()
     view.start = Math.round(view.start / intervalms) * intervalms;
     view.end = Math.round(view.end / intervalms) * intervalms;
 
-    datetimepicker1.setLocalDate(new Date(view.start));
-    datetimepicker2.setLocalDate(new Date(view.end));
-    datetimepicker1.setEndDate(new Date(view.end));
-    datetimepicker2.setStartDate(new Date(view.start));
+    if(datetimepicker1) {
+        datetimepicker1.setLocalDate(new Date(view.start));
+        datetimepicker1.setEndDate(new Date(view.end));
+    }
+    if(datetimepicker2) {
+        datetimepicker2.setLocalDate(new Date(view.end));
+        datetimepicker2.setStartDate(new Date(view.start));
+    }
 
     $("#request-interval").val(view.interval);
     $("#request-limitinterval").attr("checked",view.limitinterval);
@@ -945,8 +949,8 @@ function graph_draw()
             var quality = Math.round(100 * (1-(feedlist[z].stats.npointsnull/feedlist[z].stats.npoints)));
             out += "<td>"+quality+"% ("+(feedlist[z].stats.npoints-feedlist[z].stats.npointsnull)+"/"+feedlist[z].stats.npoints+")</td>";
             var dp = feedlist[z].dp;
-            out += "<td>"+feedlist[z].stats.minval.toFixed(dp)+"</td>";
-            out += "<td>"+feedlist[z].stats.maxval.toFixed(dp)+"</td>";
+            if(!isNaN(Number(feedlist[z].stats.minval))) out += "<td>"+feedlist[z].stats.minval.toFixed(dp)+"</td>";
+            if(!isNaN(Number(feedlist[z].stats.maxval))) out += "<td>"+feedlist[z].stats.maxval.toFixed(dp)+"</td>";
             out += "<td>"+feedlist[z].stats.diff.toFixed(dp)+"</td>";
             out += "<td>"+feedlist[z].stats.mean.toFixed(dp)+"</td>";
             out += "<td>"+feedlist[z].stats.stdev.toFixed(dp)+"</td>";

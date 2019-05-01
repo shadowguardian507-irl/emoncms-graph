@@ -4,6 +4,18 @@
   padding-left: 250px;
 }
 
+#sidebar-wrapper {
+  margin-top:-10px;
+  margin-left: -250px;
+  left: 250px;
+  width: 250px;
+  background: #eee;
+  position: fixed;
+  overflow-y: auto;
+  z-index: 1000;
+  height: 100%;
+}
+
 #page-content-wrapper {
   width: 100%;
   padding-left:0px;
@@ -42,7 +54,14 @@
     background-color:#eee;
     overflow-x: scroll;
 }
-
+table#feeds thead tr th .caret{
+    border-top-color: black!important;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+table#feeds tbody tr th {
+    font-weight: normal
+}
 .feed-options-header {
     height:40px;
     background-color:#ccc;
@@ -92,11 +111,11 @@
 }
 
 #group-table .user-name{
-    font-size:12px; 
-    padding:4px; 
-    padding-left:8px; 
+    font-size:12px;
+    padding:4px;
+    padding-left:8px;
     font-weight:bold;
-    background-color:#aaa; 
+    background-color:#aaa;
     cursor:pointer
 }
 
@@ -122,11 +141,11 @@
 
 .feed-tag{
     padding:5px 0 1px 5px;
-    margin:0px 0px 2px 3px;
+    margin:0 0 2px 3px;
     cursor: pointer
 }
 
-input.feed-tag-checkbox{
+.feed-tag-checkbox{
     margin:5px;
 }
 
@@ -222,20 +241,7 @@ table#feeds.table .caret {
     vertical-align: middle;
     margin-right: .4em;
 }
-#sidebar .include-container{
-    padding: .5rem .95rem .5rem .95rem
-}
-#error {
-    margin-left: 1em;
-}
-#error .alert{
-    margin-bottom: 0;
-    padding-right: 1em;
-}
-#error .alert{
-    margin-bottom: 0;
-    padding-right: 1em;
-}
+
 #graph-wrapper{
     transition: all .3s ease-out;
 }
@@ -247,7 +253,7 @@ table#feeds.table .caret {
     margin: 0;
     padding: 0;
 }
-#download-buttons form button { 
+#download-buttons form button {
     width: 100%;
     text-align: left;
 }
