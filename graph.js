@@ -40,7 +40,7 @@ $('#graph_right').click(function () {floatingtime=0; view.panright(); graph_relo
 $('#graph_left').click(function () {floatingtime=0; view.panleft(); graph_reloaddraw();});
 $('.graph_time').click(function () {
     floatingtime=1; 
-    view.timewindow($(this).attr("time")); 
+    view.timewindow($(this).data("time")); 
     graph_reloaddraw();
 });
 
@@ -257,7 +257,7 @@ function graph_init_editor()
            if (name.length>20) {
                name = name.substr(0,20)+"..";
            }
-           out += "<th class='feed-title' data-feedid='"+feedsbytag[tag][z].id+"'>"+name+"</th>";
+           out += "<th class='feed-title' title='"+name+"' data-feedid='"+feedsbytag[tag][z].id+"'><span class='text-truncate d-inline-block'>"+name+"</span></th>";
            out += "<td><input class='feed-select-left' data-feedid='"+feedsbytag[tag][z].id+"' type='checkbox'></td>";
            out += "<td><input class='feed-select-right' data-feedid='"+feedsbytag[tag][z].id+"' type='checkbox'></td>";
            out += "</tr>";
@@ -609,7 +609,7 @@ function graph_reload()
         var title = _lang['Select a feed'] + '.';
         var message = _lang['Please select a feed from the Feeds List'];
         var icon = '<svg class="icon show_chart"><use xlink:href="#icon-show_chart"></use></svg>';
-        var markup = ['<div class="alert alert-info"><a href="#" class="open-sidebar"><strong>',title,'</strong>',message,'</a></div>'].join(' ');
+        var markup = ['<div class="alert alert-info"><a href="#" class="open-sidebar"><strong>',icon,title,'</strong>',message,'</a></div>'].join(' ');
         $('#error').show()
         .html(markup);
         return false;
@@ -1470,35 +1470,7 @@ function graph_delete(id) {
     
     graph_load_savedgraphs();
 }
-// ----------------------------------------------------------------------------------------
-// Sidebar
-// ----------------------------------------------------------------------------------------
-$("#sidebar-open").click(function(){
-    $("#sidebar-wrapper").css("left","250px");
-    $("#sidebar-close").show();
-});
 
-$("#sidebar-close").click(function(){
-    $("#sidebar-wrapper").css("left","0");
-    $("#sidebar-close").hide();
-});
-
-function sidebar_resize() {
-    var width = $(window).width();
-    var height = $(window).height();
-    $("#sidebar-wrapper").height(height-41);
-    
-    if (width<1024) {
-        $("#sidebar-wrapper").css("left","0");
-        $("#wrapper").css("padding-left","0");
-        $("#sidebar-open").show();
-    } else {
-        $("#sidebar-wrapper").css("left","250px");
-        $("#wrapper").css("padding-left","250px");
-        $("#sidebar-open").hide();
-        $("#sidebar-close").hide();
-    }
-}
 
 // ----------------------------------------------------------------------------------------
 function load_feed_selector() {
