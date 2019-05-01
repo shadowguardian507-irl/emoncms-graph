@@ -567,10 +567,14 @@ function graph_reload()
     view.start = Math.round(view.start / intervalms) * intervalms;
     view.end = Math.round(view.end / intervalms) * intervalms;
 
-    datetimepicker1.setLocalDate(new Date(view.start));
-    datetimepicker2.setLocalDate(new Date(view.end));
-    datetimepicker1.setEndDate(new Date(view.end));
-    datetimepicker2.setStartDate(new Date(view.start));
+    if(datetimepicker1) {
+        datetimepicker1.setLocalDate(new Date(view.start));
+        datetimepicker1.setEndDate(new Date(view.end));
+    }
+    if(datetimepicker2) {
+        datetimepicker2.setLocalDate(new Date(view.end));
+        datetimepicker2.setStartDate(new Date(view.start));
+    }
 
     $("#request-interval").val(view.interval);
     $("#request-limitinterval").attr("checked",view.limitinterval);
