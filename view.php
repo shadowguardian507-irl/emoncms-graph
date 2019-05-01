@@ -413,7 +413,8 @@
         }
     }
     
-    sidebar_resize();
+    if(typeof sidebar_resize === 'function') sidebar_resize();
+    
     graph_init_editor();
     
     load_feed_selector();
