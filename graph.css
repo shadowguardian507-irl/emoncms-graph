@@ -4,39 +4,22 @@
   padding-left: 250px;
 }
 
+#sidebar-wrapper {
+  margin-top:-10px;
+  margin-left: -250px;
+  left: 250px;
+  width: 250px;
+  background: #eee;
+  position: fixed;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
 #page-content-wrapper {
   width: 100%;
   padding-left:0px;
 }
 
-
-#sub_nav li{
-    transition: all .2s ease-out;
-    height: 0;
-    border-bottom-width: 0;
-    overflow: hidden;
-}
-/* show all menu items when 'in' class added */
-#sub_nav.in li,
-#sub_nav li.active{
-    height: 3.125rem;
-    border-bottom-width: 1px;
-}
-
-/* sidebar #mygraphs */
-#graph-list{
-    width: 14rem;
-    overflow: hidden;
-    position: relative;
-    margin-bottom: 3rem;
-}
-#graph-list input{
-    width:12rem;
-}
-#graph-list select{
-    width:13rem;
-}
-/* end of sidebar #mygraphs */
 
 .feed-options {
     background-color:#eee;
@@ -92,11 +75,11 @@
 }
 
 #group-table .user-name{
-    font-size:12px; 
-    padding:4px; 
-    padding-left:8px; 
+    font-size:12px;
+    padding:4px;
+    padding-left:8px;
     font-weight:bold;
-    background-color:#aaa; 
+    background-color:#aaa;
     cursor:pointer
 }
 
@@ -122,11 +105,11 @@
 
 .feed-tag{
     padding:5px 0 1px 5px;
-    margin:0px 0px 2px 3px;
+    margin:0 0 2px 3px;
     cursor: pointer
 }
 
-input.feed-tag-checkbox{
+.feed-tag-checkbox{
     margin:5px;
 }
 
@@ -188,57 +171,18 @@ input.feed-tag-checkbox-left, input.feed-tag-checkbox-right{
     outline: none;
 }
 
-table#feeds.table thead th{
-    border-top: 4px solid #333;
-    font-weight: normal !important;
-    color: #adadad;
-    cursor: pointer;
-    transition: all .3s ease-in;
-    padding-left: 0;
+#download-buttons form{
+    margin: 0;
+    padding: 0;
 }
-table#feeds.table thead th:hover{
-    color: #f8f9fa;
-    text-decoration: underline;
+#download-buttons form button {
+    width: 100%;
+    text-align: left;
 }
-table#feeds.table input[type="checkbox"] { margin: 0 }
-table#feeds.table tbody tr > *{
-    border-color: #444;
+.csvoptions{
+    width: auto;
 }
-table#feeds.table tbody tr th{
-    cursor: pointer;
-    transition: all .3s ease-in;
-    font-weight: normal;
-}
-table#feeds.table tbody tr th:hover{
-    text-decoration: underline;
-}
-table#feeds.table .caret {
-    border-top-color: currentColor !important;
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: .4em;
-}
-#sidebar .include-container{
-    padding: .5rem .95rem .5rem .95rem
-}
-#error {
-    margin-left: 1em;
-}
-#error .alert{
-    margin-bottom: 0;
-    padding-right: 1em;
-}
-#error .alert{
-    margin-bottom: 0;
-    padding-right: 1em;
-}
-#graph-wrapper{
-    transition: all .3s ease-out;
-}
-#graph-wrapper.empty{
-    opacity: .3;
-    transform: scale(.99);
-}
+
 @media(max-width: 512px) {
     #legend .col {
         position: relative; left: 0;
