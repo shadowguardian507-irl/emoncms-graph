@@ -1,4 +1,4 @@
-<table class="table table-condensed mx-3" id="feeds"></table>
+<table class="table table-condensed mx-3" id="feeds" style="width: 90%"></table>
 
 <div id="mygraphs" class="px-3">
     <h4><a href="#" class="collapsed" data-toggle="collapse" data-target="#graph-list">

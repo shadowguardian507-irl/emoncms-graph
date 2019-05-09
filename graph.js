@@ -782,7 +782,7 @@ function group_legend_values(_flot, placeholder) {
 }
 function onClickLegendLink(event) {
     event.preventDefault();
-    var link = event.target;
+    var link = event.currentTarget;
     // toggle opacity of the link
     link.classList.toggle('faded');
     // re-draw the chart with the plot lines hidden/shown
