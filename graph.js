@@ -245,7 +245,7 @@ function graph_init_editor()
        tagname = tag;
        if (tag=="") tagname = "undefined";
        out += "<thead>";
-       out += "<tr class='tagheading' data-tag='"+tagname+"'>";
+       out += "<tr class='tagheading' data-tag='"+tagname+"' tabindex='0'>";
        out += "<th colspan='3'><span class='caret'></span>"+tagname+"</th>";
        out += "</tr>";
        out += "</thead>";
@@ -257,7 +257,7 @@ function graph_init_editor()
            if (name.length>20) {
                name = name.substr(0,20)+"..";
            }
-           out += "<th class='feed-title' title='"+name+"' data-feedid='"+feedsbytag[tag][z].id+"'><span class='text-truncate d-inline-block'>"+name+"</span></th>";
+           out += "<th class='feed-title' title='"+name+"' data-feedid='"+feedsbytag[tag][z].id+"' tabindex='0'><span class='text-truncate d-inline-block'>"+name+"</span></th>";
            out += "<td><input class='feed-select-left' data-feedid='"+feedsbytag[tag][z].id+"' type='checkbox'></td>";
            out += "<td><input class='feed-select-right' data-feedid='"+feedsbytag[tag][z].id+"' type='checkbox'></td>";
            out += "</tr>";
@@ -357,10 +357,13 @@ function graph_init_editor()
         graph_draw();
     });
 
-    $("body").on("click",".feed-title",function(event){
-        event.preventDefault();
-        var feedid = $(this).data("feedid");
-        $('.feed-select-left[data-feedid="' + feedid + '"]').click();
+    $("body").on("click keyup",".feed-title", function(event){
+        let enterKey = 13;
+        if((event.type === 'keyup' && event.which === enterKey) || event.type === 'click') {
+            var feedid = $(this).data("feedid");
+            $('.feed-select-left[data-feedid="' + feedid + '"]').click();
+            event.preventDefault();
+        }
     });
     $("body").on("click",".feed-select-left",function(){
         var feedid = $(this).data("feedid");
@@ -409,10 +412,16 @@ function graph_init_editor()
         graph_reloaddraw();
     });
     
-    $("body").on("click",".tagheading",function(){
-        var tag = $(this).data("tag");
-        var e = $(".tagbody[data-tag='"+tag+"']");
-        if (e.is(":visible")) e.hide(); else e.show();
+    $("body").on("click keyup",".tagheading",function(event){
+        let enterKey = 13;
+        console.log(event.type,event.which);
+
+        if((event.type === 'keyup' && event.which === enterKey) || event.type === 'click') {
+            var tag = $(this).data("tag");
+            var e = $(".tagbody[data-tag='"+tag+"']");
+            if (e.is(":visible")) e.hide(); else e.show();
+            event.preventDefault();
+        }
     });
 
     $("#showmissing").click(function(){
