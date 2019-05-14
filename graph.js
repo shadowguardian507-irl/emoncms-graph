@@ -254,7 +254,7 @@ function graph_init_editor()
        {
            out += "<tr>";
            var name = feedsbytag[tag][z].name;
-           if (name.length>20) {
+           if (name && name.length>20) {
                name = name.substr(0,20)+"..";
            }
            out += "<th class='feed-title' title='"+name+"' data-feedid='"+feedsbytag[tag][z].id+"'><span class='text-truncate d-inline-block'>"+name+"</span></th>";
@@ -1498,8 +1498,12 @@ function load_feed_selector() {
         var feedid = feedlist[z].id;
         var tag = feedlist[z].tag;
         if (tag=="") tag = "undefined";
-        if (feedlist[z].yaxis==1) { $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = true; $(".tagbody[data-tag='"+tag+"']").show(); }
-        if (feedlist[z].yaxis==2) { $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = true; $(".tagbody[data-tag='"+tag+"']").show(); }
+        if (feedlist[z].yaxis==1 && $(".feed-select-left[data-feedid="+feedid+"]").length > 0) { 
+            $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = true; $(".tagbody[data-tag='"+tag+"']").show(); 
+        }
+        if (feedlist[z].yaxis==2 && $(".feed-select-right[data-feedid="+feedid+"]").length > 0) {
+            $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = true; $(".tagbody[data-tag='"+tag+"']").show();
+        }
     }
 }
 

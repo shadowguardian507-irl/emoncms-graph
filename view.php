@@ -406,9 +406,11 @@
     <?php
     $translations = array(
         "Received data not in correct format. Check the logs for more details" => _("Received data not in correct format. Check the logs for more details"),
-        "Request error" => _("Request error")
+        "Request error" => _("Request error"),
+        "User" => _("User"),
+        "Authentication Required" => _("Authentication Required")
     );
-    echo 'var translations = '.json_encode($translations);
+    printf("var translations = %s;\n",json_encode($translations));
     ?>
 
     function gettext(key) {
@@ -440,13 +442,18 @@
             $all_timezones.html(out);
         }).then( function() {
             $.getJSON(path + 'user/get.json')
-            .done( function(user) {
-                $user_timezone.val(user.timezone).text('User: ' + user.timezone +' (' + timezones[user.timezone].label + ')');
+            .done( function(response) {
+                if(response.hasOwnProperty('success') && response.success === false) {
+                    $user_timezone.text(gettext('User') +': ' + gettext('Authentication Required'));
+                } else {
+                    let user = response;
+                    $user_timezone.val(user.timezone).text(gettext('User') +': ' + user.timezone +' (' + timezones[user.timezone].label + ')');
+                }
             })
-            .then (function() {
-                let browser_tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                $browser_timezone.val(browser_tz).text('Browser: ' + browser_tz + ' ('+ timezones[browser_tz].label + ')');
-            })
+            
+            let browser_tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            let label = timezones.hasOwnProperty(browser_tz) ? timezones[browser_tz].label : browser_tz;
+            $browser_timezone.val(browser_tz).text('Browser: ' + browser_tz + ' ('+ label + ')');
         })
 
         $timezone.on('change', function(event) {
