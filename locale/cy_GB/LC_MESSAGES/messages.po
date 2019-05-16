@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Emoncms Graph Module\n"
-"POT-Creation-Date: 2019-01-16 17:48+0000\n"
-"PO-Revision-Date: 2019-01-16 17:49+0000\n"
-"Last-Translator: Emrys <emrys@openenergymonitor.org>\n"
+"POT-Creation-Date: 2019-05-01 17:39+0100\n"
+"PO-Revision-Date: 2019-05-01 17:45+0100\n"
+"Last-Translator: Emrys Roberts <emrys@openenergymonitor.org>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
@@ -16,311 +16,330 @@ msgstr ""
 "X-Poedit-KeywordsList: _;__;_e;_n:1,2;_n_noop:1,2;_nx:1,2;_nx_noop:1,2\n"
 "X-Poedit-SearchPath-0: view.php\n"
 
-#: view.php:54
-msgid "Feeds"
-msgstr "Porthau"
-
-#: view.php:63
-msgid "My Graphs"
-msgstr "Fy Graffiau"
-
-#: view.php:69
-msgid "Graph Name"
-msgstr "Enw'r Graff"
-
-#: view.php:71
-msgid "Selected graph id"
-msgstr "Dewiswch id graff"
-
-#: view.php:71
-msgid "None selected"
-msgstr "Dim dewiswyd"
-
-#: view.php:72
-msgid "Delete"
-msgstr "Dileu"
-
-#: view.php:73
-msgid "Save"
-msgstr "Cadw"
-
-#: view.php:79
+#: view.php:48
 msgid "Data viewer"
 msgstr "Gwyliwr Data"
 
-#: view.php:85
+#: view.php:52
 msgid "Day"
 msgstr "Diwrnod"
 
-#: view.php:85
+#: view.php:52
 msgid "D"
 msgstr ""
 
-#: view.php:86
+#: view.php:53
 msgid "Week"
 msgstr "Wythnos"
 
-#: view.php:86
+#: view.php:53
 msgid "W"
 msgstr ""
 
-#: view.php:87
+#: view.php:54
 msgid "Month"
 msgstr "Mis"
 
-#: view.php:87
+#: view.php:54
 msgid "M"
 msgstr ""
 
-#: view.php:88
+#: view.php:55
 msgid "Year"
 msgstr "Blwyddyn"
 
-#: view.php:88
+#: view.php:55
 msgid "Y"
 msgstr "B"
 
-#: view.php:89
+#: view.php:56
 msgid "Zoom In"
 msgstr "Chwyddo i mewn"
 
-#: view.php:90
+#: view.php:57
 msgid "Zoom Out"
 msgstr "Chwyddo allan"
 
-#: view.php:91
+#: view.php:58
 msgid "Earlier"
 msgstr "Cynharach"
 
-#: view.php:92
+#: view.php:59
 msgid "Later"
 msgstr "Hwyrach"
 
-#: view.php:95 view.php:224
+#: view.php:62 view.php:208
 msgid "Show"
 msgstr "Dangos"
 
-#: view.php:96
+#: view.php:63
 msgid "missing data"
 msgstr "data ar goll"
 
-#: view.php:97
+#: view.php:64
 msgid "legend"
 msgstr "chwedl"
 
-#: view.php:98
+#: view.php:65
 msgid "feed tag"
 msgstr "tag borth"
 
-#: view.php:106
+#: view.php:73
 msgid "Histogram"
 msgstr ""
 
-#: view.php:107 view.php:142 view.php:186
+#: view.php:74 view.php:109 view.php:168
 msgid "Type"
 msgstr "Math"
 
-#: view.php:109
+#: view.php:76
 msgid "Time at value"
 msgstr "Amser am bob werth"
 
-#: view.php:110
+#: view.php:77
 #, fuzzy
 msgid "kWh at Power"
 msgstr "kWh am bob Pwer"
 
-#: view.php:112
+#: view.php:79
 msgid "Resolution"
 msgstr "Datrys Histogram"
 
-#: view.php:116
+#: view.php:83
 msgid "Back to main view"
 msgstr "Yn ôl i'r prif dudalen"
 
-#: view.php:126
+#: view.php:93
 msgid "Start"
 msgstr "Cychwyn"
 
-#: view.php:134
+#: view.php:101
 msgid "End"
 msgstr "Diwedd"
 
-#: view.php:144
+#: view.php:111
 msgid "Fixed Interval"
 msgstr "Cyfnod Sefydlog"
 
-#: view.php:145
+#: view.php:112
 msgid "Daily"
 msgstr "Dyddiol"
 
-#: view.php:146
+#: view.php:113
 msgid "Weekly"
 msgstr "Wythnosol"
 
-#: view.php:147
+#: view.php:114
 msgid "Monthly"
 msgstr "Misol"
 
-#: view.php:148
+#: view.php:115
 msgid "Annual"
 msgstr "Blynyddol"
 
-#: view.php:156
+#: view.php:123
 msgid "Fix"
 msgstr "Trwsio"
 
-#: view.php:157
+#: view.php:124
 msgid "Limit to data interval"
 msgstr "Cyfyngu ar yr egwyl data"
 
-#: view.php:162
+#: view.php:128
+msgid "Timezone"
+msgstr ""
+
+#: view.php:131
+msgid "System"
+msgstr ""
+
+#: view.php:135
+msgid "World Timezones"
+msgstr ""
+
+#: view.php:141
 msgid "Y-axis"
 msgstr ""
 
-#: view.php:163
+#: view.php:142
 msgid "min"
 msgstr "lleiaf"
 
-#: view.php:166
+#: view.php:145
 msgid "max"
 msgstr "mwyaf"
 
-#: view.php:169
+#: view.php:148
 msgid "Reload"
 msgstr "Ail lwytho"
 
-#: view.php:176
-msgid "Feeds in view"
-msgstr "Porthau mewn golwg"
-
-#: view.php:177
+#: view.php:155
 msgid "Show options"
 msgstr "Dangos opsiynau"
 
-#: view.php:178
+#: view.php:156
 msgid "Show statistics"
 msgstr "Dangos ystadegau"
 
-#: view.php:185 view.php:200
+#: view.php:159
+msgid "Feeds in view"
+msgstr "Porthau mewn golwg"
+
+#: view.php:167 view.php:183
 msgid "Feed"
 msgstr "Porth"
 
-#: view.php:187
+#: view.php:169
 msgid "Color"
 msgstr "Lliw"
 
-#: view.php:188
+#: view.php:170
 msgid "Fill"
 msgstr "Llenwi"
 
-#: view.php:189
+#: view.php:171
 msgid "Stack"
 msgstr "Pentyrrau"
 
-#: view.php:190
+#: view.php:172
 msgid "Scale"
 msgstr "Graddfa"
 
-#: view.php:191
+#: view.php:173
 msgid "Delta"
 msgstr ""
 
-#: view.php:192
+#: view.php:174
 msgid "Average"
 msgstr "Cyfartaledd"
 
-#: view.php:193
+#: view.php:175
 msgid "DP"
 msgstr "Lle Degol"
 
-#: view.php:201
+#: view.php:184
 msgid "Quality"
 msgstr "Ansawdd"
 
-#: view.php:202
+#: view.php:185
 msgid "Min"
 msgstr "Lleiaf"
 
-#: view.php:203
+#: view.php:186
 msgid "Max"
 msgstr "Mwyaf"
 
-#: view.php:204
+#: view.php:187
 msgid "Diff"
 msgstr "Gwahaniaeth"
 
-#: view.php:205
+#: view.php:188
 msgid "Mean"
 msgstr "Cymedrig"
 
-#: view.php:206
+#: view.php:189
 msgid "Stdev"
 msgstr "Gwyriad Safonol (σ)"
 
-#: view.php:207
+#: view.php:190
 msgid "Wh"
 msgstr ""
 
-#: view.php:215
+#: view.php:199
 msgid "Show CSV Output"
 msgstr "Dangos Allbwn CSV"
 
-#: view.php:216
+#: view.php:200
 msgid "Time format"
 msgstr "Fformat Amser"
 
-#: view.php:218
+#: view.php:202
 msgid "Unix timestamp"
 msgstr "Amser Unix"
 
-#: view.php:219
+#: view.php:203
 msgid "Seconds since start"
 msgstr "Eiliadau ers cychwyn"
 
-#: view.php:220
+#: view.php:204
 msgid "Date-time string"
 msgstr "Llinyn dyddiad-amser"
 
-#: view.php:222
+#: view.php:206
 msgid "Null values"
 msgstr "Dim gwerthoedd"
 
-#: view.php:225
+#: view.php:209
 msgid "Replace with last value"
 msgstr "Ailosod gyda'r gwerth olaf"
 
-#: view.php:226
+#: view.php:210
 msgid "Remove whole line"
 msgstr "Dileu y linell gyfan"
 
-#: view.php:228
+#: view.php:212
 msgid "Headers"
 msgstr "Penawdau"
 
-#: view.php:230
+#: view.php:214
 msgid "Show name and tag"
 msgstr "Dangos enw a tag"
 
-#: view.php:231
+#: view.php:215
 msgid "Show name"
 msgstr "Dangos enw"
 
-#: view.php:232
+#: view.php:216
 msgid "Hide"
 msgstr "Cuddiad"
 
-#: view.php:237
+#: view.php:222
+msgid "Download"
+msgstr ""
+
+#: view.php:260
 msgid "Copy"
 msgstr "Copi"
 
-#: view.php:258
+#: view.php:292
 msgid "Select a feed"
 msgstr "Dewiswch borth"
 
-#: view.php:259
+#: view.php:293
 msgid "Please select a feed from the Feeds List"
 msgstr "Dewiswch borth o'r rhestr o borthau"
 
-#: view.php:260
+#: view.php:294
 msgid "Select graph"
 msgstr "Dewiswch graff"
+
+#: view.php:410
+msgid "Received data not in correct format. Check the logs for more details"
+msgstr ""
+"Data heb ei dderbyn yn y fformat cywir. Gwiriwch y ffeil cofnod am fwy o "
+"fanylion"
+
+#: view.php:411
+msgid "Request error"
+msgstr "Gwall cais"
+
+#~ msgid "Feeds"
+#~ msgstr "Porthau"
+
+#~ msgid "My Graphs"
+#~ msgstr "Fy Graffiau"
+
+#~ msgid "Graph Name"
+#~ msgstr "Enw'r Graff"
+
+#~ msgid "Selected graph id"
+#~ msgstr "Dewiswch id graff"
+
+#~ msgid "None selected"
+#~ msgstr "Dim dewiswyd"
+
+#~ msgid "Delete"
+#~ msgstr "Dileu"
+
+#~ msgid "Save"
+#~ msgstr "Cadw"
