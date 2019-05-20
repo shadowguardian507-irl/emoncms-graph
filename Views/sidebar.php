@@ -9,7 +9,7 @@
         <select id="graph-select"></select>
         <h5><?php echo _('Graph Name') ?>:</h5>
         <input id="graph-name" type="text">
-        <small id="selected-graph-id"><?php echo _('Selected graph id') ?>: <span id="graph-id"><?php echo _('None selected') ?></span></small>
+        <small id="selected-graph-id" class="help-block text-light"><?php echo _('Selected graph id') ?>: <span id="graph-id"><?php echo _('None selected') ?></span></small>
         <button id="graph-delete" class="btn" style="display:none"><?php echo _('Delete') ?></button>
         <button id="graph-save" class="btn"><?php echo _('Save') ?></button>
     </div>
