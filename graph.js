@@ -414,7 +414,7 @@ function graph_init_editor()
     
     $("body").on("click keyup",".tagheading",function(event){
         let enterKey = 13;
-        console.log(event.type,event.which);
+        // console.log(event.type,event.which);
 
         if((event.type === 'keyup' && event.which === enterKey) || event.type === 'click') {
             var tag = $(this).data("tag");
@@ -1269,6 +1269,8 @@ function histogram(feedid,type,resolution)
 //----------------------------------------------------------------------------------------
 $("#graph-select").change(function() {
     var name = $(this).val();
+    var id = $(this).find(':selected').data('id');
+    $('#graph-id').text(id);
     load_saved_graph(name);
 });
 
@@ -1421,10 +1423,11 @@ function graph_load_savedgraphs(fn=false)
         success: function(result) {
             savedgraphs = result.user;
             
-            var out = "<option>" + _lang['Select graph'] + ":</option>";
+            var out = "<option value=''>" + _lang['Select graph'] + ":</option>";
             for (var z in savedgraphs) {
-               var name = savedgraphs[z].name;
-               out += "<option>"+name+"</option>";
+                var id = savedgraphs[z].id;
+                var name = savedgraphs[z].name;
+               out += '<option data-id="' + id +'" value="' + name +'">'+ '[#'+id+'] ' + name+'</option>';
             }
             $("#graph-select").html(out);
             if (fn) fn();
