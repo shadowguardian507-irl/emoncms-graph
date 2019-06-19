@@ -14,6 +14,9 @@
     $fullwidth = true;
     
     $graphid = get("graphid");
+    
+    $apikey = "";
+    if (isset($_GET['apikey'])) $apikey = $_GET['apikey'];
 ?>
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
@@ -26,6 +29,7 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js"></script>
 <link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
+<link href="<?php echo $path; ?>Modules/graph/graph.css" rel="stylesheet">
 
 <div id='navigation-timemanual' style='right:1px; display: none;'>
     <div class='input-prepend input-append' style='margin-bottom:5px' >
@@ -59,11 +63,14 @@
     <button id='graph_right' class='btn'>></button>
 </div>
 
+<div id="legend"></div>
 <div id="placeholder_bound" style="width:100%; height:100%">
     <div id="placeholder"></div>
 </div>
 
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/moment.min.js?v=2"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=2"></script>
+
 
 <script>
     $("body").css("background","none");
@@ -73,6 +80,10 @@
     var getbackup = false;
     
     var graphid = "<?php echo $graphid; ?>";
+
+    var apikey = "<?php echo $apikey; ?>";
+    var apikeystr = "";
+    if (apikey!="") apikeystr = "&apikey="+apikey;
     
     $.ajax({                                      
         url: path+"/graph/get?id="+graphid,

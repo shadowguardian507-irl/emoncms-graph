@@ -28,6 +28,7 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.stack.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/misc/clipboard.js"></script>
 
 <!-- toggle button to choose User or Group. Documentation: http://bootstrapswitch.com/options.html -->
 <link href="<?php echo $path; ?>Modules/graph/Lib/bootstrap-switch.css" rel="stylesheet">
@@ -101,7 +102,7 @@
 
         <div id="histogram-controls" style="padding-bottom:5px; display:none;">
             <div class="input-prepend input-append">
-                <span class="add-on" style="width:75px"><b>Histogram</b></span>
+                <span class="add-on" style="width:100px"><b>Histogram</b></span>
                 <span class="add-on" style="width:75px">Type</span>
                 <select id="histogram-type" style="width:150px">
                     <option value="timeatvalue" >Time at value</option>
@@ -132,7 +133,7 @@
             
             <div class="input-prepend input-append" style="padding-right:5px">
                 <span class="add-on" style="width:50px">Type</span>
-                <select id="request-type" style="width:120px">
+                <select id="request-type" style="width:130px">
                     <option value="interval">Fixed Interval</option>
                     <option>Daily</option>
                     <option>Weekly</option>
@@ -197,6 +198,10 @@
                     <option value="lastvalue">Replace with last value</option>
                     <option value="remove">Remove whole line</option>
                 </select>
+                <div class="input-append"><!-- just to match the styling of the other items -->
+                    <button onclick="copyToClipboardCustomMsg(document.getElementById('csv'), 'copy-csv-feedback','Copied')" class="csvoptions btn" id="copy-csv" type="button">Copy <i class="icon-share-alt"></i></button>
+                </div>
+                <span id="copy-csv-feedback" class="csvoptions"></span>
             </div> 
             
             
@@ -333,6 +338,14 @@
             $('#vis-mode-user').show();
         }
     });
+
+    // stops a part upgrade error - this change requires emoncms/emoncms repo to also be updated 
+    // keep button hidden if new version of clipboard.js is not available
+    if (typeof copyToClipboardCustomMsg === 'function') {
+        document.getElementById('copy-csv').classList.remove('hidden');
+    } else {
+        copyToClipboardCustomMsg = function () {}
+    }
 
     /******************************************
      Functions
