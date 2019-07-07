@@ -715,12 +715,12 @@ function set_feedlist() {
             // Apply delta adjustement to feed values
             if (feedlist[z].delta) {
                 for (var i=1; i<feedlist[z].data.length; i++) {
-                    if (feedlist[z].data[i][1]!=null && feedlist[z].data[i-1][1]!=null) {
-                        var delta = feedlist[z].data[i][1] - feedlist[z].data[i-1][1];
-                        feedlist[z].data[i-1][1] = delta;
-                    } else {
-                        feedlist[z].data[i][1] = 0;
+                    // compute feedlist[z].data[i-1]
+                    if (feedlist[z].data[i-1][1] == null || feedlist[z].data[i][1] == null) {
                         feedlist[z].data[i-1][1] = null;
+                    }
+                    else {
+                        feedlist[z].data[i-1][1] = feedlist[z].data[i][1] - feedlist[z].data[i-1][1];
                     }
                 }
                 feedlist[z].data[feedlist[z].data.length-1][1] = null;
