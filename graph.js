@@ -18,6 +18,8 @@ var showlegend = true;
 var floatingtime=1;
 var yaxismin="auto";
 var yaxismax="auto";
+var yaxismin2="auto";
+var yaxismax2="auto";
 
 var csvtimeformat="datestr";
 var csvnullvalues="show";
@@ -499,7 +501,7 @@ function graph_init_editor()
             }
         }
     });
-    
+    // left axis
     $("body").on("change","#yaxis-min",function(){
         yaxismin = $(this).val();
         graph_draw();
@@ -509,6 +511,18 @@ function graph_init_editor()
         yaxismax = $(this).val();
         graph_draw();
     });
+    // right axis
+    $("body").on("change","#yaxis-min2",function(){
+        yaxismin2 = $(this).val();
+        graph_draw();
+    });
+    $("body").on("change","#yaxis-max2",function(){
+        yaxismax2 = $(this).val();
+        graph_draw();
+    });
+    $("body").on("click",".reset-yaxis",function(){
+        $(this).parent().find('input').val('auto');
+    })
 
     $("#csvtimeformat").change(function(){
         csvtimeformat=$(this).val();
@@ -662,7 +676,7 @@ function addFeedlistData(response){
                 feed.postprocessed = false;
                 feed.data = item.data;
             }
-            if (typeof item.data.success === 'undefined') {
+            if (!item || !item.data || typeof item.data.success === 'undefined') {
                 valid = true;
             }
         }
@@ -869,8 +883,11 @@ function graph_draw()
 
     if (showlegend) options.legend.show = true;
     
-    if (yaxismin!='auto' && yaxismin!='') { options.yaxes[0].min = yaxismin; options.yaxes[1].min = yaxismin; }
-    if (yaxismax!='auto' && yaxismax!='') { options.yaxes[0].max = yaxismax; options.yaxes[1].max = yaxismax; }
+    if (yaxismin!='auto' && yaxismin!='') { options.yaxes[0].min = yaxismin; }
+    if (yaxismin2!='auto' && yaxismin2!='') {  options.yaxes[1].min = yaxismin2; }
+
+    if (yaxismax!='auto' && yaxismax!='') { options.yaxes[0].max = yaxismax; }
+    if (yaxismax2!='auto' && yaxismax2!='') { options.yaxes[1].max = yaxismax2; }
     
     var time_in_window = (view.end - view.start) / 1000;
     var hours = Math.floor(time_in_window / 3600);
@@ -910,6 +927,12 @@ function graph_draw()
         plot.id = feedlist[z].id;
         plot.index = z;
         plotdata.push(plot);
+    }
+    if (plotdata.length > 1) {
+        // show right yaxis options if required
+        $('#yaxis_right').show()
+    } else {
+        $('#yaxis_right').hide()
     }
     plot_statistics = $.plot($('#placeholder'), plotdata, options);
 
@@ -1275,10 +1298,13 @@ $("#graph-select").change(function() {
 function load_saved_graph(name) {
     $("#graph-name").val(name);
     $("#graph-delete").show();
+    
     var index = graph_index_from_name(name);
     
     if(typeof savedgraphs[index] === 'undefined') return;
     
+    $("#graph-id").text(savedgraphs[index].id)
+
     // view settings
     view.start = savedgraphs[index].start;
     view.end = savedgraphs[index].end;
@@ -1287,7 +1313,9 @@ function load_saved_graph(name) {
     view.fixinterval = savedgraphs[index].fixinterval;
     floatingtime = savedgraphs[index].floatingtime,
     yaxismin = savedgraphs[index].yaxismin;
+    yaxismin2 = savedgraphs[index].yaxismin2 || 'auto';
     yaxismax = savedgraphs[index].yaxismax;
+    yaxismax2 = savedgraphs[index].yaxismax2 || 'auto';
 
     // CSV display settings
     csvtimeformat = (typeof(savedgraphs[index].csvtimeformat)==="undefined" ? "datestr" : savedgraphs[index].csvtimeformat);
@@ -1312,6 +1340,8 @@ function load_saved_graph(name) {
 
     $("#yaxis-min").val(yaxismin);
     $("#yaxis-max").val(yaxismax);
+    $("#yaxis-min2").val(yaxismin2);
+    $("#yaxis-max2").val(yaxismax2);
     $("#request-fixinterval")[0].checked = view.fixinterval;
     $("#request-limitinterval")[0].checked = view.limitinterval;
     $("#showmissing")[0].checked = showmissing;
@@ -1374,6 +1404,8 @@ $("#graph-save").click(function() {
         floatingtime: floatingtime,
         yaxismin: yaxismin,
         yaxismax: yaxismax,
+        yaxismin2: yaxismin2,
+        yaxismax2: yaxismax2,
         showmissing: showmissing,
         showtag: showtag,
         showlegend: showlegend,
