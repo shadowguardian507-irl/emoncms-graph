@@ -52,10 +52,10 @@
 </div>
 
 <div id="navigation" style="padding-bottom:5px;" >
-    <button class='btn graph_time' type='button' time='1'>D</button>
-    <button class='btn graph_time' type='button' time='7'>W</button>
-    <button class='btn graph_time' type='button' time='30'>M</button>
-    <button class='btn graph_time' type='button' time='365'>Y</button>
+    <button class='btn graph_time' type='button' data-time='1'>D</button>
+    <button class='btn graph_time' type='button' data-time='7'>W</button>
+    <button class='btn graph_time' type='button' data-time='30'>M</button>
+    <button class='btn graph_time' type='button' data-time='365'>Y</button>
 <button class='btn navigation-timewindow' type='button'><i class='icon-resize-horizontal'></i></button>
     <button id='graph_zoomin' class='btn'>+</button>
     <button id='graph_zoomout' class='btn'>-</button>
