@@ -122,7 +122,7 @@
             <span class="fixed-interval-options">
                 <input id="request-interval" type="text" style="width:60px" />
                 <span class="add-on"><?php echo _('Fix') ?> <input id="request-fixinterval" type="checkbox" style="margin-top:1px" /></span>
-                <span class="add-on"><?php echo _('Limit to data interval') ?> <input id="request-limitinterval" type="checkbox" style="margin-top:1px" /></span>
+                <span class="add-on"><?php echo _('Limit to data interval') ?> <input id="request-limitinterval" type="checkbox" style="margin-top:1px" checked></span>
             </span>
         </div>
         <div class="input-prepend input-append" style="padding-right:5px">
@@ -138,16 +138,24 @@
                 </select>
             </span>
         </div>
-        <div class="input-prepend input-append">
-            <span class="add-on" style="width:50px"><?php echo _('Y-axis') ?>:</span>
+        <div id="yaxis_left" class="input-append input-prepend">
+            <span class="add-on" style="width:80px"><?php echo _('Y-axis').'('._('Left').')' ?>:</span>
             <span class="add-on" style="width:30px"><?php echo _('min') ?></span>
-            <input id="yaxis-min" type="text" style="width:50px" value="auto"/>
-
+            <input id="yaxis-min" type="text" style="width:50px" value="auto">
             <span class="add-on" style="width:30px"><?php echo _('max') ?></span>
-            <input id="yaxis-max" type="text" style="width:50px" value="auto"/>
-            
-            <button id="reload" class="btn"><?php echo _('Reload') ?></button>
+            <input id="yaxis-max" type="text" style="width:50px;" value="auto">
+            <button class="btn reset-yaxis"><?php echo _('Reset') ?></button>
         </div>
+        <div id="yaxis_right" class="input-append input-prepend">
+            <span class="add-on" style="width:80px"><?php echo _('Y-axis').'('._('Right').')' ?>:</span>
+            <span class="add-on" style="width:30px"><?php echo _('min') ?></span>
+            <input id="yaxis-min2" type="text" style="width:50px" value="auto">
+            <span class="add-on" style="width:30px"><?php echo _('max') ?></span>
+            <input id="yaxis-max2" type="text" style="width:50px;" value="auto">
+            <button class="btn reset-yaxis"><?php echo _('Reset') ?></button>
+        </div>
+
+        <button id="reload" class="btn" style="vertical-align:top"><?php echo _('Reload') ?></button>
         
         <div id="window-info" style=""></div><br>
         
@@ -319,7 +327,7 @@
     var userid = <?php echo $userid; ?>;
     var feedidsLH = "<?php echo $feedidsLH; ?>";
     var feedidsRH = "<?php echo $feedidsRH; ?>";
-    var load_savegraphsd = "<?php echo $load_saved; ?>";
+    var load_savegraphs = "<?php echo $load_saved; ?>";
 
     var _lang = <?php
         $lang['Select a feed'] = _('Select a feed');
@@ -351,7 +359,7 @@
         copyToClipboardCustomMsg = function () {}
     }
     
-    if (load_saved=="") {
+    if (load_savegraphs=="") {
 
         // Assign active feedid from URL
         var urlparts = window.location.pathname.split("graph/");

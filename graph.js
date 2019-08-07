@@ -17,6 +17,8 @@ var showlegend = true;
 var floatingtime=1;
 var yaxismin="auto";
 var yaxismax="auto";
+var yaxismin2="auto";
+var yaxismax2="auto";
 
 var csvtimeformat="datestr";
 var csvnullvalues="show";
@@ -501,7 +503,7 @@ function graph_init_editor()
             }
         }
     });
-
+    // left axis
     $("body").on("change","#yaxis-min",function(){
         yaxismin = $(this).val();
         graph_draw();
@@ -511,6 +513,18 @@ function graph_init_editor()
         yaxismax = $(this).val();
         graph_draw();
     });
+    // right axis
+    $("body").on("change","#yaxis-min2",function(){
+        yaxismin2 = $(this).val();
+        graph_draw();
+    });
+    $("body").on("change","#yaxis-max2",function(){
+        yaxismax2 = $(this).val();
+        graph_draw();
+    });
+    $("body").on("click",".reset-yaxis",function(){
+        $(this).parent().find('input').val('auto');
+    })
 
     $("#csvtimeformat").change(function(){
         csvtimeformat=$(this).val();
@@ -664,7 +678,7 @@ function addFeedlistData(response){
                 feed.postprocessed = false;
                 feed.data = item.data;
             }
-            if (typeof item.data.success === 'undefined') {
+            if (!item || !item.data || typeof item.data.success === 'undefined') {
                 valid = true;
             }
         }
@@ -870,10 +884,13 @@ function graph_draw()
     }
 
     if (showlegend) options.legend.show = true;
+    
+    if (yaxismin!='auto' && yaxismin!='') { options.yaxes[0].min = yaxismin; }
+    if (yaxismin2!='auto' && yaxismin2!='') {  options.yaxes[1].min = yaxismin2; }
 
-    if (yaxismin!='auto' && yaxismin!='') { options.yaxes[0].min = yaxismin; options.yaxes[1].min = yaxismin; }
-    if (yaxismax!='auto' && yaxismax!='') { options.yaxes[0].max = yaxismax; options.yaxes[1].max = yaxismax; }
-
+    if (yaxismax!='auto' && yaxismax!='') { options.yaxes[0].max = yaxismax; }
+    if (yaxismax2!='auto' && yaxismax2!='') { options.yaxes[1].max = yaxismax2; }
+    
     var time_in_window = (view.end - view.start) / 1000;
     var hours = Math.floor(time_in_window / 3600);
     var mins = Math.round(((time_in_window / 3600) - hours)*60);
@@ -912,6 +929,12 @@ function graph_draw()
         plot.id = feedlist[z].id;
         plot.index = z;
         plotdata.push(plot);
+    }
+    if (plotdata.length > 1) {
+        // show right yaxis options if required
+        $('#yaxis_right').show()
+    } else {
+        $('#yaxis_right').hide()
     }
     plot_statistics = $.plot($('#placeholder'), plotdata, options);
 
@@ -1543,7 +1566,9 @@ function load_saved_graph(graph) {
     view.fixinterval = graph.fixinterval;
     floatingtime = graph.floatingtime,
     yaxismin = graph.yaxismin;
+    yaxismin2 = graph.yaxismin2 || 'auto';
     yaxismax = graph.yaxismax;
+    yaxismax2 = graph.yaxismax2 || 'auto';
 
     // CSV display settings
     csvtimeformat = (typeof(graph.csvtimeformat)==="undefined" ? "datestr" : graph.csvtimeformat);
@@ -1572,6 +1597,8 @@ function load_saved_graph(graph) {
 
     $("#yaxis-min").val(yaxismin);
     $("#yaxis-max").val(yaxismax);
+    $("#yaxis-min2").val(yaxismin2);
+    $("#yaxis-max2").val(yaxismax2);
     $("#request-fixinterval")[0].checked = view.fixinterval;
     $("#request-limitinterval")[0].checked = view.limitinterval;
     $("#showmissing")[0].checked = showmissing;
@@ -1605,6 +1632,8 @@ function get_graph_data () {
         floatingtime: floatingtime,
         yaxismin: yaxismin,
         yaxismax: yaxismax,
+        yaxismin2: yaxismin2,
+        yaxismax2: yaxismax2,
         showmissing: showmissing,
         showtag: showtag,
         showlegend: showlegend,
