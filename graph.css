@@ -1,3 +1,7 @@
+.content-container { max-width:1150px; }
+
+/* ------------------------------------------ */
+/* REMOVE ONCE GROUP VIEW SIDEBAR REMOVED */
 #wrapper {
   padding:0px;
   margin:0px;
@@ -21,7 +25,6 @@
   padding-left:0px;
 }
 
-
 #sub_nav li{
     transition: all .2s ease-out;
     height: 0;
@@ -34,6 +37,7 @@
     height: 3.125rem;
     border-bottom-width: 1px;
 }
+/* ------------------------------------------ */
 
 /* sidebar #mygraphs */
 #graph-list{
