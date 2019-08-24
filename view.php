@@ -30,7 +30,11 @@
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
 
-
+<style>
+    [v-cloak] {
+        visibility: hidden
+    }
+</style>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.time.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.selection.min.js"></script>
@@ -43,6 +47,7 @@
 <link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
 <link href="<?php echo $path; ?>Modules/graph/graph.css?v=<?php echo $v; ?>" rel="stylesheet">
+<script src="<?php echo $path; ?>Modules/config/vue.js"></script>
 
 <h3><?php echo _('Data viewer'); ?></h3>
 <div id="error" style="display:none"></div>
@@ -272,10 +277,42 @@
     <textarea id="csv" style="width:98%; height:500px; display:none; margin-top:10px"></textarea>
 </div>
 
+
+<script>
+    var apikey = "<?php echo $apikey; ?>";
+    var apikeystr = "";
+    if (apikey!="") apikeystr = "&apikey="+apikey;
+</script>
+
+<script>
+/**
+     * @todo replace this with moment.js translated date/time strings
+     * see feed and input views for example of translated dates
+     * eg. moment().fromUnix(timestamp).format('ll') // format unix timestamp as per user's locale
+     * @see Lib/misc/moment.min.js
+     **/
+    function printdate(timestamp)
+    {
+        var date = new Date();
+        var thisyear = date.getFullYear()-2000;
+
+        var date = new Date(timestamp);
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var year = date.getFullYear()-2000;
+        var month = months[date.getMonth()];
+        var day = date.getDate();
+
+        var minutes = date.getMinutes();
+        if (minutes<10) minutes = "0"+minutes;
+
+        var datestr = date.getHours()+":"+minutes+" "+day+" "+month;
+        if (thisyear!=year) datestr +=" "+year;
+        return datestr;
+    };
+</script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=<?php echo $v; ?>"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/moment.min.js"></script>
 <script>
-    var path = "<?php echo $path; ?>";
     var user = {
         lang : "<?php if (isset($_SESSION['lang'])) echo $_SESSION['lang']; ?>"
     }
@@ -285,15 +322,15 @@
     }
 </script>
 <script src="<?php echo $path; ?>Lib/user_locale.js"></script>
+<script src="<?php echo $path; ?>Lib/misc/gettext.js"></script>
 
 <script>
-    var path = "<?php echo $path; ?>";
     var session = <?php echo $session; ?>;
     var userid = <?php echo $userid; ?>;
     var feedidsLH = "<?php echo $feedidsLH; ?>";
     var feedidsRH = "<?php echo $feedidsRH; ?>";
-    var load_saved = "<?php echo $load_saved; ?>";
-    var apikey = "<?php echo $apikey; ?>";
+    var load_savegraphs = "<?php echo $load_saved; ?>";
+
     var _lang = <?php
         $lang['Select a feed'] = _('Select a feed');
         $lang['Please select a feed from the Feeds List'] = _('Please select a feed from the Feeds List');
@@ -301,9 +338,6 @@
         echo json_encode($lang) . ';';
         echo "\n";
     ?>
-    
-    var apikeystr = "";
-    if (apikey!="") apikeystr = "&apikey="+apikey;
     
     // Load user feeds
     if (session) {
@@ -327,7 +361,7 @@
         copyToClipboardCustomMsg = function () {}
     }
     
-    if (load_saved=="") {
+    if (load_savegraphs=="") {
 
         // Assign active feedid from URL
         var urlparts = window.location.pathname.split("graph/");
@@ -375,18 +409,6 @@
 
     graph_init_editor();
     
-    load_feed_selector();
-    if (!session) {
-        $("#mygraphs").hide();
-    } else {
-        if (load_saved!="") {
-            graph_load_savedgraphs(function(){
-                load_saved_graph(load_saved);
-            });
-        } else {
-            graph_load_savedgraphs();
-        }
-    }
     graph_resize();
     
     var timeWindow = 3600000*24.0*7;
@@ -419,9 +441,6 @@
     printf("var translations = %s;\n",json_encode($translations));
     ?>
 
-    function gettext(key) {
-        return translations.hasOwnProperty(key) ? translations[key] : key
-    }
 </script>
 
 
@@ -450,10 +469,10 @@
             $.getJSON(path + 'user/get.json')
             .done( function(response) {
                 if(response.hasOwnProperty('success') && response.success === false) {
-                    $user_timezone.text(gettext('User') +': ' + gettext('Authentication Required'));
+                    $user_timezone.text(_('User') +': ' + _('Authentication Required'));
                 } else {
                     let user = response;
-                    $user_timezone.val(user.timezone).text(gettext('User') +': ' + user.timezone +' (' + timezones[user.timezone].label + ')');
+                    $user_timezone.val(user.timezone).text(_('User') +': ' + user.timezone +' (' + timezones[user.timezone].label + ')');
                 }
             })
             

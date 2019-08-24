@@ -1,4 +1,3 @@
-var savedgraphs = [];
 var feeds = [];
 feedlist = [];
 var plotdata = [];
@@ -25,6 +24,9 @@ var csvtimeformat="datestr";
 var csvnullvalues="show";
 var csvheaders="showNameTag";
 
+var current_graph_id = "";
+var current_graph_name = "";
+
 var previousPoint = 0;
 
 var active_histogram_feed = 0;
@@ -41,18 +43,18 @@ $("#graph_zoomin").click(function () {floatingtime=0; view.zoomin(); graph_reloa
 $('#graph_right').click(function () {floatingtime=0; view.panright(); graph_reloaddraw();});
 $('#graph_left').click(function () {floatingtime=0; view.panleft(); graph_reloaddraw();});
 $('.graph_time').click(function () {
-    floatingtime=1; 
-    view.timewindow($(this).data("time")); 
+    floatingtime=1;
+    view.timewindow($(this).data("time"));
     graph_reloaddraw();
 });
 
 $('#placeholder').bind("plotselected", function (event, ranges)
 {
-    floatingtime=0; 
+    floatingtime=0;
     view.start = ranges.xaxis.from;
     view.end = ranges.xaxis.to;
     view.calc_interval();
-    
+
     graph_reloaddraw();
 });
 function getFeedUnit(id){
@@ -83,7 +85,7 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
             item_value+=' '+getFeedUnit(feedid);
             var date = moment(item_time).format('llll')
             tooltip(item.pageX, item.pageY, "<span style='font-size:11px'>"+item.series.label+"</span>"+
-            "<br>"+item_value + 
+            "<br>"+item_value +
             "<br><span style='font-size:11px'>"+date+"</span>"+
             "<br><span style='font-size:11px'>("+(item_time/1000)+")</span>", "#fff");
         }
@@ -196,7 +198,7 @@ function csvShowHide(set)
         if ($("#showcsv").html()=="Show CSV Output") {
             action="show";
         } else {
-            action="hide"; 
+            action="hide";
         }
     } else {
         action = (set==="1" ? "show" : "hide");
@@ -225,7 +227,7 @@ function arrayMove(array,old_index, new_index){
 function graph_init_editor()
 {
     if (!session && !userid) feeds = feedlist;
-            
+
     var numberoftags = 0;
     feedsbytag = {};
     for (var z in feeds) {
@@ -235,14 +237,14 @@ function graph_init_editor()
         }
         feedsbytag[feeds[z].tag].push(feeds[z]);
     }
-    
+
     var out = "";
     out += "<colgroup>";
     out += "<col span='1' style='width: 70%;'>";
     out += "<col span='1' style='width: 15%;'>";
     out += "<col span='1' style='width: 15%;'>";
     out += "</colgroup>";
-    
+
     for (var tag in feedsbytag) {
        tagname = tag;
        if (tag=="") tagname = "undefined";
@@ -252,7 +254,7 @@ function graph_init_editor()
        out += "</tr>";
        out += "</thead>";
        out += "<tbody class='tagbody' data-tag='"+tagname+"'>";
-       for (var z in feedsbytag[tag]) 
+       for (var z in feedsbytag[tag])
        {
            out += "<tr>";
            var name = feedsbytag[tag][z].name;
@@ -267,11 +269,11 @@ function graph_init_editor()
        out += "</tbody>";
     }
     $("#feeds").html(out);
-    
+
     if (feeds.length>12 && numberoftags>2) {
         $(".tagbody").hide();
     }
-    
+
     datetimepickerInit();
 
     $("#reload").click(function(){
@@ -290,7 +292,7 @@ function graph_init_editor()
 
     $("body").on("click",".getaverage",function(){
         var feedid = $(this).attr("feedid");
-        
+
         for (var z in feedlist) {
             if (feedlist[z].id==feedid) {
                 feedlist[z].getaverage = $(this)[0].checked;
@@ -313,7 +315,7 @@ function graph_init_editor()
 
     $("body").on("click",".delta",function(){
         var feedid = $(this).attr("feedid");
-        
+
         for (var z in feedlist) {
             if (feedlist[z].id==feedid) {
                 feedlist[z].delta = $(this)[0].checked;
@@ -322,10 +324,10 @@ function graph_init_editor()
         }
         graph_draw();
     });
-    
+
     $("body").on("change",".linecolor",function(){
         var feedid = $(this).attr("feedid");
-        
+
         for (var z in feedlist) {
             if (feedlist[z].id==feedid) {
                 feedlist[z].color = $(this).val();
@@ -334,10 +336,10 @@ function graph_init_editor()
         }
         graph_draw();
     });
-    
+
     $("body").on("change",".fill",function(){
         var feedid = $(this).attr("feedid");
-        
+
         for (var z in feedlist) {
             if (feedlist[z].id==feedid) {
                 feedlist[z].fill = $(this)[0].checked;
@@ -370,7 +372,7 @@ function graph_init_editor()
     $("body").on("click",".feed-select-left",function(){
         var feedid = $(this).data("feedid");
         var checked = $(this)[0].checked;
-        
+
         var loaded = false;
         for (var z in feedlist) {
            if (feedlist[z].id==feedid) {
@@ -383,7 +385,7 @@ function graph_init_editor()
                }
            }
         }
-        
+
         //if (loaded==false && checked) {
         //    var index = getfeedindex(feedid);
         //    feedlist.push({id:feedid, name:feeds[index].name, tag:feeds[index].tag, yaxis:1, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
@@ -395,7 +397,7 @@ function graph_init_editor()
     $("body").on("click",".feed-select-right",function(){
         var feedid = $(this).data("feedid");
         var checked = $(this)[0].checked;
-        
+
         var loaded = false;
         for (var z in feedlist) {
            if (feedlist[z].id==feedid) {
@@ -408,12 +410,12 @@ function graph_init_editor()
                }
            }
         }
-        
+
         // if (loaded==false && checked) feedlist.push({id:feedid, yaxis:2, fill:0, scale: 1.0, delta:false, getaverage:false, dp:1, plottype:'lines'});
         if (loaded==false && checked) pushfeedlist(feedid, 2);
         graph_reloaddraw();
     });
-    
+
     $("body").on("click keyup",".tagheading",function(event){
         let enterKey = 13;
         // console.log(event.type,event.which);
@@ -430,12 +432,12 @@ function graph_init_editor()
         if ($("#showmissing")[0].checked) showmissing = true; else showmissing = false;
         graph_draw();
     });
-    
+
     $("#showlegend").click(function(){
         if ($("#showlegend")[0].checked) showlegend = true; else showlegend = false;
         graph_draw();
     });
-    
+
     $("#showtag").click(function(){
         if ($("#showtag")[0].checked) showtag = true; else showtag = false;
         graph_draw();
@@ -454,34 +456,34 @@ function graph_init_editor()
     $("#request-type").change(function() {
         var type = $(this).val();
         type = type.toLowerCase();
-        
+
         if (type!="interval") {
             $(".fixed-interval-options").hide();
             view.fixinterval = true;
-        } else { 
+        } else {
             $(".fixed-interval-options").show();
             view.fixinterval = false;
         }
-        
+
         requesttype = type;
-        
+
         // Intervals are set here for bar graph bar width sizing
         if (type=="daily") view.interval = 86400;
         if (type=="weekly") view.interval = 86400*7;
         if (type=="monthly") view.interval = 86400*30;
         if (type=="annual") view.interval = 86400*365;
-        
+
         $("#request-interval").val(view.interval);
     });
 
     $("body").on("change",".decimalpoints",function(){
         var feedid = $(this).attr("feedid");
         var dp = $(this).val();
-        
+
         for (var z in feedlist) {
             if (feedlist[z].id == feedid) {
                 feedlist[z].dp = dp;
-                
+
                 graph_draw();
                 break;
             }
@@ -491,11 +493,11 @@ function graph_init_editor()
     $("body").on("change",".plottype",function(){
         var feedid = $(this).attr("feedid");
         var plottype = $(this).val();
-        
+
         for (var z in feedlist) {
             if (feedlist[z].id == feedid) {
                 feedlist[z].plottype = plottype;
-                
+
                 graph_draw();
                 break;
             }
@@ -506,7 +508,7 @@ function graph_init_editor()
         yaxismin = $(this).val();
         graph_draw();
     });
-    
+
     $("body").on("change","#yaxis-max",function(){
         yaxismax = $(this).val();
         graph_draw();
@@ -538,11 +540,11 @@ function graph_init_editor()
         csvheaders=$(this).val();
         printcsv();
     });
-    
+
     $('body').on("click",".legendColorBox",function(d){
           var country = $(this).html().toLowerCase();
         //   console.log(country);
-    }); 
+    });
 
     $(".feed-options-show-stats").click(function(event){
         $("#feed-options-table").hide();
@@ -552,7 +554,7 @@ function graph_init_editor()
         event.preventDefault();
     });
 
-    
+
     $(".feed-options-show-options").click(function(event){
         $("#feed-options-table").show();
         $("#feed-stats-table").hide();
@@ -601,7 +603,7 @@ function graph_reload()
 
     $("#request-interval").val(view.interval);
     $("#request-limitinterval").attr("checked",view.limitinterval);
-    
+
     var ids = [];
     var average_ids = [];
 
@@ -625,7 +627,7 @@ function graph_reload()
     if (requesttype!="interval") {
         data.mode = requesttype;
     }
-   
+
     if (ids.length + average_ids.length === 0) {
         graph_resize();
         graph_draw();
@@ -685,8 +687,8 @@ function addFeedlistData(response){
     if (valid) set_feedlist();
 }
 function handleFeedlistDataError(jqXHR, error, message){
-    error = error === 'parsererror' ? gettext('Received data not in correct format. Check the logs for more details'): error;
-    var errorstr = '<div class="alert alert-danger" title="'+message+'"><strong>'+gettext('Request error')+':</strong> ' + error + '</div>';
+    error = error === 'parsererror' ? _('Received data not in correct format. Check the logs for more details'): error;
+    var errorstr = '<div class="alert alert-danger" title="'+message+'"><strong>'+_('Request error')+':</strong> ' + error + '</div>';
     $('#error').html(errorstr).show();
 }
 function checkFeedlistData(response){
@@ -708,7 +710,7 @@ function checkFeedlistData(response){
     message = messages.join(', ');
     var errorstr = '';
     if (messages.length > 0) {
-        errorstr = '<div class="alert alert-danger"><strong>'+gettext('Request error')+':</strong> ' + message + '</div>';
+        errorstr = '<div class="alert alert-danger"><strong>'+_('Request error')+':</strong> ' + message + '</div>';
         $('#error').html(errorstr).show();
     } else {
         $('#error').hide();
@@ -720,12 +722,12 @@ function set_feedlist() {
     {
         var scale = $(".scale[feedid="+feedlist[z].id+"]").val();
         if (scale!=undefined) feedlist[z].scale = scale;
-            
+
         // check to ensure feed scaling and data are only applied once
         if (feedlist[z].postprocessed==false) {
             feedlist[z].postprocessed = true;
             console.log("postprocessing feed "+feedlist[z].id+" "+feedlist[z].name);
-            
+
             // Apply delta adjustement to feed values
             if (feedlist[z].delta) {
                 for (var i=1; i<feedlist[z].data.length; i++) {
@@ -739,8 +741,8 @@ function set_feedlist() {
                 }
                 feedlist[z].data[feedlist[z].data.length-1][1] = null;
             }
-            
-            // Apply a scale to feed values            
+
+            // Apply a scale to feed values
             if (feedlist[z].scale!=undefined && feedlist[z].scale!=1.0) {
                 for (var i=0; i<feedlist[z].data.length; i++) {
                     if (feedlist[z].data[i][1]!=null) {
@@ -842,9 +844,9 @@ function graph_draw()
     var timezone = _TIMEZONE || "browser";
     var options = {
         lines: { fill: false },
-        xaxis: { 
+        xaxis: {
             mode: "time",
-            timezone: "browser", 
+            timezone: "browser",
             min: view.start,
             max: view.end,
             monthNames: moment ? moment.monthsShort() : null,
@@ -858,7 +860,7 @@ function graph_draw()
         } ],
         grid: {hoverable: true, clickable: true},
         selection: { mode: "x" },
-        legend: { 
+        legend: {
             show: false,
             position: "nw",
             toggle: true,
@@ -897,12 +899,12 @@ function graph_draw()
     } else {
         mins = "";
     }
-    
+
     if (!embed) $("#window-info").html("<b>Window:</b> "+printdate(view.start)+" > "+printdate(view.end)+", <b>Length:</b> "+hours+"h"+mins+" ("+time_in_window+" seconds)");
-    
+
     plotdata = [];
     for (var z in feedlist) {
-        
+
         var data = feedlist[z].data;
         // Hide missing data (only affects the plot view)
         if (!showmissing) {
@@ -919,7 +921,7 @@ function graph_draw()
         label += ' '+getFeedUnit(feedlist[z].id);
         var stacked = (typeof(feedlist[z].stack) !== "undefined" && feedlist[z].stack);
         var plot = {label:label, data:data, yaxis:feedlist[z].yaxis, color: feedlist[z].color, stack: stacked};
-        
+
         if (feedlist[z].plottype=="lines") { plot.lines = { show: true, fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), fill: feedlist[z].fill } };
         if (feedlist[z].plottype=="bars") { plot.bars = { align: "center", fill: (feedlist[z].fill ? (stacked ? 1.0 : 0.5) : 0.0), show: true, barWidth: view.interval * 1000 * 0.75 } };
         if (feedlist[z].plottype == 'points') plot.points = {show: true, radius: 3};
@@ -937,11 +939,11 @@ function graph_draw()
     plot_statistics = $.plot($('#placeholder'), plotdata, options);
 
     if (!embed) {
-        
+
         for (var z in feedlist) {
             feedlist[z].stats = stats(feedlist[z].data);
         }
-        
+
         var default_linecolor = "000";
         var out = "";
         for (var z in feedlist) {
@@ -983,7 +985,7 @@ function graph_draw()
             out += "</tr>";
         }
         $("#feed-controls").html(out);
-        
+
         var out = "";
         for (var z in feedlist) {
             out += "<tr>";
@@ -1001,9 +1003,9 @@ function graph_draw()
             out += "</tr>";
         }
         $("#feed-stats").html(out);
-        
+
         if (feedlist.length) $(".feed-options").show(); else $(".feed-options").hide();
-        
+
         for (var z in feedlist) {
             $(".decimalpoints[feedid="+feedlist[z].id+"]").val(feedlist[z].dp);
             if ($(".getaverage[feedid="+feedlist[z].id+"]")[0]!=undefined)
@@ -1017,7 +1019,7 @@ function graph_draw()
             if ($(".stack[feedid="+feedlist[z].id+"]")[0]!=undefined)
                 $(".stack[feedid="+feedlist[z].id+"]")[0].checked = feedlist[z].stack;
         }
-        
+
         if (showcsv) printcsv();
     }
 }
@@ -1037,7 +1039,7 @@ function getFeedName(item) {
 
     return name;
 }
-function getfeed(id) 
+function getfeed(id)
 {
     for (var z in feeds) {
         if (feeds[z].id == id) {
@@ -1049,7 +1051,7 @@ function getfeed(id)
 
 function getfeedpublic(feedid) {
     var f = {};
-    $.ajax({                                      
+    $.ajax({
         url: path+"feed/aget.json?id="+feedid+apikeystr,
         async: false,
         dataType: "json",
@@ -1061,7 +1063,7 @@ function getfeedpublic(feedid) {
     return f;
 }
 
-function getfeedindex(id) 
+function getfeedindex(id)
 {
     for (var z in feeds) {
         if (feeds[z].id == id) {
@@ -1081,7 +1083,7 @@ function printcsv()
     var timeformat = $("#csvtimeformat").val();
     var nullvalues = $("#csvnullvalues").val();
     var headers = $("#csvheaders").val();
-    
+
     var csvout = "";
 
     var value = [];
@@ -1142,11 +1144,11 @@ function printcsv()
             if (minutes<10) minutes = "0"+minutes;
             var seconds = t.getSeconds();
             if (seconds<10) seconds = "0"+seconds;
-            
+
             var formatted = year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
             line.push(formatted);
         }
-        
+
         var nullfound = false;
         for (var f in feedlist) {
             if (value[f]==undefined) value[f] = null;
@@ -1158,10 +1160,10 @@ function printcsv()
             line.push(value[f]+"");
             }
         }
-        
+
         if (nullvalues=="remove" && nullfound) {
             // pass
-        } else { 
+        } else {
             csvout += line.join(", ")+"\n";
         }
     }
@@ -1200,7 +1202,7 @@ $("body").on("click",".histogram",function(){
     active_histogram_feed = feedid;
     var type = $("#histogram-type").val();
     var resolution = 1;
-    
+
     var index = 0;
     for (var z in feedlist) {
       if (feedlist[z].id==feedid) {
@@ -1208,11 +1210,11 @@ $("body").on("click",".histogram",function(){
         break;
       }
     }
-    
+
     if (feedlist[index].stats.diff<5000) resolution = 10;
     if (feedlist[index].stats.diff<100) resolution = 0.1;
     $("#histogram-resolution").val(resolution);
-    
+
     histogram(feedid,type,resolution);
 });
 
@@ -1238,30 +1240,30 @@ $("#histogram-back").click(function(){
 });
 
 // Draw the histogram
-function histogram(feedid,type,resolution) 
-{    
+function histogram(feedid,type,resolution)
+{
     var histogram = {};
     var total_histogram = 0;
     var val = 0;
-    
+
     // Get the feedlist index of the feedid
     var index = -1;
     for (var z in feedlist)
       if (feedlist[z].id==feedid) index = z;
     if (index==-1) return false;
-    
+
     // Load data from feedlist object
     var data = feedlist[index].data;
-    
+
     for (var i=1; i<data.length; i++) {
       if (data[i][1]!=null) {
         val = data[i][1];
       }
       var key = Math.round(val/resolution)*resolution;
       if (histogram[key]==undefined) histogram[key] = 0;
-      
+
       var t = (data[i][0] - data[i-1][0])*0.001;
-      
+
       var inc = 0;
       if (type=="kwhatpower") inc = (val * t)/(3600.0*1000.0);
       if (type=="timeatvalue") inc = t;
@@ -1283,56 +1285,309 @@ function histogram(feedid,type,resolution)
     var label = "";
     if (showtag) label += feedlist[index].tag+": ";
     label += feedlist[index].name;
-    
+
     $.plot("#placeholder",[{label:label, data:histogram}], options);
 }
 
-//----------------------------------------------------------------------------------------
-// Saved graph's feature
-//----------------------------------------------------------------------------------------
-$("#graph-select").change(function() {
-    var name = $(this).val();
-    var id = $(this).find(':selected').data('id');
-    $('#graph-id').text(id);
-    load_saved_graph(name);
-});
 
-function load_saved_graph(name) {
-    $("#graph-name").val(name);
-    $("#graph-delete").show();
+var saveGraphsApp = new Vue({
+    el: '#my_graphs',
+    data: {
+        selected: -1,
+        collapsed: false,
+        messages: {
+            none: 'None selected',
+            deleted: 'Deleted',
+            saved: 'Saved',
+            select: 'Select graph'
+        },
+        original: '',
+        graphs: {},
+        apikeystr: apikeystr,
+        timeout: false,
+        delay: 1500,
+        status: '',
+        graphName: ''
+    },
+    methods: {
+        /**
+         * update or create saved graph
+         */
+        saveGraph: function(){
+            var vm = this
+            var data = get_graph_data()
+            // @todo : check for duplicate name
+            // @todo : check for new name - if new create, else update
+            data.name = this.graphName
+
+            if (this.graphsChanged && !this.nameChanged) {
+                // UPDATE
+                graph_update(data)
+                .done(function(response) {
+                    if(typeof response.success == 'undefined' || response.success) {
+                        vm.status = response.message || vm.messages.saved
+                    } else {
+                        vm.status = "error 322"
+                    }
+                    window.setTimeout(function() {
+                        vm.status = ""
+                    }, vm.delay)
+                })
+            } else {
+                // CREATE
+                graph_create(data)
+                .done(function(response) {
+                    var newId = response.message.replace('graph saved id:','')
+                    vm.selected = -1
+                    vm.status = response.message || vm.messages.saved
+                    window.setTimeout(function() {
+                        vm.status = ''
+                    }, vm.delay)
+
+                    // get new data once saved.
+                    vm.getGraphs()
+                    .done(function(){
+                        // pre-select the new item
+                        vm.selected = vm.findGraphIndexById(newId)
+                        // add new graph to browser history
+                        vm.updateHashState(newId)
+                    })
+                })
+            }
+
+        },
+        deleteGraph: function(){
+            var vm = this
+            if(window.confirm('Delete ' + this.graphs[this.selected].name + ' (#' + this.graphs[this.selected].id + ') ?')) {
+                graph_delete(this.graphs[this.selected].id)
+                .done(function(response) {
+                    vm.selected = -1
+                    vm.getGraphs()
+                    vm.status = response.message || vm.messages.deleted
+                    window.setTimeout(function() {
+                        vm.status = ''
+                        vm.emptyHashState()
+                    }, vm.delay)
+                })
+            }
+        },
+        /**
+         * load data from graph/getall
+         */
+        getGraphs: function () {
+            var vm = this
+            return $.getJSON(path+"/graph/getall"+this.apikeystr)
+            .done(function(response){
+                if (!response.success && response.success !== false) {
+                    // @todo : work with response.groups
+                    // save sorted list to vue data
+                    vm.graphs = response.user.sort( compare_name )
+                    vm.original = JSON.stringify(vm.graphs)
+                    // if view called with graph/#Saved/[id]
+                    // find the relevant graph in the list
+                    var hashId = vm.getHashState()
+                    if (hashId !== '') {
+                        var index = vm.findGraphIndexById(hashId)
+                        if(index > -1) {
+                            vm.selected = vm.graphs[index].name
+                        }
+                    }
+                } else {
+                    vm.message = response.messsage
+                }
+            })
+        },
+        /**
+         * get graphs[] index that stores graph with matching id
+         * @param {String} id taken from api response
+         * @return {Number} array index of match, else -1
+         */
+        findGraphIndexById: function(id) {
+            return this.findGraph('id', id)
+        },
+        /**
+         * get graphs[] index that stores graph with matching id
+         * @param {String} name taken from form selections
+         * @return {Number} array index of match, else -1
+         */
+        findGraphIndexByName: function(name) {
+            return this.findGraph('name', name)
+        },
+        /**
+         * search loaded graphs by property and value
+         * @return first index of matched value
+         */
+        findGraph: function(property, value) {
+            return this.find(this.graphs, property, value)
+        },
+        /**
+         * Return object key if property value matches 
+         * @param {Object} list Enumerable Object to search
+         * @param {String} property Object property to compare
+         * @param {*} value Object property value to compare
+         * @return {Number} first matching index, else -1
+         */
+        find: function (list, property, value) {
+            if (typeof list === 'undefined' || typeof property === 'undefined' || typeof value === 'undefined') {
+                return -1
+            }
+            for (n in list) {
+                var item = list[n]
+                if (item.hasOwnProperty(property)) {
+                    if (item[property] === value) {
+                        return n
+                    }
+                }
+            }
+            return -1
+        },
+        getHashState: function() {
+            // get the id of the saved graph from the url
+            return window.location.hash.replace('#/Saved/','')
+        },
+        updateHashState: function(id){
+            // add the '#/Saved/[id]' symbol to the url
+            var hashId = this.getHashState()
+            if (hashId === "" || id !== hashId) {
+                window.location.hash = '/Saved/' + id
+            }
+        },
+        emptyHashState: function(){
+            // remove the '#' symbol from url
+            history.replaceState(null, null, ' ')
+        }
+    },
+    computed: {
+        graphsChanged: function() {
+            return JSON.stringify(this.graphs).length !== this.original.length
+        },
+        saveButtonDisabled: function() {
+            var empty = this.graphName === ''
+            var changed = this.graphsChanged
+            var selected = this.selected > -1
+
+            if ( selected && !changed ) {
+                return true
+            }
+            if ( empty && !selected) {
+                return true
+            }
+            return false
+        },
+        /**
+         * return true if new or saved graph name changed
+         */
+        nameChanged: function() {
+            var empty = this.graphName === ''
+            var selected = this.selected > -1
+            var downloaded = this.original !== ''
+
+            if (!downloaded || empty) {
+                return false
+            } else {
+                var originalSelected = {}
+                try {
+                    originalSelected = JSON.parse(this.original)[this.selected]
+                } catch (error) {}
+                if(originalSelected && this.graphName === originalSelected.name) {
+                    return false
+                }
+            }
+            return true
+        }
+    },
+    watch: {
+        /**
+         * `selected` is array index of currently selected graph
+         */
+        selected: function (newVal) {
+            // change the name of the selected graph to display
+            // change global id of selected item
+            var graph = this.graphs[newVal]
+            if (graph) {
+                this.graphName = graph.name
+                if (graph.id !== this.getHashState()) {
+                    this.updateHashState(graph.id)
+                }
+                // use function outside of vuejs to update the graph and menu
+                load_saved_graph(this.graphs[newVal])
+            } else {
+                this.graphName =  ''
+                this.emptyHashState()
+            }
+        },
+        graphName: function (newVal) {
+            if (newVal !== "" && this.selected > -1) {
+                this.graphs[this.selected].name = newVal
+            } else {
+                graphsChanged = true
+            }
+        }
+    },
+    created: function () {
+        var vm = this
+        this.getGraphs()
+        .done(function(){
+            var newId = vm.getHashState()
+            // pre-select the item
+            vm.selected = vm.findGraphIndexById(newId)
+        })
+        window.addEventListener('hashchange', function(event) {
+            var hashId = vm.getHashState()
+            if (hashId !== '') {
+                vm.selected = vm.findGraphIndexById(hashId)
+            }
+        });
+    }
+})
+
+$(function(){
+    // when the form changes send the new data into the "saved list" vue app (if available)
+    $('#info').on('change', function(event) {
+        if (saveGraphsApp) {
+            if(saveGraphsApp.selected > -1) {
+                Vue.set(saveGraphsApp.graphs, saveGraphsApp.selected, get_graph_data())
+            }
+        }
+    })
+})
+
+// place data into view (not vue.js)
+function load_saved_graph(graph) {
+    // @todo: unload_saved_graph()
     
-    var index = graph_index_from_name(name);
-    
-    if(typeof savedgraphs[index] === 'undefined') return;
-    
-    $("#graph-id").text(savedgraphs[index].id)
+    if(typeof graph === 'undefined') return;
 
     // view settings
-    view.start = savedgraphs[index].start;
-    view.end = savedgraphs[index].end;
-    view.interval = savedgraphs[index].interval;
-    view.limitinterval = savedgraphs[index].limitinterval;
-    view.fixinterval = savedgraphs[index].fixinterval;
-    floatingtime = savedgraphs[index].floatingtime,
-    yaxismin = savedgraphs[index].yaxismin;
-    yaxismin2 = savedgraphs[index].yaxismin2 || 'auto';
-    yaxismax = savedgraphs[index].yaxismax;
-    yaxismax2 = savedgraphs[index].yaxismax2 || 'auto';
+    view.start = graph.start;
+    view.end = graph.end;
+    view.interval = graph.interval;
+    view.limitinterval = graph.limitinterval;
+    view.fixinterval = graph.fixinterval;
+    floatingtime = graph.floatingtime,
+    yaxismin = graph.yaxismin;
+    yaxismin2 = graph.yaxismin2 || 'auto';
+    yaxismax = graph.yaxismax;
+    yaxismax2 = graph.yaxismax2 || 'auto';
 
     // CSV display settings
-    csvtimeformat = (typeof(savedgraphs[index].csvtimeformat)==="undefined" ? "datestr" : savedgraphs[index].csvtimeformat);
-    csvnullvalues = (typeof(savedgraphs[index].csvnullvalues)==="undefined" ? "show" : savedgraphs[index].csvnullvalues);
-    csvheaders = (typeof(savedgraphs[index].csvheaders)==="undefined" ? "showNameTag" : savedgraphs[index].csvheaders);
-    var tmpCsv = (typeof(savedgraphs[index].showcsv)==="undefined" ? "0" : savedgraphs[index].showcsv.toString());
+    csvtimeformat = (typeof(graph.csvtimeformat)==="undefined" ? "datestr" : graph.csvtimeformat);
+    csvnullvalues = (typeof(graph.csvnullvalues)==="undefined" ? "show" : graph.csvnullvalues);
+    csvheaders = (typeof(graph.csvheaders)==="undefined" ? "showNameTag" : graph.csvheaders);
+    var tmpCsv = (typeof(graph.showcsv)==="undefined" ? "0" : graph.showcsv.toString());
 
     // show settings
-    showmissing = savedgraphs[index].showmissing;
-    showtag = savedgraphs[index].showtag;
-    showlegend = savedgraphs[index].showlegend;
-    
+    showmissing = graph.showmissing;
+    showtag = graph.showtag;
+    showlegend = graph.showlegend;
+
+    // graph details
+    current_graph_id = graph.id
+    current_graph_name = graph.name
+
     // feedlist
-    feedlist = savedgraphs[index].feedlist;
-    
+    feedlist = graph.feedlist;
+
     if (floatingtime) {
         var timewindow = view.end - view.start;
         var now = Math.round(+new Date * 0.001)*1000;
@@ -1349,9 +1604,7 @@ function load_saved_graph(name) {
     $("#showmissing")[0].checked = showmissing;
     $("#showtag")[0].checked = showtag;
     $("#showlegend")[0].checked = showlegend;
-
-    load_feed_selector();
-
+    // draw graph
     graph_reloaddraw();
 
     // Placed after graph load as values only available after the graph is redrawn
@@ -1359,45 +1612,18 @@ function load_saved_graph(name) {
     $("#csvnullvalues").val(csvnullvalues);
     $("#csvheaders").val(csvheaders);
     csvShowHide(tmpCsv);
+
 }
 
-$("#graph-name").keyup(function(){
-    var name = $(this).val();
-    
-    if (graph_exists(name)) {
-        $("#graph-delete").show(); 
-    } else { 
-        $("#graph-delete").hide();
-    }
-});
+function get_graph_data () {
 
-$("#graph-delete").click(function() {
-    var name = $("#graph-name").val();
-    var updateindex = graph_index_from_name(name);
-    if (updateindex!=-1) {
-        graph_delete(savedgraphs[updateindex].id);
-        feedlist = [];
-        graph_reloaddraw();
-        $("#graph-name").val("");
-        load_feed_selector();
-    }
-});
-
-$("#graph-save").click(function() {
-    var name = $("#graph-name").val();
-    
-    if (name==undefined || name=="") {
-        alert("Please enter a name for the graph you wish to save");
-        return false;
-    }
-    
     var now = Math.round(+new Date * 0.001)*1000;
     if (Math.abs(now - view.end)<120000) {
         floatingtime = 1;
     }
-    
+
     var graph_to_save = {
-        name: name,
+        name: current_graph_name,
         start: view.start,
         end: view.end,
         interval: view.interval,
@@ -1415,78 +1641,10 @@ $("#graph-save").click(function() {
         csvtimeformat: csvtimeformat,
         csvnullvalues: csvnullvalues,
         csvheaders: csvheaders,
-        feedlist: JSON.parse(JSON.stringify(feedlist))
+        feedlist: JSON.parse(JSON.stringify(feedlist)),
+        id: current_graph_id,
     };
-    
-    var updateindex = graph_index_from_name(name);
-    
-    // Update or append
-    if (updateindex==-1) {
-        savedgraphs.push(graph_to_save);
-        graph_create(graph_to_save);
-    } else {
-        graph_to_save.id = savedgraphs[updateindex].id;
-        savedgraphs[updateindex] = graph_to_save;
-        graph_update(graph_to_save);
-    }
-    
-    $("#graph-select").val(name);
-});
-
-function graph_exists(name) {
-    if (graph_index_from_name(name)!=-1) return true;
-    return false;
-}
-
-function graph_index_from_name(name) {
-    var index = -1;
-    for (var z in savedgraphs) {
-        if (savedgraphs[z].name==name) index = z;
-    }
-    return index;
-}
-
-function graph_load_savedgraphs(fn=false)
-{
-    $.ajax({                                      
-        url: path+"/graph/getall"+apikeystr,
-        async: true,
-        dataType: "json",
-        success: function(result) {
-            savedgraphs = result.user;
-            
-            var out = "<option value=''>" + _lang['Select graph'] + ":</option>";
-            for (var z in savedgraphs) {
-                var id = savedgraphs[z].id;
-                var name = savedgraphs[z].name;
-               out += '<option data-id="' + id +'" value="' + name +'">'+ '[#'+id+'] ' + name+'</option>';
-            }
-            $("#graph-select").html(out);
-            if (fn) fn();
-        }
-    });
-}
-function graph_create(data) {
-
-    // Clean feedlist of data and stats that dont need to be saved
-    for (var i in data.feedlist) {
-        delete data.feedlist[i].data
-        delete data.feedlist[i].stats;
-    }
-    
-    // Save 
-    $.ajax({         
-        method: "POST",                             
-        url: path+"/graph/create",
-        data: "data="+JSON.stringify(data),
-        async: true,
-        dataType: "json",
-        success: function(result) {
-            if (!result.success) alert("ERROR: "+result.message);
-        }
-    });
-    
-    graph_load_savedgraphs();
+    return graph_to_save
 }
 
 function graph_update(data) {
@@ -1497,23 +1655,43 @@ function graph_update(data) {
     }
 
     // Save 
-    $.ajax({         
-        method: "POST",                             
+    return $.ajax({
+        method: "POST",
         url: path+"/graph/update",
         data: "id="+data.id+"&data="+JSON.stringify(data),
+        dataType: "json",
+        success: function(result) {
+            if (!result.success) alert("ERROR: "+result.message);
+        },
+        error: function(xhr,type,message) {
+            alert("ERROR: "+type+":"+message);
+        }
+    });
+}
+function graph_create(data) {
+    // Clean feedlist of data and stats that dont need to be saved
+    for (var i in data.feedlist) {
+        delete data.feedlist[i].data
+        delete data.feedlist[i].stats;
+    }
+    // Save
+    var ajax = $.ajax({
+        method: "POST",
+        url: path+"/graph/create",
+        data: "data="+JSON.stringify(data),
         async: true,
         dataType: "json",
         success: function(result) {
             if (!result.success) alert("ERROR: "+result.message);
         }
     });
+    return ajax
 }
 
 function graph_delete(id) {
-    // Save 
-
-    $.ajax({         
-        method: "POST",                             
+    // Save
+    var ajax = $.ajax({
+        method: "POST",
         url: path+"/graph/delete",
         data: "id="+id,
         async: true,
@@ -1522,50 +1700,34 @@ function graph_delete(id) {
             if (!result.success) alert("ERROR: "+result.message);
         }
     });
-    
-    graph_load_savedgraphs();
+    return ajax
+}
+
+/**
+ * return -1 for less than, 1 for more than, else 0
+ * @param {Object} a 
+ * @param {Object} b 
+ * @param {String} prop property name to compare
+ */
+function compare_name( a, b ) {
+    var prop = 'name'
+    if ( a[prop] < b[prop] ){
+        return -1
+    }
+    if ( a[prop] > b[prop] ){
+        return 1
+    }
+    return 0
 }
 
 
-// ----------------------------------------------------------------------------------------
-function load_feed_selector() {
-    for (var z in feeds) {
-        var feedid = feeds[z].id;
-        var left = $(".feed-select-left[data-feedid="+feedid+"]");
-        if (left.length>0) $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = false;
-
-        var right = $(".feed-select-left[data-feedid="+feedid+"]");
-        if (right.length>0) $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = false;
-    }
-    
-    for (var z=0; z<feedlist.length; z++) {
-        var feedid = feedlist[z].id;
-        var tag = feedlist[z].tag;
-        if (tag=="") tag = "undefined";
-        if (feedlist[z].yaxis==1 && $(".feed-select-left[data-feedid="+feedid+"]").length > 0) { 
-            $(".feed-select-left[data-feedid="+feedid+"]")[0].checked = true; $(".tagbody[data-tag='"+tag+"']").show(); 
-        }
-        if (feedlist[z].yaxis==2 && $(".feed-select-right[data-feedid="+feedid+"]").length > 0) {
-            $(".feed-select-right[data-feedid="+feedid+"]")[0].checked = true; $(".tagbody[data-tag='"+tag+"']").show();
-        }
-    }
-}
-
-function printdate(timestamp)
-{
-    var date = new Date();
-    var thisyear = date.getFullYear()-2000;
-    
-    var date = new Date(timestamp);
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var year = date.getFullYear()-2000;
-    var month = months[date.getMonth()];
-    var day = date.getDate();
-    
-    var minutes = date.getMinutes();
-    if (minutes<10) minutes = "0"+minutes;
-    
-    var datestr = date.getHours()+":"+minutes+" "+day+" "+month;
-    if (thisyear!=year) datestr +=" "+year;
-    return datestr;
-};
+/*
+savedgraphs;
+load_feed_selector();
+load_saved_graph();
+graph_load_savedgraphs();
+get_graph_data();
+graph_index_from_name(name);
+graph_exists();
+graph_index_from_name();
+*/
