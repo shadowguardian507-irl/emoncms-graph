@@ -28,25 +28,26 @@
     if (isset($_GET['apikey'])) $apikey = $_GET['apikey'];
 ?>
 
-<!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
+<!--[if IE]><script src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
 
 <style>
     [v-cloak] {
         visibility: hidden
     }
 </style>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.time.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.selection.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.touch.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.resize.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.stack.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js?v=<?php echo $v; ?>"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/misc/clipboard.js?v=<?php echo $v; ?>"></script>
 <link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-<script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
 <link href="<?php echo $path; ?>Modules/graph/graph.css?v=<?php echo $v; ?>" rel="stylesheet">
+
+<script src="<?php echo $path;?>Lib/flot/jquery.flot.min.js"></script>
+<script src="<?php echo $path;?>Lib/flot/jquery.flot.time.min.js"></script>
+<script src="<?php echo $path;?>Lib/flot/jquery.flot.selection.min.js"></script>
+<script src="<?php echo $path;?>Lib/flot/jquery.flot.touch.min.js"></script>
+<script src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
+<script src="<?php echo $path;?>Lib/flot/jquery.flot.resize.min.js"></script>
+<script src="<?php echo $path; ?>Lib/flot/jquery.flot.stack.min.js"></script>
+<script src="<?php echo $path;?>Modules/graph/vis.helper.js?v=<?php echo $v; ?>"></script>
+<script src="<?php echo $path;?>Lib/misc/clipboard.js?v=<?php echo $v; ?>"></script>
+<script src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
 <script src="<?php echo $path; ?>Lib/vue.min.js"></script>
 
 <h3><?php echo _('Data viewer'); ?></h3>
@@ -310,8 +311,8 @@
         return datestr;
     };
 </script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=<?php echo $v; ?>"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/moment.min.js"></script>
+<script src="<?php echo $path;?>Modules/graph/graph.js?v=<?php echo $v; ?>"></script>
+<script src="<?php echo $path;?>Lib/moment.min.js"></script>
 <script>
     var user = {
         lang : "<?php if (isset($_SESSION['lang'])) echo $_SESSION['lang']; ?>"
