@@ -47,7 +47,7 @@
 <link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
 <link href="<?php echo $path; ?>Modules/graph/graph.css?v=<?php echo $v; ?>" rel="stylesheet">
-<script src="<?php echo $path; ?>Modules/config/vue.js"></script>
+<script src="<?php echo $path; ?>Lib/vue.min.js"></script>
 
 <h3><?php echo _('Data viewer'); ?></h3>
 <div id="error" style="display:none"></div>
