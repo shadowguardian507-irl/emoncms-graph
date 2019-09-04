@@ -92,10 +92,11 @@ $('#placeholder').bind("plothover", function (event, pos, item) {
     } else $("#tooltip").remove();
 });
 
-$(window).resize(function(){
+// on finish sidebar hide/show
+$(document).on('window.resized hidden.sidebar.collapse shown.sidebar.collapse', function(){
     graph_resize();
     graph_draw();
-});
+})
 
 function graph_resize() {
     var top_offset = 0;
