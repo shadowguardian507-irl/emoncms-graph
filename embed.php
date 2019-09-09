@@ -76,8 +76,6 @@
     $("body").css("background","none");
     embed = true;
     
-    var path = "<?php echo $path; ?>";
-    
     var graphid = "<?php echo $graphid; ?>";
 
     var apikey = "<?php echo $apikey; ?>";

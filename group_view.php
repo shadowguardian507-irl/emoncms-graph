@@ -220,7 +220,6 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/group_graph.js?v=1"></script>
 
 <script>
-    var path = "<?php echo $path; ?>";
     var session = <?php echo $session; ?>;
     var group_support = <?php echo $group_support === 0 ? 'false' : 'true'; ?>;
     var vis_mode = 'user';
