@@ -632,8 +632,8 @@ function graph_reload()
     if (ids.length + average_ids.length === 0) {
         graph_resize();
         graph_draw();
-        var title = _lang['Select a feed'] + '.';
-        var message = _lang['Please select a feed from the Feeds List'];
+        var title = _('Select a feed') + '.';
+        var message = _('Please select a feed from the Feeds List');
         var icon = '<svg class="icon show_chart"><use xlink:href="#icon-show_chart"></use></svg>';
         var markup = ['<div class="alert alert-info"><a href="#" class="open-sidebar"><strong>',icon,title,'</strong>',message,'</a></div>'].join(' ');
         $('#error').show()
@@ -1722,13 +1722,27 @@ function compare_name( a, b ) {
 }
 
 
-/*
-savedgraphs;
-load_feed_selector();
-load_saved_graph();
-graph_load_savedgraphs();
-get_graph_data();
-graph_index_from_name(name);
-graph_exists();
-graph_index_from_name();
-*/
+/**
+ * @todo replace this with moment.js translated date/time strings
+ * see feed and input views for example of translated dates
+ * eg. moment().fromUnix(timestamp).format('ll') // format unix timestamp as per user's locale
+ * @see Lib/misc/moment.min.js
+ **/
+function printdate(timestamp)
+{
+    var date = new Date();
+    var thisyear = date.getFullYear()-2000;
+
+    var date = new Date(timestamp);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = date.getFullYear()-2000;
+    var month = months[date.getMonth()];
+    var day = date.getDate();
+
+    var minutes = date.getMinutes();
+    if (minutes<10) minutes = "0"+minutes;
+
+    var datestr = date.getHours()+":"+minutes+" "+day+" "+month;
+    if (thisyear!=year) datestr +=" "+year;
+    return datestr;
+};
