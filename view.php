@@ -285,32 +285,6 @@
     if (apikey!="") apikeystr = "&apikey="+apikey;
 </script>
 
-<script>
-/**
-     * @todo replace this with moment.js translated date/time strings
-     * see feed and input views for example of translated dates
-     * eg. moment().fromUnix(timestamp).format('ll') // format unix timestamp as per user's locale
-     * @see Lib/misc/moment.min.js
-     **/
-    function printdate(timestamp)
-    {
-        var date = new Date();
-        var thisyear = date.getFullYear()-2000;
-
-        var date = new Date(timestamp);
-        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        var year = date.getFullYear()-2000;
-        var month = months[date.getMonth()];
-        var day = date.getDate();
-
-        var minutes = date.getMinutes();
-        if (minutes<10) minutes = "0"+minutes;
-
-        var datestr = date.getHours()+":"+minutes+" "+day+" "+month;
-        if (thisyear!=year) datestr +=" "+year;
-        return datestr;
-    };
-</script>
 <script src="<?php echo $path;?>Modules/graph/graph.js?v=<?php echo $v; ?>"></script>
 <script src="<?php echo $path;?>Lib/moment.min.js"></script>
 <script>

@@ -30,6 +30,7 @@
 <link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
 <link href="<?php echo $path; ?>Modules/graph/graph.css" rel="stylesheet">
+<script src="<?php echo $path; ?>Lib/vue.min.js?ver=<?php echo $js_css_version; ?>"></script>
 
 <div id='navigation-timemanual' style='right:1px; display: none;'>
     <div class='input-prepend input-append' style='margin-bottom:5px' >
@@ -68,21 +69,22 @@
     <div id="placeholder"></div>
 </div>
 
+<script>
+    var apikey = "<?php echo $apikey; ?>";
+    var apikeystr = "";
+    if (apikey!="") apikeystr = "&apikey="+apikey;
+</script>
+
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/moment.min.js?v=2"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=2"></script>
-
 
 <script>
     $("body").css("background","none");
     embed = true;
     
     var graphid = "<?php echo $graphid; ?>";
-
-    var apikey = "<?php echo $apikey; ?>";
-    var apikeystr = "";
-    if (apikey!="") apikeystr = "&apikey="+apikey;
     
-    $.ajax({                                      
+    $.ajax({
         url: path+"/graph/get?id="+graphid,
         async: true,
         dataType: "json",
