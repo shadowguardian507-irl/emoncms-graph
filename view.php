@@ -131,8 +131,8 @@
     </div>
     <div class="input-prepend input-append" style="padding-right:5px">
         <span class="add-on"><?php echo _('Timezone') ?></span>
-        <span class="timezone-options">
-            <select id="timezone">
+        <span class="timezone-options" >
+            <select id="timezone" style="width:280px" >
                 <optgroup label="<?php echo _('System') ?>">
                     <option id="browser_timezone"></option>
                     <option id="user_timezone"></option>
@@ -143,7 +143,7 @@
         </span>
     </div>
     <div id="yaxis_left" class="input-append input-prepend">
-        <span class="add-on" style="width:80px"><?php echo _('Y-axis').'('._('Left').')' ?>:</span>
+        <span class="add-on" style="width:110px"><?php echo _('Y-axis').' ('._('Left').')' ?>:</span>
         <span class="add-on" style="width:30px"><?php echo _('min') ?></span>
         <input id="yaxis-min" type="text" style="width:50px" value="auto">
         <span class="add-on" style="width:30px"><?php echo _('max') ?></span>
@@ -151,7 +151,7 @@
         <button class="btn reset-yaxis"><?php echo _('Reset') ?></button>
     </div>
     <div id="yaxis_right" class="input-append input-prepend">
-        <span class="add-on" style="width:80px"><?php echo _('Y-axis').'('._('Right').')' ?>:</span>
+        <span class="add-on" style="width:110px"><?php echo _('Y-axis').' ('._('Right').')' ?>:</span>
         <span class="add-on" style="width:30px"><?php echo _('min') ?></span>
         <input id="yaxis-min2" type="text" style="width:50px" value="auto">
         <span class="add-on" style="width:30px"><?php echo _('max') ?></span>
@@ -270,7 +270,7 @@
     </div>
 
     <div class="input-append"><!-- just to match the styling of the other items -->
-        <button onclick="copyToClipboardCustomMsg(document.getElementById('csv'), 'copy-csv-feedback','Copied')" class="csvoptions btn hidden" id="copy-csv" type="button"><?php echo _('Copy') ?> <i class="icon-share-alt"></i></button>
+        <button onclick="copyToClipboardCustomMsg(document.getElementById('csv'), 'copy-csv-feedback','<?php echo _('Copied') ?>')" class="csvoptions btn hidden" id="copy-csv" type="button"><?php echo _('Copy') ?> <i class="icon-share-alt"></i></button>
     </div>
 
     <span id="copy-csv-feedback" class="csvoptions"></span>
@@ -411,6 +411,7 @@
         "Received data not in correct format. Check the logs for more details" => _("Received data not in correct format. Check the logs for more details"),
         "Request error" => _("Request error"),
         "User" => _("User"),
+        "Browser" => _("Browser"),
         "Authentication Required" => _("Authentication Required")
     );
     printf("var translations = %s;\n",json_encode($translations));
@@ -453,7 +454,7 @@
             
             let browser_tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
             let label = timezones.hasOwnProperty(browser_tz) ? timezones[browser_tz].label : browser_tz;
-            $browser_timezone.val(browser_tz).text('Browser: ' + browser_tz + ' ('+ label + ')');
+            $browser_timezone.val(browser_tz).text(_('Browser') +': ' + browser_tz + ' ('+ label + ')');
         })
 
         $timezone.on('change', function(event) {
