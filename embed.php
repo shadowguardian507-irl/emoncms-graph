@@ -17,6 +17,8 @@
     
     $apikey = "";
     if (isset($_GET['apikey'])) $apikey = $_GET['apikey'];
+    
+    $js_css_version = 1;
 ?>
 
 <!--[if IE]><script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/excanvas.min.js"></script><![endif]-->
@@ -26,11 +28,11 @@
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.touch.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/flot/jquery.flot.togglelegend.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/flot/jquery.flot.stack.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/vis.helper.js?v=<?php echo $js_css_version; ?>"></script>
 <link href="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script language="javascript" type="text/javascript" src="<?php echo $path; ?>Lib/bootstrap-datetimepicker-0.0.11/js/bootstrap-datetimepicker.min.js"></script>
-<link href="<?php echo $path; ?>Modules/graph/graph.css" rel="stylesheet">
-<script src="<?php echo $path; ?>Lib/vue.min.js?ver=<?php echo $js_css_version; ?>"></script>
+<link href="<?php echo $path; ?>Modules/graph/graph.css?v=<?php echo $js_css_version; ?>" rel="stylesheet">
+<script src="<?php echo $path; ?>Lib/vue.min.js?v=<?php echo $js_css_version; ?>"></script>
 
 <div id='navigation-timemanual' style='right:1px; display: none;'>
     <div class='input-prepend input-append' style='margin-bottom:5px' >
@@ -75,8 +77,8 @@
     if (apikey!="") apikeystr = "&apikey="+apikey;
 </script>
 
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/moment.min.js?v=2"></script>
-<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=2"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Lib/moment.min.js?v=<?php echo $js_css_version; ?>"></script>
+<script language="javascript" type="text/javascript" src="<?php echo $path;?>Modules/graph/graph.js?v=<?php echo $js_css_version; ?>"></script>
 
 <script>
     $("body").css("background","none");
