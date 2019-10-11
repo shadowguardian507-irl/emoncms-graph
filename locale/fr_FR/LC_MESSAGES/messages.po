@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2019-09-28 18:20+0200\n"
-"PO-Revision-Date: 2019-09-28 18:22+0200\n"
+"POT-Creation-Date: 2019-10-11 10:37+0200\n"
+"PO-Revision-Date: 2019-10-11 10:37+0200\n"
 "Last-Translator: Aymeric THIBAUT\n"
 "Language-Team: Aymeric THIBAUT\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 "X-Poedit-Basepath: ../../..\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -38,21 +38,13 @@ msgstr "Supprimer"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: graph.js:635 view.php:310
-msgid "Select a feed"
-msgstr "Sélectionner un flux"
-
-#: graph.js:636 view.php:311
-msgid "Please select a feed from the Feeds List"
-msgstr "Sélectionner SVP un flux à partir de la liste Flux"
-
-#: graph.js:691 view.php:411
+#: graph.js:691 view.php:413
 msgid "Received data not in correct format. Check the logs for more details"
 msgstr ""
 "Les données reçues ne sont pas de format correct. Vérifier les journaux pour "
 "plus de détails."
 
-#: graph.js:692 graph.js:714 view.php:412
+#: graph.js:692 graph.js:714 view.php:414
 msgid "Request error"
 msgstr "Erreur de requête"
 
@@ -300,7 +292,7 @@ msgstr "Écart-type"
 msgid "Wh"
 msgstr "Wh"
 
-#: view.php:212
+#: view.php:212 view.php:313
 msgid "Show CSV Output"
 msgstr "Afficher sortie CSV"
 
@@ -360,19 +352,31 @@ msgstr "Copié"
 msgid "Copy"
 msgstr "Copier"
 
+#: view.php:310
+msgid "Select a feed"
+msgstr "Sélectionner un flux"
+
+#: view.php:311
+msgid "Please select a feed from the Feeds List"
+msgstr "Sélectionner SVP un flux à partir de la liste Flux"
+
 #: view.php:312
 msgid "Select graph"
 msgstr "Sélectionner graphique"
 
-#: view.php:413
+#: view.php:314
+msgid "Hide CSV Output"
+msgstr "Masquer sortie CSV"
+
+#: view.php:415
 msgid "User"
 msgstr "Utilisateur"
 
-#: view.php:414
+#: view.php:416
 msgid "Browser"
 msgstr "Navigateur"
 
-#: view.php:415
+#: view.php:417
 msgid "Authentication Required"
 msgstr "Authentification requise"
 
