@@ -310,6 +310,8 @@
         $lang['Select a feed'] = _('Select a feed');
         $lang['Please select a feed from the Feeds List'] = _('Please select a feed from the Feeds List');
         $lang['Select graph'] = _('Select graph');
+        $lang['Show CSV Output'] = _('Show CSV Output');
+        $lang['Hide CSV Output'] = _('Hide CSV Output');
         echo json_encode($lang) . ';';
         echo "\n";
     ?>
