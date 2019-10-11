@@ -196,7 +196,7 @@ function csvShowHide(set)
     var action="hide";
 
     if (set==="swap") {
-        if ($("#showcsv").html()=="Show CSV Output") {
+        if ($("#showcsv").html()==_lang["Show CSV Output"]) {
             action="show";
         } else {
             action="hide";
@@ -210,12 +210,12 @@ function csvShowHide(set)
         showcsv = 1;
         $("#csv").show();
         $(".csvoptions").show();
-        $("#showcsv").html("Hide CSV Output");
+        $("#showcsv").html(_lang["Hide CSV Output"]);
     } else {
         showcsv = 0;
         $("#csv").hide();
         $(".csvoptions").hide();
-        $("#showcsv").html("Show CSV Output");
+        $("#showcsv").html(_lang["Show CSV Output"]);
     }
 }
 
@@ -632,8 +632,8 @@ function graph_reload()
     if (ids.length + average_ids.length === 0) {
         graph_resize();
         graph_draw();
-        var title = _('Select a feed') + '.';
-        var message = _('Please select a feed from the Feeds List');
+        var title = _lang['Select a feed'];
+        var message = _lang['Please select a feed from the Feeds List'];
         var icon = '<svg class="icon show_chart"><use xlink:href="#icon-show_chart"></use></svg>';
         var markup = ['<div class="alert alert-info"><a href="#" class="open-sidebar"><strong>',icon,title,'</strong>',message,'</a></div>'].join(' ');
         $('#error').show()
