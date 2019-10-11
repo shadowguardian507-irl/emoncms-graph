@@ -632,7 +632,7 @@ function graph_reload()
     if (ids.length + average_ids.length === 0) {
         graph_resize();
         graph_draw();
-        var title = _lang['Select a feed'];
+        var title = _lang['Select a feed'] + '.';
         var message = _lang['Please select a feed from the Feeds List'];
         var icon = '<svg class="icon show_chart"><use xlink:href="#icon-show_chart"></use></svg>';
         var markup = ['<div class="alert alert-info"><a href="#" class="open-sidebar"><strong>',icon,title,'</strong>',message,'</a></div>'].join(' ');
