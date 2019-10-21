@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2019-10-11 10:37+0200\n"
-"PO-Revision-Date: 2019-10-11 10:37+0200\n"
+"POT-Creation-Date: 2019-10-20 15:11+0200\n"
+"PO-Revision-Date: 2019-10-20 15:23+0200\n"
 "Last-Translator: Aymeric THIBAUT\n"
 "Language-Team: Aymeric THIBAUT\n"
 "Language: fr_FR\n"
@@ -38,13 +38,13 @@ msgstr "Supprimer"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: graph.js:691 view.php:413
+#: graph.js:691 view.php:421
 msgid "Received data not in correct format. Check the logs for more details"
 msgstr ""
 "Les données reçues ne sont pas de format correct. Vérifier les journaux pour "
-"plus de détails."
+"plus de détails"
 
-#: graph.js:692 graph.js:714 view.php:414
+#: graph.js:692 graph.js:714 view.php:422
 msgid "Request error"
 msgstr "Erreur de requête"
 
@@ -120,7 +120,7 @@ msgstr "légende"
 msgid "feed tag"
 msgstr "étiquette flux"
 
-#: view.php:78
+#: view.php:78 view.php:318
 msgid "Histogram"
 msgstr "Histogramme"
 
@@ -368,15 +368,43 @@ msgstr "Sélectionner graphique"
 msgid "Hide CSV Output"
 msgstr "Masquer sortie CSV"
 
-#: view.php:415
+#: view.php:315
+msgid "Lines"
+msgstr "Lignes"
+
+#: view.php:316
+msgid "Bars"
+msgstr "Barres"
+
+#: view.php:317
+msgid "Points"
+msgstr "Points"
+
+#: view.php:319
+msgid "Move up"
+msgstr "Monter"
+
+#: view.php:320
+msgid "Move down"
+msgstr "Descendre"
+
+#: view.php:321
+msgid "Window"
+msgstr "Fenêtre"
+
+#: view.php:322
+msgid "Length"
+msgstr "Longueur"
+
+#: view.php:423
 msgid "User"
 msgstr "Utilisateur"
 
-#: view.php:416
+#: view.php:424
 msgid "Browser"
 msgstr "Navigateur"
 
-#: view.php:417
+#: view.php:425
 msgid "Authentication Required"
 msgstr "Authentification requise"
 

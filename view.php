@@ -312,6 +312,14 @@
         $lang['Select graph'] = _('Select graph');
         $lang['Show CSV Output'] = _('Show CSV Output');
         $lang['Hide CSV Output'] = _('Hide CSV Output');
+        $lang['Lines'] = _('Lines');
+        $lang['Bars'] = _('Bars');
+        $lang['Points'] = _('Points');
+        $lang['Histogram'] = _('Histogram');
+        $lang['Move up'] = _('Move up');
+        $lang['Move down'] = _('Move down');
+        $lang['Window'] = _('Window');
+        $lang['Length'] = _('Length');
         echo json_encode($lang) . ';';
         echo "\n";
     ?>

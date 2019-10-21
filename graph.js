@@ -901,7 +901,7 @@ function graph_draw()
         mins = "";
     }
 
-    if (!embed) $("#window-info").html("<b>Window:</b> "+printdate(view.start)+" > "+printdate(view.end)+", <b>Length:</b> "+hours+"h"+mins+" ("+time_in_window+" seconds)");
+    if (!embed) $("#window-info").html("<b>"+_lang['Window']+":</b> "+printdate(view.start)+" > "+printdate(view.end)+", <b>"+_lang['Length']+":</b> "+hours+"h"+mins+" ("+time_in_window+" seconds)");
 
     plotdata = [];
     for (var z in feedlist) {
@@ -953,10 +953,10 @@ function graph_draw()
             out += "<tr>";
             out += "<td>";
             if (z > 0) {
-                out += "<a class='move-feed' title='Move up' feedid="+z+" moveby=-1 ><i class='icon-arrow-up'></i></a>";
+                out += "<a class='move-feed' title='"+_lang['Move up']+"' feedid="+z+" moveby=-1 ><i class='icon-arrow-up'></i></a>";
             }
             if (z < feedlist.length-1) {
-                out += "<a class='move-feed' title='Move down' feedid="+z+" moveby=1 ><i class='icon-arrow-down'></i></a>";
+                out += "<a class='move-feed' title='"+_lang['Move down']+"' feedid="+z+" moveby=1 ><i class='icon-arrow-down'></i></a>";
             }
             out += "</td>";
 
@@ -965,11 +965,11 @@ function graph_draw()
 
             var selected = "";
             if (feedlist[z].plottype == "lines") selected = "selected"; else selected = "";
-            out += "<option value='lines' "+selected+">Lines</option>";
+            out += "<option value='lines' "+selected+">"+_lang['Lines']+"</option>";
             if (feedlist[z].plottype == "bars") selected = "selected"; else selected = "";
-            out += "<option value='bars' "+selected+">Bars</option>";
+            out += "<option value='bars' "+selected+">"+_lang['Bars']+"</option>";
             if (feedlist[z].plottype == "points") selected = "selected"; else selected = "";
-            out += "<option value='points' "+selected+">Points</option>";
+            out += "<option value='points' "+selected+">"+_lang['Points']+"</option>";
             out += "</select></td>";
             out += "<td><input class='linecolor' feedid="+feedlist[z].id+" style='width:50px' type='color' value='#"+default_linecolor+"'></td>";
             out += "<td><input class='fill' type='checkbox' feedid="+feedlist[z].id+"></td>";
@@ -981,7 +981,7 @@ function graph_draw()
             out += "<td style='text-align:center'><input class='delta' feedid="+feedlist[z].id+" type='checkbox'/></td>";
             out += "<td style='text-align:center'><input class='getaverage' feedid="+feedlist[z].id+" type='checkbox'/></td>";
             out += "<td><select feedid="+feedlist[z].id+" class='decimalpoints' style='width:50px'><option>0</option><option>1</option><option>2</option><option>3</option></select></td>";
-            out += "<td><button feedid="+feedlist[z].id+" class='histogram'>Histogram <i class='icon-signal'></i></button></td>";
+            out += "<td><button feedid="+feedlist[z].id+" class='histogram'>"+_lang['Histogram']+" <i class='icon-signal'></i></button></td>";
             // out += "<td><a href='"+apiurl+"'><button class='btn btn-link'>API REF</button></a></td>";
             out += "</tr>";
         }
