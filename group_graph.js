@@ -835,7 +835,7 @@ function graph_draw()
             out += "<td style='text-align:center'><input class='getaverage' feedid="+feedlist[z].id+" type='checkbox'/></td>";
             out += "<td><select feedid="+feedlist[z].id+" class='decimalpoints' style='width:50px'><option>0</option><option>1</option><option>2</option><option>3</option></select></td>";
             out += "<td><button feedid="+feedlist[z].id+" class='histogram'>Histogram <i class='icon-signal'></i></button></td>";
-            // out += "<td><a href='"+apiurl+"'><button class='btn btn-link'>API REF</button></a></td>";
+            out += "<td><a href='"+apiurl+"'><button class='btn btn-link'>API REF</button></a></td>";
             out += "</tr>";
         }
         $("#feed-controls").html(out);
