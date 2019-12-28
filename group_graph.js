@@ -841,6 +841,7 @@ function graph_draw()
         $("#feed-controls").html(out);
         
         var out = "";
+	console.log("dp = "+dp);
         for (var z in feedlist) {
             out += "<tr>";
             out += "<td>"+feedlist[z].id+":"+feedlist[z].tag+": "+feedlist[z].name+"</td>";
